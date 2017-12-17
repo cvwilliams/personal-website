@@ -1,0 +1,36 @@
+// Mixins
+// Bootstrap Button Variant
+@mixin background-cover {
+  background-size: cover;
+}
+@mixin body-font {
+  font-family: 'Open Sans', serif;
+}
+@mixin heading-font {
+  font-family: 'Saira Extra Condensed', serif;
+}
+
+// @param $bg-color     - Background color for the button
+// @param $text-color   - Text color for the button
+@mixin fa-anchor-color($bg-color, $text-color) {
+  color: $bg-color;
+
+  &:hover {
+    color: darken($bg-color, 8%);
+    transition: all .3s ease;
+  }
+
+  &:active {
+    color: darken($bg-color, 25%);
+  }
+
+  &:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    color: darken($bg-color, 25%);
+    outline: none;
+  }
+}
