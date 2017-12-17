@@ -1,0 +1,33 @@
+.resume-section {
+  border-bottom: 1px solid $gray-300;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+  margin-top: 5rem;
+
+  .resume-item {
+    .resume-date {
+      min-width: none;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .resume-section {
+    min-height: 100vh;
+    margin: 0;
+
+    .resume-item {
+      .resume-date {
+        min-width: 18rem;
+      }
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .resume-section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    margin: 0;
+  }
+}
