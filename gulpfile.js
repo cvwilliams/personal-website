@@ -77,7 +77,11 @@ gulp.task('font', function () {
 gulp.task('inject-html', function () {
   return gulp.src('index.html')
     .pipe(
-      inject(gulp.src(['public/*.css', 'public/vendor.min.js','public/main*.js'], { read: false }), {addRootSlash: false, ignorePath: 'public'})
+      inject(
+        gulp.src(['public/*.css', 'public/vendor.min.js', 'public/main*.js'],
+        { read: false }),
+        { addRootSlash: false, ignorePath: 'public' }
+      )
     )
     .pipe(gulp.dest('public'))
 })
