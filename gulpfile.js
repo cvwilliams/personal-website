@@ -75,7 +75,7 @@ gulp.task('font', function () {
 
 // Inject css into HTML
 gulp.task('inject-html', function () {
-  return gulp.src('index.html')
+  return gulp.src(['index.html', '404.html'])
     .pipe(
       inject(
         gulp.src(['public/*.css', 'public/vendor.min.js', 'public/main*.js'],
@@ -88,7 +88,7 @@ gulp.task('inject-html', function () {
 
 // HTML Linting task
 gulp.task('html-lint', function () {
-  return gulp.src('index.html')
+  return gulp.src(['index.html', '404.html'])
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter('htmlhint-stylish'))
     .pipe(htmlhint.failAfterError())
