@@ -1,11 +1,12 @@
 {
   "title": "Cameron Williams",
   "name": "personal-website",
+  "version": "1.0.0",
   "homepage": "https://cameronwillia.ms",
   "description": "My personal website",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/cvwilliams/personal-website.git"
   },
   "license": "MIT",
   "scripts": {
