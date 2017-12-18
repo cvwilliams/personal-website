@@ -12,6 +12,41 @@
 
 // @param $bg-color     - Background color for the button
 // @param $text-color   - Text color for the button
+// @param $border-color - Border color for the button
+@mixin button-color($bg-color, $text-color, $border-color) {
+  background-color: $bg-color;
+  border: 1px solid $border-color;
+  color: $text-color;
+
+  &:hover {
+    background-color: darken($bg-color, 8%);
+    border: 1px solid $border-color;
+    transition: all .3s ease;
+    color: $text-color;
+  }
+
+  &:active {
+    background-color: darken($bg-color, 25%);
+    border: 1px solid $border-color;
+    color: $text-color;
+  }
+
+  &:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    background-color: darken($bg-color, 8%);
+    transition: all .3s ease;
+    outline: none;
+    border: 1px solid $border-color;
+    color: $text-color;
+  }
+}
+
+// @param $bg-color     - Background color for the button
+// @param $text-color   - Text color for the button
 @mixin fa-anchor-color($bg-color, $text-color) {
   color: $bg-color;
 
