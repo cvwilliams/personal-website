@@ -1,0 +1,47 @@
+.not-found-body {
+  padding-top: 0;
+  padding-left: 0;
+}
+
+.space-background {
+  background: url('image/stars.gif');
+  padding: 0;
+  height: 100vh;
+}
+
+.btn-phone-home {
+  @include button-color($cam-gren, $white, $cam-gren);
+}
+
+.main-section {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+  margin-top: 5rem;
+
+  .main-item {
+    .main-date {
+      min-width: none;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .main-section {
+    min-height: 100vh;
+    margin: 0;
+
+    .main-item {
+      .main-date {
+        min-width: 18rem;
+      }
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .main-section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    margin: 0;
+  }
+}
