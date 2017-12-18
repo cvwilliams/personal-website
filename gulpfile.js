@@ -14,6 +14,7 @@ var sequence = require('run-sequence')
 var del = require('del')
 var imagemin = require('gulp-imagemin')
 var concat = require('gulp-concat')
+var bust = require('gulp-cache-bust')
 
 var devEnv = ((process.env.NODE_ENV || 'development').trim().toLowerCase() === 'development')
 
@@ -83,6 +84,9 @@ gulp.task('inject-html', function () {
         { addRootSlash: false, ignorePath: 'public' }
       )
     )
+    .pipe(gulpif(!devEnv, bust({
+      'basePath': 'public/'
+    })))
     .pipe(gulp.dest('public'))
 })
 
