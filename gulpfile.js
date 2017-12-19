@@ -14,11 +14,12 @@ var sequence = require('run-sequence')
 var del = require('del')
 var imagemin = require('gulp-imagemin')
 var concat = require('gulp-concat')
+var bust = require('gulp-cache-bust')
 
 var devEnv = ((process.env.NODE_ENV || 'development').trim().toLowerCase() === 'development')
 
 gulp.task('default', function () {
-  sequence('clean', ['styles', 'js', 'image', 'font'], 'inject-html')
+  sequence('clean', ['styles', 'js', 'image', 'font', 'copy'], 'html')
 })
 gulp.task('lint', ['js-lint', 'scss-lint', 'html-lint'])
 
@@ -73,8 +74,8 @@ gulp.task('font', function () {
   .pipe(gulp.dest('public/fonts'))
 })
 
-// Inject css into HTML
-gulp.task('inject-html', function () {
+// Inject css into HTML, cache bust
+gulp.task('html', function () {
   return gulp.src(['index.html', '404.html'])
     .pipe(
       inject(
@@ -83,6 +84,14 @@ gulp.task('inject-html', function () {
         { addRootSlash: false, ignorePath: 'public' }
       )
     )
+    .pipe(gulpif(!devEnv, bust({
+      'basePath': 'public/'
+    })))
+    .pipe(gulp.dest('public'))
+})
+
+gulp.task('copy', function () {
+  return gulp.src(['robots.txt', 'sitemap.xml'])
     .pipe(gulp.dest('public'))
 })
 
