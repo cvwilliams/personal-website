@@ -1,7 +1,7 @@
 sudo: false
 language: go
-  go:
-    - master
+go:
+  - master
 install: 
   - . $HOME/.nvm/nvm.sh
   - nvm install stable
