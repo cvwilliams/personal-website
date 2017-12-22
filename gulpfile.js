@@ -90,12 +90,12 @@ gulp.task('font', function () {
 
 // Inject css into HTML, cache bust
 gulp.task('html', function () {
-  return gulp.src(['public/index.html', 'public/404.html'])
+  return gulp.src(['public/**/*.html'])
     .pipe(
       inject(
         gulp.src(['public/*.css', 'public/vendor.min.js', 'public/main*.js'],
         { read: false }),
-        { addRootSlash: false, ignorePath: 'public' }
+        { addRootSlash: false, relative: true }
       )
     )
     .pipe(gulp.dest('public'))
@@ -103,7 +103,7 @@ gulp.task('html', function () {
 
 // HTML Linting task
 gulp.task('html-lint', function () {
-  return gulp.src(['layouts/index.html', 'layouts/404.html'])
+  return gulp.src(['layouts/**/*.html'])
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter('htmlhint-stylish'))
     .pipe(htmlhint.failAfterError())
