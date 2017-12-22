@@ -1,101 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Cameron Williams</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Personal web page with links to my important content">
-    <meta name="author" content="Cameron Williams">
-    <meta name="keywords" content="cameron,williams,software,engineer,android,angular,javascript,resume,github,linkedin">
+{{ partial "header.html" . }}
 
-    <!-- Custom fonts for this template -->
-    <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+<body id="page-top">
 
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="57x57" href="/image/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/image/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/image/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/image/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/image/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/image/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/image/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/image/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/image/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/image/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/image/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/image/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/image/favicon/favicon-16x16.png">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/image/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+  {{ partial "nav.html" }}
 
-    <!-- Custom styles -->
-    {{ "<!-- inject:css -->" | safeHTML }}
-    {{ "<!-- endinject -->" | safeHTML }}
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-      
-      ga('create', 'UA-111413725-1', 'auto');
-      ga('send', 'pageview');
-    </script>
-  </head>
-
-  <body id="page-top">
-
-    <nav id="side-nav" class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top side-nav">
-      <a class="navbar-brand js-scroll-trigger">
-        <span class="d-lg-block">
-          <img class="img-logo mx-auto" src="image/logo.svg" alt="Brand logo">
-        </span>
-      </a>
-      <ul class="list-inline list-social-icons mb-0">
-        <li class="list-inline-item">
-          <a href="https://resume.creddle.io/resume/gkwk8qfgpa3">
-            <span class="fa-stack fa-lg">
-              <i class="fa fa-circle fa-stack-2x"></i>
-              <i class="fa fa-file-text-o fa-stack-1x fa-inverse"></i>
-            </span>
-          </a>
-        </li>
-        <li class="list-inline-item">
-          <a href="https://linkedin.com/in/cameronvwilliams/">
-            <span class="fa-stack fa-lg">
-              <i class="fa fa-circle fa-stack-2x"></i>
-              <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
-            </span>
-          </a>
-        </li>
-        <li class="list-inline-item">
-          <a href="https://github.com/cvwilliams/">
-            <span class="fa-stack fa-lg">
-              <i class="fa fa-circle fa-stack-2x"></i>
-              <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-            </span>
-          </a>
-        </li>
-      </ul>
-      <div class="collapse navbar-collapse">
+  <div class="container-fluid p-0">
+    <section class="resume-section p-3 p-lg-5 d-flex d-column" id="about">
+      <div class="my-auto">
+        <img class="img-fluid rounded-circle img-profile mx-auto" src="image/profile.jpg" alt="Profile image">
+        <h1 class="mb-0">Cameron
+          <span class="text-primary">Williams</span>
+        </h1>
+        <div class="subheading">Software Engineer · Android · Angular · JavaScript</div>
       </div>
-    </nav>
-
-    <div class="container-fluid p-0">
-      <section class="resume-section p-3 p-lg-5 d-flex d-column" id="about">
-        <div class="my-auto">
-          <img class="img-fluid rounded-circle img-profile mx-auto" src="image/profile.jpg" alt="Profile image">            
-          <h1 class="mb-0">Cameron
-            <span class="text-primary">Williams</span>
-          </h1>
-          <div class="subheading">Software Engineer · Android · Angular · JavaScript</div>
-        </div>
-      </section>
-    </div>
-
-    <!-- Custom scripts for this template -->
-    {{ "<!-- inject:js -->" | safeHTML }}
-    {{ "<!-- endinject -->" | safeHTML }}
-  </body>
-</html>
+    </section>
+  </div>
+</body>
+{{ partial "footer.html" }}
