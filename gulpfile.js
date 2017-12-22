@@ -15,6 +15,7 @@ var del = require('del')
 var imagemin = require('gulp-imagemin')
 var concat = require('gulp-concat')
 var hash = require('gulp-hash')
+var liveServer = require('gulp-live-server')
 var exec = require('child_process').exec
 
 var devEnv = ((process.env.NODE_ENV || 'development').trim().toLowerCase() === 'development')
@@ -23,6 +24,15 @@ gulp.task('default', function () {
   sequence('clean', ['styles', 'js', 'image', 'font'], 'hugo', 'html')
 })
 gulp.task('lint', ['js-lint', 'scss-lint', 'html-lint'])
+gulp.task('dev', function () {
+  var server = liveServer.static('public', 8080)
+  server.start()
+  gulp.watch('public/**/*', function () {
+    server.start.bind(server)()
+  })
+  gulp.watch('js/**/*.js', ['js'])
+  gulp.watch('scss/**/*.scss', ['styles'])
+})
 
 gulp.task('hugo', function (cb) {
   exec('hugo', function (err, stdout, stderr) {
