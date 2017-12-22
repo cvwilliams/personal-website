@@ -14,14 +14,25 @@ var sequence = require('run-sequence')
 var del = require('del')
 var imagemin = require('gulp-imagemin')
 var concat = require('gulp-concat')
-var bust = require('gulp-cache-bust')
+var exec = require('child_process').exec
 
 var devEnv = ((process.env.NODE_ENV || 'development').trim().toLowerCase() === 'development')
 
 gulp.task('default', function () {
-  sequence('clean', ['styles', 'js', 'image', 'font', 'copy'], 'html')
+  sequence('clean', ['styles', 'js', 'image', 'font'], 'hugo', 'html')
 })
 gulp.task('lint', ['js-lint', 'scss-lint', 'html-lint'])
+
+gulp.task('hugo', function (cb) {
+  exec('hugo', function (err, stdout, stderr) {
+    if (err) {
+      console.log(stderr)
+    } else {
+      console.log(stdout)
+    }
+    cb()
+  })
+})
 
 // Compiles SCSS files from /scss into /css
 gulp.task('styles', function () {
@@ -76,7 +87,7 @@ gulp.task('font', function () {
 
 // Inject css into HTML, cache bust
 gulp.task('html', function () {
-  return gulp.src(['index.html', '404.html'])
+  return gulp.src(['public/index.html', 'public/404.html'])
     .pipe(
       inject(
         gulp.src(['public/*.css', 'public/vendor.min.js', 'public/main*.js'],
@@ -84,20 +95,12 @@ gulp.task('html', function () {
         { addRootSlash: false, ignorePath: 'public' }
       )
     )
-    .pipe(gulpif(!devEnv, bust({
-      'basePath': 'public/'
-    })))
-    .pipe(gulp.dest('public'))
-})
-
-gulp.task('copy', function () {
-  return gulp.src(['robots.txt', 'sitemap.xml'])
     .pipe(gulp.dest('public'))
 })
 
 // HTML Linting task
 gulp.task('html-lint', function () {
-  return gulp.src(['index.html', '404.html'])
+  return gulp.src(['layouts/index.html', 'layouts/404.html'])
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter('htmlhint-stylish'))
     .pipe(htmlhint.failAfterError())
