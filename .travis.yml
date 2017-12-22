@@ -1,8 +1,13 @@
 sudo: false
-language: node_js
-node_js:
-- node
-install: npm install
+matrix:
+  include:
+    - language: node_js
+      node_js:
+        - node
+    - language: go
+      go:
+        -master
+install: npm install; go get -v github.com/spf13/hugo
 script:
 - npm test
 - npm run build:prod
