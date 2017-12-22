@@ -14,6 +14,7 @@ var sequence = require('run-sequence')
 var del = require('del')
 var imagemin = require('gulp-imagemin')
 var concat = require('gulp-concat')
+var hash = require('gulp-hash')
 var exec = require('child_process').exec
 
 var devEnv = ((process.env.NODE_ENV || 'development').trim().toLowerCase() === 'development')
@@ -45,6 +46,7 @@ gulp.task('styles', function () {
     }))
     .pipe(gulpif(devEnv, sourcemaps.write()))
     .pipe(gulpif(!devEnv, cleanCSS({compatibility: 'ie8'})))
+    .pipe(gulpif(!devEnv, hash()))
     .pipe(gulpif(!devEnv, rename({suffix: '.min'})))
     .pipe(gulp.dest('public'))
 })
@@ -63,6 +65,7 @@ gulp.task('js', function () {
 
   return gulp.src('js/main.js')
     .pipe(gulpif(!devEnv, uglify()))
+    .pipe(gulpif(!devEnv, hash()))
     .pipe(gulpif(!devEnv, rename({ suffix: '.min' })))
     .pipe(gulp.dest('public'))
 })
