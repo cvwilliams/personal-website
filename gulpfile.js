@@ -32,6 +32,9 @@ gulp.task('dev', function () {
   })
   gulp.watch('js/**/*.js', ['js'])
   gulp.watch('scss/**/*.scss', ['styles'])
+  gulp.watch('layouts/**/*.html', function () {
+    sequence('hugo', 'html')
+  })
 })
 
 gulp.task('hugo', function (cb) {
