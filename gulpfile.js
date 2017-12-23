@@ -14,14 +14,39 @@ var sequence = require('run-sequence')
 var del = require('del')
 var imagemin = require('gulp-imagemin')
 var concat = require('gulp-concat')
-var bust = require('gulp-cache-bust')
+var hash = require('gulp-hash')
+var liveServer = require('gulp-live-server')
+var exec = require('child_process').exec
 
 var devEnv = ((process.env.NODE_ENV || 'development').trim().toLowerCase() === 'development')
 
 gulp.task('default', function () {
-  sequence('clean', ['styles', 'js', 'image', 'font', 'copy'], 'html')
+  sequence('clean', ['styles', 'js', 'image', 'font'], 'hugo', 'html')
 })
 gulp.task('lint', ['js-lint', 'scss-lint', 'html-lint'])
+gulp.task('dev', function () {
+  var server = liveServer.static('public', 8080)
+  server.start()
+  gulp.watch('public/**/*', function () {
+    server.start.bind(server)()
+  })
+  gulp.watch('js/**/*.js', ['js'])
+  gulp.watch('scss/**/*.scss', ['styles'])
+  gulp.watch('layouts/**/*.html', function () {
+    sequence('hugo', 'html')
+  })
+})
+
+gulp.task('hugo', function (cb) {
+  exec('hugo', function (err, stdout, stderr) {
+    if (err) {
+      console.log(stderr)
+    } else {
+      console.log(stdout)
+    }
+    cb()
+  })
+})
 
 // Compiles SCSS files from /scss into /css
 gulp.task('styles', function () {
@@ -34,6 +59,7 @@ gulp.task('styles', function () {
     }))
     .pipe(gulpif(devEnv, sourcemaps.write()))
     .pipe(gulpif(!devEnv, cleanCSS({compatibility: 'ie8'})))
+    .pipe(gulpif(!devEnv, hash()))
     .pipe(gulpif(!devEnv, rename({suffix: '.min'})))
     .pipe(gulp.dest('public'))
 })
@@ -52,6 +78,7 @@ gulp.task('js', function () {
 
   return gulp.src('js/main.js')
     .pipe(gulpif(!devEnv, uglify()))
+    .pipe(gulpif(!devEnv, hash()))
     .pipe(gulpif(!devEnv, rename({ suffix: '.min' })))
     .pipe(gulp.dest('public'))
 })
@@ -76,28 +103,20 @@ gulp.task('font', function () {
 
 // Inject css into HTML, cache bust
 gulp.task('html', function () {
-  return gulp.src(['index.html', '404.html'])
+  return gulp.src(['public/**/*.html'])
     .pipe(
       inject(
         gulp.src(['public/*.css', 'public/vendor.min.js', 'public/main*.js'],
         { read: false }),
-        { addRootSlash: false, ignorePath: 'public' }
+        { addRootSlash: false, relative: true }
       )
     )
-    .pipe(gulpif(!devEnv, bust({
-      'basePath': 'public/'
-    })))
-    .pipe(gulp.dest('public'))
-})
-
-gulp.task('copy', function () {
-  return gulp.src(['robots.txt', 'sitemap.xml'])
     .pipe(gulp.dest('public'))
 })
 
 // HTML Linting task
 gulp.task('html-lint', function () {
-  return gulp.src(['index.html', '404.html'])
+  return gulp.src(['layouts/**/*.html'])
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter('htmlhint-stylish'))
     .pipe(htmlhint.failAfterError())
