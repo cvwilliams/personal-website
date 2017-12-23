@@ -1,11 +1,14 @@
-// Components
-@import 'components/base';
-@import 'components/vendor';
-@import 'components/overrides';
+@import 'abstracts/variables';
+@import 'abstracts/mixins';
+
+@import 'vendors/bootstrap';
+@import 'vendors/font-awesome';
+
+@import 'base/global';
+
+@import 'layouts/nav';
+@import 'layouts/resume-item';
+
 @import 'components/social-icons';
 
-// Global CSS
-@import 'global';
-@import 'pages/nav';
-@import 'pages/resume-item';
 @import 'pages/404';
