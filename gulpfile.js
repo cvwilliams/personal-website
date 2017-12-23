@@ -30,7 +30,7 @@ gulp.task('dev', function () {
   gulp.watch('public/**/*', function () {
     server.start.bind(server)()
   })
-  gulp.watch('js/**/*.js', ['js'])
+  gulp.watch('src/js/**/*.js', ['js'])
   gulp.watch('src/scss/**/*.scss', ['styles'])
   gulp.watch('layouts/**/*.html', function () {
     sequence('hugo', 'html')
@@ -76,7 +76,7 @@ gulp.task('js', function () {
   .pipe(rename({ suffix: '.min' }))
   .pipe(gulp.dest('public'))
 
-  return gulp.src('js/main.js')
+  return gulp.src('src/js/main.js')
     .pipe(gulpif(!devEnv, uglify()))
     .pipe(gulpif(!devEnv, hash()))
     .pipe(gulpif(!devEnv, rename({ suffix: '.min' })))
@@ -84,7 +84,7 @@ gulp.task('js', function () {
 })
 
 gulp.task('image', function () {
-  return gulp.src('image/**/*')
+  return gulp.src('src/image/**/*')
     .pipe(imagemin())
     .pipe(gulp.dest('public/image'))
 })
@@ -132,7 +132,7 @@ gulp.task('scss-lint', function () {
 
 // JS Linting task
 gulp.task('js-lint', function () {
-  return gulp.src(['js/**/*.js', '!js/**/*min.js', 'gulpfile.js'])
+  return gulp.src(['src/js/**/*.js', '!js/**/*min.js', 'gulpfile.js'])
     .pipe(standard({ globals: ['jQuery'] }))
     .pipe(standard.reporter('default', {
       breakOnError: true,
