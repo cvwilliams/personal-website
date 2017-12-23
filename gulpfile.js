@@ -108,7 +108,7 @@ gulp.task('html', function () {
       inject(
         gulp.src(['public/*.css', 'public/vendor.min.js', 'public/main*.js'],
         { read: false }),
-        { addRootSlash: false, relative: true }
+        { addRootSlash: true, relative: true }
       )
     )
     .pipe(gulp.dest('public'))
