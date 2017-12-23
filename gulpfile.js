@@ -31,7 +31,7 @@ gulp.task('dev', function () {
     server.start.bind(server)()
   })
   gulp.watch('js/**/*.js', ['js'])
-  gulp.watch('scss/**/*.scss', ['styles'])
+  gulp.watch('src/scss/**/*.scss', ['styles'])
   gulp.watch('layouts/**/*.html', function () {
     sequence('hugo', 'html')
   })
@@ -50,7 +50,7 @@ gulp.task('hugo', function (cb) {
 
 // Compiles SCSS files from /scss into /css
 gulp.task('styles', function () {
-  return gulp.src('scss/main.scss')
+  return gulp.src('src/scss/main.scss')
     .pipe(gulpif(devEnv, sourcemaps.init()))
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer({
@@ -124,7 +124,7 @@ gulp.task('html-lint', function () {
 
 // SCSS Linting task
 gulp.task('scss-lint', function () {
-  return gulp.src('scss/**/*.scss')
+  return gulp.src('src/scss/**/*.scss')
       .pipe(sassLint())
       .pipe(sassLint.format())
       .pipe(sassLint.failOnError())
