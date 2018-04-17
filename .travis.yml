@@ -12,7 +12,7 @@ install:
   - wget https://github.com/gohugoio/hugo/releases/download/v${VERSION}/hugo_${VERSION}_Linux-64bit.tar.gz
   - tar xvzf hugo_${VERSION}_Linux-64bit.tar.gz
   - mkdir -p $GOPATH/bin
-  - cp hugo_${VERSION}_linux_amd64/hugo_${VERSION}_linux_amd64 $GOPATH/bin/hugo
+  - cp hugo_${VERSION}_Linux-64bit/hugo $GOPATH/bin/hugo
 script:
   - npm test
   - npm run build:prod
