@@ -7,7 +7,7 @@ install:
   - nvm install stable
   - nvm use stable
   - npm install
-  - go get -v github.com/spf13/hugo
+  - go get -v github.com/gohugoio/hugo
 script:
   - npm test
   - npm run build:prod
