@@ -30,8 +30,8 @@ gulp.task('dev', function () {
   gulp.watch('public/**/*', function () {
     server.start.bind(server)()
   })
-  gulp.watch('js/**/*.js', ['js'])
-  gulp.watch('scss/**/*.scss', ['styles'])
+  gulp.watch('src/js/**/*.js', ['js'])
+  gulp.watch('src/scss/**/*.scss', ['styles'])
   gulp.watch('layouts/**/*.html', function () {
     sequence('hugo', 'html')
   })
@@ -50,7 +50,7 @@ gulp.task('hugo', function (cb) {
 
 // Compiles SCSS files from /scss into /css
 gulp.task('styles', function () {
-  return gulp.src('scss/main.scss')
+  return gulp.src('src/scss/main.scss')
     .pipe(gulpif(devEnv, sourcemaps.init()))
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer({
@@ -76,7 +76,7 @@ gulp.task('js', function () {
   .pipe(rename({ suffix: '.min' }))
   .pipe(gulp.dest('public'))
 
-  return gulp.src('js/main.js')
+  return gulp.src('src/js/main.js')
     .pipe(gulpif(!devEnv, uglify()))
     .pipe(gulpif(!devEnv, hash()))
     .pipe(gulpif(!devEnv, rename({ suffix: '.min' })))
@@ -84,7 +84,7 @@ gulp.task('js', function () {
 })
 
 gulp.task('image', function () {
-  return gulp.src('image/**/*')
+  return gulp.src('src/image/**/*')
     .pipe(imagemin())
     .pipe(gulp.dest('public/image'))
 })
@@ -108,7 +108,7 @@ gulp.task('html', function () {
       inject(
         gulp.src(['public/*.css', 'public/vendor.min.js', 'public/main*.js'],
         { read: false }),
-        { addRootSlash: false, relative: true }
+        { addRootSlash: true, relative: true }
       )
     )
     .pipe(gulp.dest('public'))
@@ -124,7 +124,7 @@ gulp.task('html-lint', function () {
 
 // SCSS Linting task
 gulp.task('scss-lint', function () {
-  return gulp.src('scss/**/*.scss')
+  return gulp.src('src/scss/**/*.scss')
       .pipe(sassLint())
       .pipe(sassLint.format())
       .pipe(sassLint.failOnError())
@@ -132,7 +132,7 @@ gulp.task('scss-lint', function () {
 
 // JS Linting task
 gulp.task('js-lint', function () {
-  return gulp.src(['js/**/*.js', '!js/**/*min.js', 'gulpfile.js'])
+  return gulp.src(['src/js/**/*.js', '!js/**/*min.js', 'gulpfile.js'])
     .pipe(standard({ globals: ['jQuery'] }))
     .pipe(standard.reporter('default', {
       breakOnError: true,
