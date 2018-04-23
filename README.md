@@ -22,6 +22,12 @@ git clone https://github.com/cvwilliams/personal-website.git;
 cd personal-website
 ```
 
+Install all the necessary dependencies by running the install command
+
+```
+npm install
+```
+
 In order to start development mode (local live-reload server) run
 
 ```

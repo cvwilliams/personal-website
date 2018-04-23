@@ -2,12 +2,17 @@ sudo: false
 language: go
 go:
   - master
+env:
+  - VERSION=0.39
 install: 
   - . $HOME/.nvm/nvm.sh
   - nvm install stable
   - nvm use stable
   - npm install
-  - go get -v github.com/spf13/hugo
+  - wget https://github.com/gohugoio/hugo/releases/download/v${VERSION}/hugo_${VERSION}_Linux-64bit.tar.gz
+  - tar xvzf hugo_${VERSION}_Linux-64bit.tar.gz
+  - mkdir -p $GOPATH/bin
+  - cp hugo $GOPATH/bin/hugo
 script:
   - npm test
   - npm run build:prod
