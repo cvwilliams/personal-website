@@ -2,7 +2,11 @@
 <html lang="en">
 
 <head>
-  <title>Cameron Williams</title>
+  {{ if eq .Title "Cameron Williams" }}
+  <title>{{ .Title }}</title>
+  {{ else }}
+  <title>{{ (printf "%s | Cameron Williams" .Title) }}</title>
+  {{ end }}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Personal web page with links to my important content">

@@ -15,7 +15,6 @@
       {{ if gt $paginator.TotalPages 1 }}
         <footer>
           <nav>
-            <h3>Pagination</h3>
             {{ if $paginator.HasPrev }}
               <a href="{{ $paginator.Prev.URL }}">← Newer Posts</a>
             {{ end }}
