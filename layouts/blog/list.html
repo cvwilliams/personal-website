@@ -1,7 +1,31 @@
 {{ partial "header.html" . }}
 
 <body id="page-top">
-
   {{ partial "nav.html" }}
+  <div class="container-fluid">
+    <section class="my-4">
+      {{ $paginator := .Paginate (where .Data.Pages "Type" "blog") (index .Site.Params "paginate" | default 10) }}
+      {{ if ne $paginator.TotalPages 0 }}
+        {{ range $paginator.Pages.ByDate.Reverse }}
+          {{ .Render "summary" }}
+        {{ end }}
+      {{ else }}
+        <p>Some cools posts coming soon. Stay tuned...</p>
+      {{ end }}
+      {{ if gt $paginator.TotalPages 1 }}
+        <footer>
+          <nav>
+            <h3>Pagination</h3>
+            {{ if $paginator.HasPrev }}
+              <a href="{{ $paginator.Prev.URL }}">← Newer Posts</a>
+            {{ end }}
+            {{ if $paginator.HasNext }}
+              <a href="{{ $paginator.Next.URL }}">Older Posts →</a>
+            {{ end }}
+          </nav>
+        </footer>
+      {{ end }}
+    </section>
+  </div>
 </body>
 {{ partial "footer.html" }}

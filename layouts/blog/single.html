@@ -1,0 +1,29 @@
+{{ partial "header.html" . }}
+
+<body id="page-top">
+
+  {{ partial "nav.html" }}
+
+  <div class="container-fluid">
+    <section>
+      <header>
+        <h1>{{ .Title }}</h1>
+        <p>@{{ if isset .Params "author" }}{{ .Params.author }}{{ else }}{{ .Site.Params.author }}{{ end }} · {{ .Date.Format "Jan 2, 2006" }} · {{ .ReadingTime }} min read</p>
+      </header>
+      <article>{{ .Content }}</article>
+      <footer>
+        {{ if isset .Params "tags" }}
+        <ul>
+          {{ range $tag := .Params.tags }}
+            <li><a href="/tags/{{ $tag | urlize }}"><span>{{ $tag | title }}</span></a></li>
+          {{ end }}
+        </ul>
+        {{ end }}
+        <p>
+          {{ if .Site.Copyright }}{{ .Site.Copyright }}{{ end }}{{ if gt (div (sub now.Unix .Lastmod.Unix) 86400) 100 }}This post was published <strong>{{ div (sub now.Unix .Lastmod.Unix) 86400 }}</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.{{ end }}
+        </p>
+      </footer>
+    </section>
+  </div>
+</body>
+{{ partial "footer.html" }}
