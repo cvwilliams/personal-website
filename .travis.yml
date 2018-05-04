@@ -13,6 +13,8 @@ install:
   - tar xvzf hugo_${VERSION}_Linux-64bit.tar.gz
   - mkdir -p $GOPATH/bin
   - cp hugo $GOPATH/bin/hugo
+before_script: 
+  - npm rebuild node-sass
 script:
   - npm test
   - npm run build:prod
