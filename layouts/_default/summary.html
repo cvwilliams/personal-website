@@ -10,9 +10,10 @@
   <footer>
     <a href="{{ .RelPermalink }}">Read More →</a>
     <div class="float-right">
-        <i class="fa fa-tags"></i>
-        {{ range $tag := .Params.tags }}
-          <a href="/tags/{{ $tag | urlize }}"><span>{{ $tag | title }}</span></a>,
+      <i class="fa fa-tags"></i>
+      {{ range $i, $tag := .Params.tags }}
+        {{ if $i }}· {{ end }}
+          <a href="/tags/{{ $tag | urlize }}"><span>{{ $tag | title }}</span></a>
         {{ end }}
     </div>
   </footer>

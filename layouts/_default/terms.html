@@ -1,0 +1,19 @@
+{{ partial "header.html" . }}
+
+<body id="page-top">
+  {{ partial "nav.html" }}
+  <div class="container-fluid">
+    {{ partial "breadcrumbs" . }}
+    <section class="main post-detail terms-list">
+      <header class="post-header">
+        <h2 class="post-title">{{ .Title }}</h1>
+      </header>
+      <div>
+        {{ $data := .Data }} {{ range $key, $value := $data.Terms.ByCount }}
+        <a href="/{{ $data.Plural }}/{{ $value.Name | urlize }}/">{{ $value.Name | title }}</a>
+        {{ end }}
+      </div>
+    </section>
+  </div>
+</body>
+{{ partial "footer.html" }}
