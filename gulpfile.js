@@ -68,8 +68,8 @@ gulp.task('styles', function () {
 gulp.task('js', function () {
   gulp.src([
     'node_modules/jquery/dist/jquery.min.js',
-    'node_modules/jquery.easing/jquery.easing.js',
-    'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'
+    'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
+    'node_modules/smoothscroll-polyfill/dist/smoothscroll.min.js'
   ])
   .pipe(concat('vendor.js'))
   .pipe(uglify())
