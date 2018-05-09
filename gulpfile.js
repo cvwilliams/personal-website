@@ -24,6 +24,9 @@ gulp.task('default', function () {
   sequence('clean', ['styles', 'js', 'image', 'font'], 'hugo', 'html')
 })
 gulp.task('lint', ['js-lint', 'scss-lint', 'html-lint'])
+gulp.task('html', function () {
+  sequence('inject')
+})
 gulp.task('dev', function () {
   var server = liveServer.static('public', 8080)
   server.start()
@@ -58,9 +61,9 @@ gulp.task('styles', function () {
       cascade: false
     }))
     .pipe(gulpif(devEnv, sourcemaps.write()))
-    .pipe(gulpif(!devEnv, cleanCSS({compatibility: 'ie8'})))
+    .pipe(gulpif(!devEnv, cleanCSS({ compatibility: 'ie8' })))
     .pipe(gulpif(!devEnv, hash()))
-    .pipe(gulpif(!devEnv, rename({suffix: '.min'})))
+    .pipe(gulpif(!devEnv, rename({ suffix: '.min' })))
     .pipe(gulp.dest('public'))
 })
 
@@ -71,10 +74,10 @@ gulp.task('js', function () {
     'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
     'node_modules/smoothscroll-polyfill/dist/smoothscroll.min.js'
   ])
-  .pipe(concat('vendor.js'))
-  .pipe(uglify())
-  .pipe(rename({ suffix: '.min' }))
-  .pipe(gulp.dest('public'))
+    .pipe(concat('vendor.js'))
+    .pipe(uglify())
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(gulp.dest('public'))
 
   return gulp.src('src/js/main.js')
     .pipe(gulpif(!devEnv, uglify()))
@@ -98,17 +101,46 @@ gulp.task('font', function () {
     '!node_modules/font-awesome/*.md',
     '!node_modules/font-awesome/*.json'
   ])
-  .pipe(gulp.dest('public/fonts'))
+    .pipe(gulp.dest('public/fonts'))
 })
 
-// Inject css into HTML, cache bust
-gulp.task('html', function () {
+gulp.task('inject', function () {
   return gulp.src(['public/**/*.html'])
     .pipe(
       inject(
-        gulp.src(['public/*.css', 'public/vendor.min.js', 'public/main*.js'],
-        { read: false }),
-        { addRootSlash: true, relative: true }
+        gulp.src(['public/*.css'], { read: false }),
+        { addRootSlash: true, relative: true, name: 'head' }
+      )
+    )
+    .pipe(
+      inject(
+        gulp.src(['public/vendor.min.js', 'public/main*.js'], { read: false }),
+        {
+          addRootSlash: true,
+          relative: true,
+          name: 'footer',
+          transform: function (filePath, file, i, length) {
+            return '<script src="' + filePath + '" async></script>'
+          }
+        }
+      )
+    )
+    .pipe(gulp.dest('public'))
+})
+
+gulp.task('inject-js', function () {
+  gulp.src(['public/**/*.html'])
+    .pipe(
+      inject(
+        gulp.src(['public/vendor.min.js', 'public/main*.js'], { read: false }),
+        {
+          addRootSlash: true,
+          relative: true,
+          name: 'footer',
+          transform: function (filePath, file, i, length) {
+            return '<script src="' + filePath + '" async></script>'
+          }
+        }
       )
     )
     .pipe(gulp.dest('public'))
@@ -125,9 +157,9 @@ gulp.task('html-lint', function () {
 // SCSS Linting task
 gulp.task('scss-lint', function () {
   return gulp.src('src/scss/**/*.scss')
-      .pipe(sassLint())
-      .pipe(sassLint.format())
-      .pipe(sassLint.failOnError())
+    .pipe(sassLint())
+    .pipe(sassLint.format())
+    .pipe(sassLint.failOnError())
 })
 
 // JS Linting task

@@ -2,10 +2,12 @@
   'use strict'
 
   var showBackToTopButton = function () {
-    if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
-      $('#back-to-top')[0].style.display = 'block'
-    } else {
-      $('#back-to-top')[0].style.display = 'none'
+    if ($('#back-to-top')[0]) {
+      if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
+        $('#back-to-top')[0].style.display = 'block'
+      } else {
+        $('#back-to-top')[0].style.display = 'none'
+      }
     }
   }
 
