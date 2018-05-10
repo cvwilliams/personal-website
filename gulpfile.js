@@ -120,7 +120,7 @@ gulp.task('inject', function () {
           relative: true,
           name: 'footer',
           transform: function (filePath, file, i, length) {
-            return '<script src="' + filePath + '" async></script>'
+            return '<script src="' + filePath + '" defer></script>'
           }
         }
       )
