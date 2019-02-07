@@ -25,11 +25,18 @@
         </p>
       </footer>
     </section>
+    {{ partial "disqus.html" }}
   </div>
-  <div id="back-to-top" class="fixed-bottom fab m-4" onclick="topFunction()">
-    <span class="fa-stack fa-lg">
+  <div id="back-to-top" class="fixed-bottom fab mx-3" style="margin-bottom: 4.5rem" onclick="topFunction()">
+    <span class="fa-stack fa-lg fab-green">
+      <i class="fa fa-circle fa-stack-2x"></i>
+      <i class="fa fa-arrow-up fa-stack-1x fa-inverse"></i>
+    </span>
+  </div>
+  <div id="comment" class="fixed-bottom fab m-3" onclick="topFunction()">
+      <span class="fa-stack fa-lg fab-green">
         <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-arrow-up fa-stack-1x fa-inverse"></i>
+        <i class="fa fa-comments fa-stack-1x fa-inverse"></i>
       </span>
   </div>
 </body>
