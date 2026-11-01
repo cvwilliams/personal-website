@@ -21,7 +21,7 @@ const current = sections.find((s) => s.id === section)!;
 const path = Astro.url.pathname.replace(/\/$/, '');
 ---
 
-<Base title={title ?? heading} description={description ?? intro} ogType={ogType}>
+<Base title={title ?? heading} description={description ?? intro} ogType={ogType} section={section}>
   <div class="page" data-section={section}>
     <header class="site-header">
       <a class="home-link" href="/">{site.name}</a>

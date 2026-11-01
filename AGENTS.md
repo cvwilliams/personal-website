@@ -75,5 +75,7 @@ src/
 - Icons live in `src/assets/icons/` and are imported with `?url` in Base.astro / site.webmanifest.ts
   so their URLs are content-hashed (cache busting). Only `/favicon.ico` stays in `public/` as
   the fallback browsers request by default; keep it in sync with the copy in src/assets/icons.
+- Link-preview images (1200×630 JPEG) live in `src/assets/og/`: one for the homepage and one per
+  section, chosen in Base.astro via the `section` prop. Same poster style as the site.
 - URLs have no trailing slash (`trailingSlash: 'never'`, `build.format: 'file'`).
 - Use Astro scoped `<style>` for page-specific CSS; use `:global()` to style child components.
