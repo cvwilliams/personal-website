@@ -1,81 +1,65 @@
-# [Cameron's Personal Website](https://cameronwillia.ms)
+# cameronwillia.ms
 
-This is the source for my personal website which can be found [here](https://cameronwillia.ms). It is built using Hugo, Bootstrap 4, Gulp and uses Travis CI to deploy to firebase hosting. Feel free to fork this repo or use it as an example for another website.
+Personal site: resume, projects, thoughts and a "now" page. Built with [Astro](https://astro.build)
+as a fully static site and hosted on Firebase Hosting. Everything runs in Docker containers
+(OrbStack on macOS), so you don't need Node installed locally.
 
-## Getting Started
+## Run it
 
-These instructions will get you started with a local instace of the website for development and testing purposes. 
-
-### Prerequisites
-
-You will need to have hugo, node, and npm installed on your machine. Links to installion instructions can be found below
-
-* [Hugo](https://gohugo.io/getting-started/installing/)
-* [Node.js & NPM](https://nodejs.org/en/download/package-manager/)
-
-### Installing
-
-Begin by cloning the repo onto your local environment and change into the project directory
-
-```
-git clone https://github.com/cvwilliams/personal-website.git;
-cd personal-website
+```sh
+make dev        # or: docker compose up
 ```
 
-Install all the necessary dependencies by running the install command
+Then open http://localhost:4321 (OrbStack also serves https://dev.personal-website.orb.local).
+Edits to files under `src/` hot-reload.
 
+The first run installs dependencies inside the container and writes `package-lock.json` to the
+repo; commit it.
+
+| Command        | What it does                                                      |
+| -------------- | ----------------------------------------------------------------- |
+| `make dev`     | Dev server with hot reload on :4321                               |
+| `make build`   | Type-check (`astro check`) and build static files into `dist/`    |
+| `make preview` | Build, then serve `dist/` on :4322 to check the production output |
+| `make login`   | Log in to Firebase (one time; stored in a Docker volume)          |
+| `make deploy`  | Build, then deploy `dist/` to Firebase Hosting                    |
+| `make shell`   | Shell inside the dev container (run `npm` commands here)          |
+| `make clean`   | Remove containers, volumes, `dist/` and `.astro/`                 |
+
+Adding a package: `make shell`, then `npm install <pkg>`.
+
+## Edit content
+
+| What             | Where                                     |
+| ---------------- | ----------------------------------------- |
+| Name, intro, links | `src/data/site.ts`                      |
+| Resume           | `src/data/resume.ts`                      |
+| Thoughts           | `src/content/thoughts/*.md` (one per post) |
+| Projects         | `src/content/projects/*.md`               |
+| Now page         | `src/content/now/now.md` (overwrite it)   |
+
+Frontmatter fields are defined (and validated) in `src/content.config.ts`. A missing or
+mistyped field fails the build with a clear message. `draft: true` hides a post or project
+from production builds but keeps it visible in the dev server.
+
+## Deploy
+
+Deploys run on GitHub Actions:
+
+- **Push or merge to `master`** → builds, type-checks and deploys to the live site
+  (`.github/workflows/deploy.yml`).
+- **Open a pull request** → deploys a temporary preview and comments the URL on the PR
+  (`.github/workflows/preview.yml`). Previews expire after 7 days.
+
+Both need a repo secret named `FIREBASE_SERVICE_ACCOUNT_PERSONAL_WEBSITE_2D952`. One-time setup:
+
+```sh
+make login          # log in to Firebase
+make github-setup   # creates the service account and uploads the secret to GitHub
 ```
-npm install
-```
 
-In order to start development mode (local live-reload server) run
+`make github-setup` asks for the repo (`cvwilliams/personal-website`) and offers to write its
+own workflow files. Answer **No** to both workflow questions (or delete any
+`.github/workflows/firebase-hosting-*.yml` it creates): the workflows above already exist.
 
-```
-npm run dev
-```
-
-In order to make a development (includes non-minified files with sourcemaps) build run
-
-```
-npm run build:dev
-```
-
-In order to make a production build run
-
-```
-npm run build:prod
-```
-
-After a build, the static files while be generated and placed in the public folder
-
-## Running the linters
-
-Run the linting task prior to deploying any changes
-
-```
-npm test
-```
-
-The definition of the rulesets can be found in the following:
-* [SCSS Linting](.sass-lint.yml)
-* [HTML Linting](.htmlhintrc)
-* [JS Linting](https://standardjs.com/rules.html)
-
-## Deployment
-
-I use Travis CI to deploy to Firebase Hosting on any commit to the master branch. The Firebase CLI does allow local deployments as well. For instructions on getting started visit the [firebase documentation](https://firebase.google.com/docs/hosting/)
-
-## Built With
-
-* [Hugo](https://gohugo.io/) - A static site generator
-* [SCSS](http://sass-lang.com/) - A CSS preprocessor
-* [Gulp.js](https://gulpjs.com/) - A build tool which runs on node
-* [Bootsrap 4](https://getbootstrap.com/) - A CSS/JS library
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
-## Acknowledgments
-
-* Thanks to [Start Bootsrap](https://startbootstrap.com/template-overviews/resume/) for providing the basis of the website
+Manual deploy from your machine, if ever needed: `make deploy`.

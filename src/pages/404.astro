@@ -1,0 +1,215 @@
+---
+import Base from '../layouts/Base.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import { site, sections } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<Base title="Page not found">
+  <div class="gallery">
+    <header class="top">
+      <a class="home-link" href="/">{site.name}</a>
+      <ThemeToggle />
+    </header>
+
+    <main class="exhibit">
+      <figure class="artwork">
+        <svg class="numerals" viewBox="0 0 620 300" role="img" aria-label="The number 404 made of cut-paper shapes">
+          <g class="piece p1">
+            <path class="f-blue" d="M20 200L130 30H170V200Z" />
+            <rect class="f-blue" x="20" y="186" width="190" height="40" />
+            <rect class="f-blue" x="120" y="30" width="50" height="250" />
+          </g>
+          <g class="piece p2">
+            <circle class="f-yellow" cx="310" cy="150" r="125" />
+            <circle class="hole" cx="310" cy="150" r="58" />
+            <circle class="f-red" cx="355" cy="88" r="14" />
+          </g>
+          <g class="piece p3">
+            <path class="f-red" d="M430 200L540 30H580V200Z" />
+            <rect class="f-red" x="430" y="186" width="190" height="40" />
+            <rect class="f-red" x="530" y="30" width="50" height="210" />
+          </g>
+          <rect class="f-red fallen" x="540" y="268" width="50" height="30" />
+        </svg>
+      </figure>
+
+      <aside class="label" aria-labelledby="label-title">
+        <p class="artist">{site.name}</p>
+        <p class="meta">Lives and works in New York</p>
+        <h1 id="label-title"><em>Untitled (Page Not Found)</em>, {year}</h1>
+        <p class="meta">Broken link on HTTP</p>
+        <p class="note">
+          The artist clearly meant to put something here. Curators are still debating what. Note the
+          fallen fragment at lower right, believed to be original.
+        </p>
+        <p class="credit">Gift of a mistyped URL<br />404.{year}</p>
+
+        <nav class="exits" aria-label="Exits">
+          <a class="lobby" href="/">Return to the lobby <span aria-hidden="true">→</span></a>
+          <p class="other">Other galleries</p>
+          <ul>
+            {
+              sections.map((s) => (
+                <li>
+                  <a href={s.href} data-section={s.id}>
+                    {s.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </aside>
+    </main>
+  </div>
+</Base>
+
+<style>
+  .gallery {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 0;
+  }
+  .home-link {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .exhibit {
+    flex: 1;
+    display: grid;
+    align-content: center;
+    gap: 48px;
+    padding: 24px 0 64px;
+  }
+  @media (min-width: 900px) {
+    .exhibit {
+      grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+      align-items: end;
+      gap: 72px;
+    }
+  }
+
+  .artwork {
+    margin: 0;
+  }
+  .numerals {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .hole {
+    fill: var(--bg);
+  }
+  .piece {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: drift 7s ease-in-out infinite alternate;
+  }
+  .p2 {
+    animation-duration: 9s;
+    animation-delay: -3s;
+  }
+  .p3 {
+    animation-duration: 8s;
+    animation-delay: -5s;
+  }
+  @keyframes drift {
+    from {
+      transform: translateY(-4px) rotate(-0.6deg);
+    }
+    to {
+      transform: translateY(4px) rotate(0.6deg);
+    }
+  }
+  .fallen {
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: rotate(14deg);
+  }
+
+  .label {
+    max-width: 340px;
+    padding-top: 16px;
+    border-top: 3px solid var(--text);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  .label p,
+  .label h1 {
+    margin: 0;
+  }
+  .artist {
+    font-weight: 800;
+    font-size: 17px;
+  }
+  .meta {
+    color: var(--muted);
+  }
+  .label h1 {
+    margin-top: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .note {
+    margin-top: 14px !important;
+  }
+  .credit {
+    margin-top: 14px !important;
+    font-size: 13px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .exits {
+    margin-top: 32px;
+  }
+  .lobby {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: var(--text);
+    color: var(--bg);
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.5s var(--ease-soft);
+  }
+  .lobby:hover {
+    transform: translateX(3px);
+  }
+  .other {
+    margin-top: 24px !important;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  ul a {
+    color: var(--accent);
+    font-weight: 600;
+    text-underline-offset: 3px;
+  }
+</style>

@@ -1,0 +1,68 @@
+---
+import Base from './Base.astro';
+import SectionArt from '../components/SectionArt.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import '../styles/page.css';
+import { site, sections, type Section } from '../data/site';
+
+interface Props {
+  section: Section;
+  heading: string;
+  eyebrow?: string;
+  intro?: string;
+  title?: string;
+  description?: string;
+  ogType?: 'website' | 'article';
+}
+
+const { section, heading, eyebrow, intro, title, description, ogType } = Astro.props;
+const current = sections.find((s) => s.id === section)!;
+const path = Astro.url.pathname.replace(/\/$/, '');
+---
+
+<Base title={title ?? heading} description={description ?? intro} ogType={ogType}>
+  <div class="page" data-section={section}>
+    <header class="site-header">
+      <a class="home-link" href="/">{site.name}</a>
+      <div class="header-end">
+      <nav aria-label="Sections">
+        <ul>
+          {
+            sections.map((s) => (
+              <li>
+                <a
+                  href={s.href}
+                  data-section={s.id}
+                  aria-current={path === s.href ? 'page' : s.id === section ? 'true' : undefined}
+                >
+                  {s.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <ThemeToggle />
+      </div>
+    </header>
+
+    <main class="page-main">
+      <div class="hero grain">
+        <div class="hero-text">
+          <p class="eyebrow">
+            <slot name="eyebrow">{eyebrow ?? current.label}</slot>
+          </p>
+          <h1>{heading}</h1>
+          {intro && <p class="hero-intro">{intro}</p>}
+          <slot name="hero" />
+        </div>
+        <SectionArt section={section} class="hero-art" />
+      </div>
+
+      <slot />
+    </main>
+
+    <SiteFooter />
+  </div>
+</Base>

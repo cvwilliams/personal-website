@@ -1,0 +1,59 @@
+---
+import type { Section } from '../data/site';
+
+interface Props {
+  section: Section;
+  class?: string;
+}
+
+const { section, class: className } = Astro.props;
+---
+
+<svg class={className} viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+  {
+    section === 'resume' && (
+      <>
+        <rect class="f-ink" x="18" y="132" width="56" height="68" />
+        <rect class="f-paper" x="74" y="92" width="56" height="108" />
+        <rect class="f-yellow" x="130" y="50" width="70" height="150" />
+        <circle class="f-red" cx="165" cy="32" r="22" />
+        <path class="f-red" d="M18 132a28 28 0 0 1 56 0Z" />
+      </>
+    )
+  }
+  {
+    section === 'projects' && (
+      <>
+        <circle class="f-yellow" cx="108" cy="70" r="46" />
+        <rect class="f-blue" x="28" y="104" width="86" height="96" />
+        <path class="f-ink" d="M98 200L152 104L206 200Z" />
+        <circle class="f-paper" cx="174" cy="38" r="10" />
+      </>
+    )
+  }
+  {
+    section === 'thoughts' && (
+      <>
+        <path
+          class="f-ink"
+          d="M78 92c-6-30 26-50 50-36 16-22 56-14 58 16 26 4 30 44 6 56 6 28-26 46-48 30-16 22-54 18-62-8-28 2-40-38-4-58Z"
+        />
+        <circle class="f-red" cx="138" cy="108" r="20" />
+        <circle class="f-blue" cx="58" cy="164" r="15" />
+        <circle class="f-blue" cx="30" cy="190" r="9" />
+      </>
+    )
+  }
+  {
+    section === 'now' && (
+      <>
+        <circle class="s-on" cx="100" cy="100" r="82" fill="none" stroke-width="1.5" stroke-dasharray="3 7" opacity="0.6" />
+        <circle class="f-red" cx="100" cy="100" r="50" />
+        <path class="f-yellow" d="M100 50a50 50 0 0 1 50 50H100Z" />
+        <g class="orbit">
+          <circle class="f-blue" cx="182" cy="100" r="11" />
+        </g>
+      </>
+    )
+  }
+</svg>

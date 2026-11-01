@@ -1,0 +1,200 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Tile from '../components/Tile.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import '../styles/home.css';
+import { site } from '../data/site';
+import { currentRole } from '../data/resume';
+import { getThoughts, getProjects, formatDate } from '../lib/content';
+
+const [latestThought] = await getThoughts();
+const projects = (await getProjects()).slice(0, 3);
+const now = await getEntry('now', 'now');
+---
+
+<Base>
+  <main class="tiles">
+    <header class="badge">
+      <div class="badge-text">
+        <h1>{site.name}</h1>
+        <p class="badge-meta">
+          <span>{site.intro}</span>
+          <span class="badge-dot" aria-hidden="true">·</span>
+          <span class="clock" data-clock>New York</span>
+        </p>
+      </div>
+      <ThemeToggle />
+    </header>
+
+    <Tile section="now" href="/now" title="Now">
+      {
+        now ? (
+          <>
+            <p class="eyebrow">
+              <span class="dot" aria-hidden="true"></span>
+              Updated {formatDate(now.data.updated, 'short')}
+            </p>
+            <p class="tile-lead">{now.data.focus}</p>
+          </>
+        ) : (
+          <p class="tile-lead">What I'm working on right now</p>
+        )
+      }
+    </Tile>
+
+    <Tile section="projects" href="/projects" title="Projects">
+      {
+        projects.length > 0 ? (
+          <ul class="mini-list">
+            {projects.map((p) => (
+              <li>
+                <span>{p.data.title}</span>
+                <span class="year">{p.data.year}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="tile-lead">Things I've built</p>
+        )
+      }
+    </Tile>
+
+    <Tile section="thoughts" href="/thoughts" title="Thoughts">
+      {
+        latestThought ? (
+          <>
+            <p class="eyebrow">Latest · {formatDate(latestThought.data.pubDate, 'short')}</p>
+            <p class="tile-lead">{latestThought.data.title}</p>
+          </>
+        ) : (
+          <p class="tile-lead">Things I keep thinking about</p>
+        )
+      }
+    </Tile>
+
+    <Tile section="resume" href="/resume" title="Resume">
+      {
+        currentRole ? (
+          <>
+            <p class="eyebrow">Currently</p>
+            <p class="tile-lead">
+              {currentRole.title} at {currentRole.company}
+            </p>
+          </>
+        ) : (
+          <p class="tile-lead">Experience, skills and education</p>
+        )
+      }
+    </Tile>
+  </main>
+
+  <div class="home-footer">
+    <SiteFooter />
+  </div>
+
+  <script is:inline>
+    (() => {
+      const pick = (min, max) => min + Math.random() * (max - min);
+      document.querySelectorAll('.tile-art').forEach((svg) => {
+        const shapes = [...svg.querySelectorAll('[class*="f-"]')];
+        const colorOf = (el) => [...el.classList].find((c) => c.startsWith('f-') && c !== 'f-on');
+        const palette = [...new Set(shapes.map(colorOf).filter(Boolean))];
+        const shuffled = [...palette].sort(() => Math.random() - 0.5);
+        shapes.forEach((el) => {
+          const from = colorOf(el);
+          if (from) el.classList.replace(from, shuffled[palette.indexOf(from)]);
+        });
+        svg.style.setProperty('--art-x', `${pick(-12, 12).toFixed(1)}px`);
+        svg.style.setProperty('--art-y', `${pick(-12, 12).toFixed(1)}px`);
+        svg.style.setProperty('--art-r', `${pick(-7, 7).toFixed(1)}deg`);
+        svg.style.setProperty('--art-s', pick(0.94, 1.06).toFixed(3));
+      });
+    })();
+  </script>
+
+  <script>
+    const clocks = document.querySelectorAll<HTMLElement>('[data-clock]');
+    const format = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: 'America/New_York',
+    });
+    const tick = () => {
+      const text = `${format.format(new Date())} in New York`;
+      clocks.forEach((el) => (el.textContent = text));
+    };
+    tick();
+    setTimeout(
+      () => {
+        tick();
+        setInterval(tick, 60_000);
+      },
+      60_000 - (Date.now() % 60_000),
+    );
+  </script>
+
+  <script>
+    const finePointer = window.matchMedia('(pointer: fine)');
+    const DRAG_THRESHOLD = 4;
+
+    document.querySelectorAll<SVGSVGElement>('.tile-art').forEach((svg) => {
+      const tile = svg.closest('a');
+      let suppressClick = false;
+      svg.addEventListener('dragstart', (event) => event.preventDefault());
+
+      tile?.addEventListener(
+        'click',
+        (event) => {
+          if (suppressClick) {
+            event.preventDefault();
+            suppressClick = false;
+          }
+        },
+        true,
+      );
+
+      svg.querySelectorAll<SVGGraphicsElement>('rect, circle, path').forEach((shape) => {
+        shape.classList.add('draggable');
+        let start: { x: number; y: number; dx: number; dy: number } | null = null;
+        let offset = { x: 0, y: 0 };
+        let dragging = false;
+
+        shape.addEventListener('pointerdown', (event) => {
+          if (!finePointer.matches || event.button !== 0) return;
+          event.preventDefault();
+          shape.setPointerCapture(event.pointerId);
+          start = { x: event.clientX, y: event.clientY, dx: offset.x, dy: offset.y };
+          dragging = false;
+        });
+
+        shape.addEventListener('pointermove', (event) => {
+          if (!start) return;
+          const moved = Math.hypot(event.clientX - start.x, event.clientY - start.y);
+          if (!dragging && moved < DRAG_THRESHOLD) return;
+          if (!dragging) {
+            dragging = true;
+            shape.classList.add('is-dragging');
+            shape.parentNode?.appendChild(shape);
+          }
+          const scale = 200 / svg.getBoundingClientRect().width;
+          offset = {
+            x: start.dx + (event.clientX - start.x) * scale,
+            y: start.dy + (event.clientY - start.y) * scale,
+          };
+          shape.style.setProperty('translate', `${offset.x}px ${offset.y}px`);
+        });
+
+        const end = () => {
+          if (dragging) suppressClick = true;
+          start = null;
+          dragging = false;
+          shape.classList.remove('is-dragging');
+        };
+        shape.addEventListener('pointerup', end);
+        shape.addEventListener('pointercancel', end);
+      });
+    });
+  </script>
+</Base>
