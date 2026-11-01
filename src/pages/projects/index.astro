@@ -73,7 +73,7 @@ const statusLabel = { active: 'Active', shipped: 'Shipped', archived: 'Archived'
   }
   .meta {
     margin: 0;
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--accent);
   }
   :global(.card-arrow) {
@@ -89,9 +89,14 @@ const statusLabel = { active: 'Active', shipped: 'Shipped', archived: 'Archived'
     transform: translate(3px, -3px);
     opacity: 1;
   }
+  @media (prefers-reduced-motion: reduce) {
+    .card:hover :global(.card-arrow) {
+      transform: none;
+    }
+  }
   h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: 750;
     letter-spacing: -0.02em;
     line-height: 1.25;

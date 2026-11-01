@@ -13,7 +13,7 @@ const year = new Date().getFullYear();
       <ThemeToggle />
     </header>
 
-    <main class="exhibit">
+    <main id="main" class="exhibit" tabindex="-1">
       <figure class="artwork">
         <svg class="numerals" viewBox="0 0 620 300" role="img" aria-label="The number 404 made of cut-paper shapes">
           <g class="piece p1">
@@ -82,7 +82,7 @@ const year = new Date().getFullYear();
     padding: 28px 0;
   }
   .home-link {
-    font-size: 19px;
+    font-size: 1.1875rem;
     font-weight: 800;
     letter-spacing: -0.02em;
     text-decoration: none;
@@ -145,7 +145,7 @@ const year = new Date().getFullYear();
     max-width: 340px;
     padding-top: 16px;
     border-top: 3px solid var(--text);
-    font-size: 15px;
+    font-size: 0.9375rem;
     line-height: 1.45;
   }
   .label p,
@@ -154,14 +154,14 @@ const year = new Date().getFullYear();
   }
   .artist {
     font-weight: 800;
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
   .meta {
     color: var(--muted);
   }
   .label h1 {
     margin-top: 14px;
-    font-size: 17px;
+    font-size: 1.0625rem;
     font-weight: 600;
     letter-spacing: 0;
   }
@@ -170,7 +170,7 @@ const year = new Date().getFullYear();
   }
   .credit {
     margin-top: 14px !important;
-    font-size: 13px;
+    font-size: 0.8125rem;
     color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
@@ -191,9 +191,14 @@ const year = new Date().getFullYear();
   .lobby:hover {
     transform: translateX(3px);
   }
+  @media (prefers-reduced-motion: reduce) {
+    .lobby:hover {
+      transform: none;
+    }
+  }
   .other {
     margin-top: 24px !important;
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
