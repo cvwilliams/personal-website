@@ -10,7 +10,7 @@ endpoints, no on-demand rendering**: every page must be prerenderable at build t
 - Verify a change: `docker compose run --rm builder` (runs `astro check` + `astro build`). Run it
   before calling work done; it must pass with no errors.
 - Run npm: `docker compose run --rm dev npm <args>`
-- Deploys happen in GitHub Actions (push to `master` → live; pull requests → preview channel).
+- Deploys happen in GitHub Actions (push to `main` → live; pull requests → preview channel).
   Don't deploy manually unless asked.
 
 ## Layout

@@ -12,7 +12,7 @@ make preview   # serve the production build at http://localhost:4322
 
 ## Deploy
 
-Pushes to `master` deploy automatically via GitHub Actions. Pull requests get a preview URL.
+Pushes to `main` deploy automatically via GitHub Actions. Pull requests get a preview URL.
 
 One-time setup, which adds the Firebase deploy secret to the GitHub repo:
 
