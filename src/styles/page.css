@@ -31,7 +31,7 @@
   gap: 8px;
 }
 .home-link {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   text-decoration: none;
@@ -51,7 +51,7 @@
   display: inline-block;
   padding: 8px 14px;
   border-radius: 999px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--muted);
   text-decoration: none;
@@ -79,6 +79,9 @@
   background: var(--surface);
   color: var(--on-surface);
 }
+.page .hero :focus-visible {
+  outline-color: var(--on-surface);
+}
 .hero-text {
   position: relative;
   z-index: 1;
@@ -89,7 +92,7 @@
 }
 .hero h1 {
   margin: 0;
-  font-size: clamp(40px, 7vw, 72px);
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.04em;
@@ -97,7 +100,7 @@
 }
 .hero-intro {
   margin: 0;
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 500;
   color: var(--muted);
   text-wrap: pretty;
@@ -128,7 +131,7 @@
 .section-title {
   margin: 0 0 20px;
   font-family: var(--font-label);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;

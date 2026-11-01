@@ -65,7 +65,25 @@ src/
 - Easter egg: with a mouse, art shapes are draggable; a drag doesn't trigger the tile link.
 - 404 is a museum piece: "404" built from shapes plus a gallery wall label. Keep the joke going
   if you edit it.
-- Respect `prefers-reduced-motion` (handled globally) and keep text contrast at 4.5:1 or above.
+- Respect `prefers-reduced-motion`: keyframe animations are disabled globally; anything that
+  moves on hover (scale, translate, rotate) needs its own reduced-motion override, while color and
+  opacity fades may stay.
+- Keep text contrast at 4.5:1 or above.
+
+## Accessibility
+
+- Target WCAG 2.2 AA. Pages with navigation before the content start with a "Skip to content"
+  link to `#main` (the homepage opts out with `skipLink={false}`, since its content comes first);
+  give each page's `<main>` `id="main" tabindex="-1"`.
+- Font sizes in `rem` (never `px`) so the reader's text-size setting applies. Containers use
+  `min-height`, not fixed heights, so larger text never gets clipped.
+- Homepage tiles are labelled by their title (`aria-labelledby`) and described by their body
+  (`aria-describedby`); keep those ids unique.
+- Focus rings must reach 3:1 against what's behind them: inside color fields use `--on-surface`.
+- Interactive targets are at least 24×24px (44px on touch for the theme toggle).
+- Decorative SVGs get `aria-hidden="true"`; meaningful ones get `role="img"` and `aria-label`.
+- Support Windows High Contrast via the `forced-colors` block in global.css: anything that
+  relies on a background color to show its shape needs a border there.
 
 ## Conventions
 
