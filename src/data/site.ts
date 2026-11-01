@@ -3,6 +3,7 @@ export const site = {
   intro: 'Engineer, tinkerer, overthinker',
   description: 'Resume, projects, thoughts and what Cameron Williams is working on now.',
   url: 'https://cameronwillia.ms',
+  location: 'New York, NY',
   links: {
     github: 'https://github.com/cvwilliams',
     linkedin: 'https://linkedin.com/in/cameronvwilliams',
