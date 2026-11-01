@@ -152,7 +152,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -177,6 +177,26 @@ svg {
   max-width: 100%;
 }
 
+.skip-link {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: none;
+}
+#main:focus {
+  outline: none;
+}
+
 .mono {
   font-family: var(--font-label);
   font-variant-numeric: tabular-nums;
@@ -188,7 +208,7 @@ svg {
   gap: 8px;
   margin: 0;
   font-family: var(--font-label);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -213,7 +233,7 @@ svg {
 }
 .chips li {
   font-family: var(--font-label);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   padding: 4px 12px;
   border: 1px solid var(--border);
@@ -238,13 +258,17 @@ svg {
   *::before,
   *::after {
     animation: none !important;
-    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .icon-sun,
+  .icon-moon {
+    transform: none !important;
   }
 }
 
 .prose {
   max-width: 68ch;
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1.7;
 }
 .prose > :first-child {
@@ -305,7 +329,7 @@ svg {
   border-radius: 12px;
   overflow-x: auto;
   border: 1px solid var(--border);
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.6;
 }
 .prose pre code {
@@ -322,4 +346,18 @@ svg {
   border: 0;
   border-top: 1px solid var(--border);
   margin: 2.5em 0;
+}
+
+@media (forced-colors: active) {
+  .tile,
+  .hero,
+  .badge {
+    border: 2px solid CanvasText;
+  }
+  .dot {
+    background: CanvasText;
+  }
+  .site-header nav a[aria-current] {
+    outline: 2px solid CanvasText;
+  }
 }

@@ -16,9 +16,10 @@ interface Props {
   description?: string;
   ogType?: 'website' | 'article';
   section?: Section;
+  skipLink?: boolean;
 }
 
-const { title, description = site.description, ogType = 'website', section } = Astro.props;
+const { title, description = site.description, ogType = 'website', section, skipLink = true } = Astro.props;
 const ogImages: Record<Section, string> = {
   now: ogNow,
   projects: ogProjects,
@@ -72,6 +73,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:image:alt" content={ogImageAlt} />
   </head>
   <body>
+    {skipLink && <a class="skip-link" href="#main">Skip to content</a>}
     <slot />
   </body>
 </html>

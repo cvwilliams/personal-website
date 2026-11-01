@@ -14,8 +14,8 @@ const projects = (await getProjects()).slice(0, 3);
 const now = await getEntry('now', 'now');
 ---
 
-<Base>
-  <main class="tiles">
+<Base skipLink={false}>
+  <main id="main" class="tiles" tabindex="-1">
     <header class="badge">
       <div class="badge-text">
         <h1>{site.name}</h1>
