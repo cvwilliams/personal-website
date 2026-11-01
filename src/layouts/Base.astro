@@ -1,0 +1,77 @@
+---
+import '@fontsource-variable/libre-franklin';
+import '../styles/global.css';
+import faviconSvg from '../assets/icons/favicon.svg?url';
+import faviconIco from '../assets/icons/favicon.ico?url';
+import appleTouchIcon from '../assets/icons/apple-touch-icon.png?url';
+import ogHome from '../assets/og/og-home.jpg?url';
+import ogNow from '../assets/og/og-now.jpg?url';
+import ogProjects from '../assets/og/og-projects.jpg?url';
+import ogThoughts from '../assets/og/og-thoughts.jpg?url';
+import ogResume from '../assets/og/og-resume.jpg?url';
+import { site, sections, type Section } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogType?: 'website' | 'article';
+  section?: Section;
+}
+
+const { title, description = site.description, ogType = 'website', section } = Astro.props;
+const ogImages: Record<Section, string> = {
+  now: ogNow,
+  projects: ogProjects,
+  thoughts: ogThoughts,
+  resume: ogResume,
+};
+const ogImage = new URL(section ? ogImages[section] : ogHome, Astro.site);
+const ogImageAlt = section
+  ? `${sections.find((s) => s.id === section)?.label} · ${site.name}`
+  : `${site.name}: Now, Projects, Thoughts and Resume`;
+const fullTitle = title ? `${title} · ${site.name}` : site.name;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={faviconIco} sizes="32x32" />
+    <link rel="icon" href={faviconSvg} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={appleTouchIcon} />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} — Thoughts`} href="/rss.xml" />
+    <meta name="theme-color" content="#f2ede4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+      } catch {}
+    </script>
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

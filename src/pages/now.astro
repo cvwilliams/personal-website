@@ -1,0 +1,26 @@
+---
+import { getEntry, render } from 'astro:content';
+import Section from '../layouts/Section.astro';
+import { formatDate } from '../lib/content';
+
+const now = await getEntry('now', 'now');
+if (!now) throw new Error('Missing src/content/now/now.md');
+const { Content } = await render(now);
+---
+
+<Section section="now" heading="Now" intro={now.data.focus} description="What I'm working on right now.">
+  <span slot="eyebrow" class="updated">
+    <span class="dot" aria-hidden="true"></span>
+    Updated <time datetime={now.data.updated.toISOString()}>{formatDate(now.data.updated)}</time>
+  </span>
+
+  <article class="prose">
+    <Content />
+  </article>
+</Section>
+
+<style>
+  .updated {
+    display: contents;
+  }
+</style>

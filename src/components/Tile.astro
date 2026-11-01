@@ -1,0 +1,24 @@
+---
+import type { Section } from '../data/site';
+import SectionArt from './SectionArt.astro';
+import Arrow from './Arrow.astro';
+
+interface Props {
+  section: Section;
+  href: string;
+  title: string;
+}
+
+const { section, href, title } = Astro.props;
+---
+
+<a class="tile grain" href={href} data-section={section}>
+  <SectionArt section={section} class="tile-art" />
+  <div class="tile-head">
+    <h2>{title}</h2>
+    <Arrow class="tile-arrow" />
+  </div>
+  <div class="tile-body">
+    <slot />
+  </div>
+</a>
