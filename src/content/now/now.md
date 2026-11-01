@@ -1,19 +1,16 @@
 ---
 updated: 2026-11-01
-focus: '[What I’m focused on right now]'
+focus: 'Diversifying my skills to be a more well-rounded person'
 ---
-
-This page is a snapshot of what I'm working on, thinking about and paying attention to.
-Overwrite it whenever things change, and bump the `updated` date at the top.
-
-## Working on
-
-- [Something]
-
-## Learning
-
-- [Something]
 
 ## Reading
 
-- [Something]
+[The Consuming Fire](https://en.wikipedia.org/wiki/The_Consuming_Fire) by John Scalzi.
+
+## Studying
+
+Spanish, through comprehensible input and reading comics.
+
+## Working on
+
+[Music Queue](/projects/music-queue), an iOS app that's an Apple Music client.

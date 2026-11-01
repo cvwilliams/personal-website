@@ -189,9 +189,11 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    height: 100vh;
-    height: 100dvh;
+    --footer-h: 44px;
+    height: calc(100vh - var(--footer-h));
+    height: calc(100dvh - var(--footer-h));
     min-height: 600px;
+    padding-bottom: 0;
     padding: 10px;
   }
 
@@ -271,8 +273,11 @@
     display: flex;
   }
 
-  .home-footer {
-    display: none;
+  .home-footer footer.site-footer {
+    flex-wrap: nowrap;
+    align-items: center;
+    height: 44px;
+    padding: 0 26px;
   }
 }
 
