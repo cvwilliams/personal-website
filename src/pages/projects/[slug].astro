@@ -1,0 +1,92 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Section from '../../layouts/Section.astro';
+import Arrow from '../../components/Arrow.astro';
+import { getProjects } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, summary, year, status, tech, links } = project.data;
+const statusLabel = { active: 'Active', shipped: 'Shipped', archived: 'Archived' } as const;
+---
+
+<Section section="projects" heading={title} intro={summary}>
+  <a slot="eyebrow" class="back" href="/projects">
+    <Arrow direction="left" class="back-arrow" />
+    Projects
+  </a>
+
+  <div slot="hero" class="facts">
+    <span class="mono">{year}</span>
+    <span class="mono">{statusLabel[status]}</span>
+    {links.live && <a href={links.live}>Visit site</a>}
+    {links.repo && <a href={links.repo}>Source code</a>}
+  </div>
+
+  <div class="layout">
+    <article class="prose">
+      <Content />
+    </article>
+    {
+      tech.length > 0 && (
+        <aside>
+          <h2 class="section-title">Built with</h2>
+          <ul class="chips">
+            {tech.map((t) => (
+              <li>{t}</li>
+            ))}
+          </ul>
+        </aside>
+      )
+    }
+  </div>
+</Section>
+
+<style>
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .back:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  :global(.back-arrow) {
+    width: 14px;
+    height: 14px;
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .facts a {
+    color: var(--accent);
+    text-underline-offset: 3px;
+  }
+  .layout {
+    display: grid;
+    gap: 40px;
+  }
+  @media (min-width: 900px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr) 240px;
+      gap: 64px;
+    }
+  }
+</style>

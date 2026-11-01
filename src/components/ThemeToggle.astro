@@ -1,0 +1,117 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<button type="button" class:list={['theme-toggle', className]} data-theme-toggle aria-label="Switch colour theme">
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" focusable="false">
+    <circle cx="12" cy="12" r="4.25" fill="currentColor"></circle>
+    <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path>
+  </svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path fill="currentColor" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path>
+  </svg>
+</button>
+
+<script>
+  type Theme = 'light' | 'dark';
+  type ViewTransitionDoc = Document & {
+    startViewTransition?: (update: () => void) => { ready: Promise<void>; finished: Promise<void> };
+  };
+
+  const root = document.documentElement;
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+
+  const current = (): Theme => {
+    const saved = root.dataset.theme;
+    if (saved === 'light' || saved === 'dark') return saved;
+    return prefersDark.matches ? 'dark' : 'light';
+  };
+
+  const label = () => {
+    const next = current() === 'dark' ? 'light' : 'dark';
+    buttons.forEach((b) => b.setAttribute('aria-label', `Switch to ${next} mode`));
+  };
+
+  const apply = (theme: Theme) => {
+    root.dataset.theme = theme;
+    try {
+      localStorage.setItem('theme', theme);
+    } catch {}
+    label();
+  };
+
+  const switchTheme = (button: HTMLButtonElement) => {
+    const next: Theme = current() === 'dark' ? 'light' : 'dark';
+    const doc = document as ViewTransitionDoc;
+
+    if (!doc.startViewTransition || reduceMotion.matches) {
+      apply(next);
+      return;
+    }
+
+    const rect = button.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+
+    root.classList.add('theme-transition');
+    const transition = doc.startViewTransition(() => apply(next));
+    transition.ready
+      .then(() => {
+        root.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+          { duration: 750, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' },
+        );
+      })
+      .catch(() => {});
+    transition.finished.finally(() => root.classList.remove('theme-transition'));
+  };
+
+  buttons.forEach((button) => button.addEventListener('click', () => switchTheme(button)));
+  prefersDark.addEventListener('change', label);
+  label();
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition:
+      border-color 0.3s ease,
+      background-color 0.3s ease;
+  }
+  .theme-toggle:hover {
+    border-color: var(--text);
+  }
+  .theme-toggle:active {
+    background-color: var(--border);
+  }
+  svg {
+    grid-area: 1 / 1;
+    width: 18px;
+    height: 18px;
+    transition:
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.45s ease;
+  }
+  @media (min-width: 900px) and (hover: hover) {
+    .theme-toggle {
+      width: 36px;
+      height: 36px;
+    }
+  }
+</style>

@@ -1,0 +1,142 @@
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 28px 16px 24px;
+}
+.header-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.home-link {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+.home-link:hover {
+  color: var(--accent);
+}
+.site-header ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.site-header nav a {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+  transition:
+    color 0.3s var(--ease-soft),
+    background-color 0.3s var(--ease-soft);
+}
+.site-header nav a:hover {
+  color: var(--accent);
+}
+.site-header nav a[aria-current] {
+  color: var(--on-surface);
+  background: var(--surface);
+}
+
+.page .hero {
+  --accent: var(--on-surface);
+  --muted: var(--on-surface-muted);
+  position: relative;
+  overflow: hidden;
+  min-height: 300px;
+  margin-bottom: 56px;
+  padding: 28px 28px 132px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--on-surface);
+}
+.hero-text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 680px;
+}
+.hero h1 {
+  margin: 0;
+  font-size: clamp(40px, 7vw, 72px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+.hero-intro {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+.hero-art {
+  position: absolute;
+  right: -14px;
+  bottom: -14px;
+  width: 140px;
+  height: 140px;
+}
+@media (min-width: 900px) {
+  .page .hero {
+    min-height: 340px;
+    padding: 44px;
+    padding-right: 320px;
+    display: flex;
+    align-items: flex-end;
+  }
+  .hero-art {
+    right: -24px;
+    bottom: -24px;
+    width: 300px;
+    height: 300px;
+  }
+}
+
+.section-title {
+  margin: 0 0 20px;
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.block + .block {
+  margin-top: 56px;
+}
+.empty {
+  color: var(--muted);
+}

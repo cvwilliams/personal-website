@@ -1,0 +1,43 @@
+name: personal-website
+
+x-node: &node
+  build:
+    context: .
+    target: dev
+  image: personal-website-dev
+  volumes:
+    - .:/app
+    - node_modules:/app/node_modules
+
+services:
+  dev:
+    <<: *node
+    ports:
+      - "4321:4321"
+
+  builder:
+    <<: *node
+    profiles: [tools]
+    command: sh -c "npm install && npm run check && npm run build"
+
+  preview:
+    <<: *node
+    profiles: [tools]
+    ports:
+      - "4322:4321"
+    command: sh -c "npm install && npm run build && npm run preview -- --host 0.0.0.0"
+
+  firebase:
+    profiles: [tools]
+    build:
+      context: .
+      target: firebase
+    image: personal-website-firebase
+    working_dir: /app
+    volumes:
+      - .:/app
+      - firebase_config:/root/.config
+
+volumes:
+  node_modules:
+  firebase_config:

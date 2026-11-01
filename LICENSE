@@ -1,6 +1,18 @@
-MIT License
+Copyright (c) 2017-2026 Cameron Williams
 
-Copyright (c) 2017 Cameron Williams
+This repository contains two kinds of material under different terms.
+
+CONTENT: ALL RIGHTS RESERVED
+
+The writing, resume and images are not open source. This covers everything in
+src/content/, src/data/resume.ts, src/assets/ and public/, and the illustrations
+in src/components/SectionArt.astro. You may not reproduce or republish them
+without permission.
+
+CODE: MIT LICENSE
+
+Everything else, the source code that builds the site, is available under the
+MIT License:
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

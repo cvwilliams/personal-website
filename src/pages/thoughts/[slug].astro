@@ -1,0 +1,85 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Section from '../../layouts/Section.astro';
+import Arrow from '../../components/Arrow.astro';
+import { getThoughts, formatDate, readingTime } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const thoughts = await getThoughts();
+  return thoughts.map((thought) => ({ params: { slug: thought.id }, props: { thought } }));
+}
+
+interface Props {
+  thought: CollectionEntry<'thoughts'>;
+}
+
+const { thought } = Astro.props;
+const { Content } = await render(thought);
+const { title, description, pubDate, updatedDate, tags } = thought.data;
+---
+
+<Section section="thoughts" heading={title} intro={description} ogType="article">
+  <a slot="eyebrow" class="back" href="/thoughts">
+    <Arrow direction="left" class="back-arrow" />
+    Thoughts
+  </a>
+
+  <div slot="hero" class="facts mono">
+    <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+    <span>{readingTime(thought.body)} min read</span>
+    {
+      updatedDate && (
+        <span>
+          Updated <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time>
+        </span>
+      )
+    }
+  </div>
+
+  <article class="prose">
+    <Content />
+  </article>
+
+  {
+    tags.length > 0 && (
+      <ul class="chips tags" aria-label="Tags">
+        {tags.map((t) => (
+          <li>{t}</li>
+        ))}
+      </ul>
+    )
+  }
+</Section>
+
+<style>
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .back:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  :global(.back-arrow) {
+    width: 14px;
+    height: 14px;
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .prose {
+    margin: 0 auto;
+  }
+  .tags {
+    max-width: 68ch;
+    margin: 48px auto 0;
+  }
+</style>

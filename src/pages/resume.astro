@@ -1,0 +1,156 @@
+---
+import Section from '../layouts/Section.astro';
+import { site } from '../data/site';
+import { experience, education, skills } from '../data/resume';
+---
+
+<Section
+  section="resume"
+  heading="Resume"
+  intro="Where I've worked, what I know, and how I got here."
+  description={`Experience, education and skills of ${site.name}.`}
+>
+  <section class="block" aria-labelledby="experience">
+    <h2 class="section-title" id="experience">Experience</h2>
+    <ol class="timeline">
+      {
+        experience.map((role) => (
+          <li class="role">
+            <p class="when mono">
+              {role.start} – {role.end ?? 'Present'}
+            </p>
+            <div class="what">
+              <h3>
+                {role.title}
+                <span class="at"> · {role.company}</span>
+              </h3>
+              {role.location && <p class="where">{role.location}</p>}
+              {role.summary && <p class="summary">{role.summary}</p>}
+              {role.highlights && role.highlights.length > 0 && (
+                <ul class="highlights">
+                  {role.highlights.map((h) => (
+                    <li>{h}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="block" aria-labelledby="education">
+    <h2 class="section-title" id="education">Education</h2>
+    <ol class="timeline">
+      {
+        education.map((e) => (
+          <li class="role">
+            <p class="when mono">{[e.start, e.end].filter(Boolean).join(' – ')}</p>
+            <div class="what">
+              <h3>
+                {e.degree}
+                <span class="at"> · {e.school}</span>
+              </h3>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="block" aria-labelledby="skills">
+    <h2 class="section-title" id="skills">Skills</h2>
+    <dl class="skills">
+      {
+        skills.map((g) => (
+          <div class="skill-group">
+            <dt>{g.group}</dt>
+            <dd>
+              <ul class="chips">
+                {g.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+</Section>
+
+<style>
+  .timeline {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .role {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px 32px;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+  }
+  .role:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+  .when {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.35;
+  }
+  .at {
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .where,
+  .summary {
+    margin: 6px 0 0;
+    color: var(--muted);
+  }
+  .highlights {
+    margin: 10px 0 0;
+    padding-left: 1.2em;
+  }
+  .highlights li::marker {
+    color: var(--accent);
+  }
+  .skills {
+    display: grid;
+    gap: 20px;
+    margin: 0;
+  }
+  .skill-group {
+    display: grid;
+    gap: 10px;
+  }
+  dt {
+    font-weight: 700;
+  }
+  dd {
+    margin: 0;
+  }
+  @media (min-width: 720px) {
+    .role {
+      grid-template-columns: 200px 1fr;
+    }
+    .when {
+      padding-top: 4px;
+    }
+    .skill-group {
+      grid-template-columns: 200px 1fr;
+      align-items: baseline;
+      gap: 32px;
+    }
+  }
+</style>

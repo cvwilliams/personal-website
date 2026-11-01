@@ -1,0 +1,104 @@
+---
+import Section from '../../layouts/Section.astro';
+import Arrow from '../../components/Arrow.astro';
+import { getProjects } from '../../lib/content';
+
+const projects = await getProjects();
+const statusLabel = { active: 'Active', shipped: 'Shipped', archived: 'Archived' } as const;
+---
+
+<Section section="projects" heading="Projects" intro="Things I've built, broken, and shipped.">
+  {
+    projects.length === 0 ? (
+      <p class="empty">No projects yet.</p>
+    ) : (
+      <ul class="grid">
+        {projects.map((p) => (
+          <li>
+            <a class="card" href={`/projects/${p.id}`}>
+              <div class="card-top">
+                <p class="meta mono">
+                  {p.data.year} · {statusLabel[p.data.status]}
+                </p>
+                <Arrow class="card-arrow" />
+              </div>
+              <h2>{p.data.title}</h2>
+              <p class="summary">{p.data.summary}</p>
+              {p.data.tech.length > 0 && (
+                <ul class="chips">
+                  {p.data.tech.map((t) => (
+                    <li>{t}</li>
+                  ))}
+                </ul>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</Section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    padding: 24px;
+    border-radius: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition:
+      border-color 0.3s ease,
+      background-color 0.3s ease;
+  }
+  .card:hover,
+  .card:focus-visible {
+    border-color: var(--accent);
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .meta {
+    margin: 0;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  :global(.card-arrow) {
+    width: 20px;
+    height: 20px;
+    color: var(--accent);
+    opacity: 0.7;
+    transition:
+      transform 0.3s var(--ease),
+      opacity 0.3s;
+  }
+  .card:hover :global(.card-arrow) {
+    transform: translate(3px, -3px);
+    opacity: 1;
+  }
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .summary {
+    margin: 0;
+    color: var(--muted);
+    flex: 1;
+  }
+</style>
