@@ -1,7 +1,11 @@
 ---
 import Section from '../layouts/Section.astro';
 import { site } from '../data/site';
-import { experience, education, skills } from '../data/resume';
+import { summary, experience, education, skills, currentRole } from '../data/resume';
+
+const printLinks = [site.url, site.links.github, site.links.linkedin]
+  .filter(Boolean)
+  .map((href) => ({ href, label: href.replace(/^https?:\/\//, '').replace(/\/$/, '') }));
 ---
 
 <Section
@@ -10,6 +14,32 @@ import { experience, education, skills } from '../data/resume';
   intro="Where I've worked, what I know, and how I got here."
   description={`Experience, education and skills of ${site.name}.`}
 >
+  <button slot="hero" type="button" class="print-button" data-print>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M7 9V3h10v6M7 18H4v-7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7h-3M7 14h10v7H7z"></path>
+    </svg>
+    Print / Save as PDF
+  </button>
+
+  <header class="print-header">
+    <h1>{site.name}</h1>
+    <p class="print-role">
+      {[currentRole && `${currentRole.title} at ${currentRole.company}`, site.location].filter(Boolean).join(' · ')}
+    </p>
+    <p class="print-links">
+      {
+        printLinks.map((link, i) => (
+          <>
+            {i > 0 && <span aria-hidden="true"> · </span>}
+            <a href={link.href}>{link.label}</a>
+          </>
+        ))
+      }
+    </p>
+  </header>
+
+  <p class="lead">{summary}</p>
+
   <section class="block" aria-labelledby="experience">
     <h2 class="section-title" id="experience">Experience</h2>
     <ol class="timeline">
@@ -23,9 +53,25 @@ import { experience, education, skills } from '../data/resume';
               <h3>
                 {role.title}
                 <span class="at"> · {role.company}</span>
+                {role.links?.map((link) => (
+                  <span class="print-link">
+                    {' · '}
+                    <a href={link.href}>{link.label}</a>
+                  </span>
+                ))}
               </h3>
               {role.location && <p class="where">{role.location}</p>}
               {role.summary && <p class="summary">{role.summary}</p>}
+              {role.links && role.links.length > 0 && (
+                <p class="role-links">
+                  {role.links.map((link) => (
+                    <a href={link.href}>
+                      {link.label}
+                      <span aria-hidden="true"> ↗</span>
+                    </a>
+                  ))}
+                </p>
+              )}
               {role.highlights && role.highlights.length > 0 && (
                 <ul class="highlights">
                   {role.highlights.map((h) => (
@@ -80,7 +126,20 @@ import { experience, education, skills } from '../data/resume';
   </section>
 </Section>
 
+<script>
+  document.querySelectorAll('[data-print]').forEach((button) => button.addEventListener('click', () => window.print()));
+</script>
+
 <style>
+  .lead {
+    max-width: 68ch;
+    margin: 0 0 48px;
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
   .timeline {
     margin: 0;
     padding: 0;
@@ -118,6 +177,18 @@ import { experience, education, skills } from '../data/resume';
     margin: 6px 0 0;
     color: var(--muted);
   }
+  .role-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    margin: 8px 0 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .role-links a {
+    color: var(--accent);
+    text-underline-offset: 3px;
+  }
   .highlights {
     margin: 10px 0 0;
     padding-left: 1.2em;
@@ -151,6 +222,190 @@ import { experience, education, skills } from '../data/resume';
       grid-template-columns: 200px 1fr;
       align-items: baseline;
       gap: 32px;
+    }
+  }
+
+  .print-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    align-self: flex-start;
+    margin-top: 12px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1.5px solid var(--on-surface);
+    background: transparent;
+    color: var(--on-surface);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+      background-color 0.3s var(--ease-soft),
+      color 0.3s var(--ease-soft);
+  }
+  .print-button:hover {
+    background: var(--on-surface);
+    color: var(--surface);
+  }
+  .print-button svg {
+    width: 18px;
+    height: 18px;
+  }
+  .print-header,
+  .print-link {
+    display: none;
+  }
+
+  @page {
+    size: letter;
+    margin: 0.45in 0.55in;
+  }
+
+  @media print {
+    :global(:root),
+    :global(:root[data-theme]) {
+      color-scheme: light !important;
+    }
+    :global(body) {
+      background: #fff;
+      color: #141414;
+      font-size: 9.5pt;
+      line-height: 1.3;
+    }
+    :global(.site-header),
+    :global(.site-footer),
+    :global(.hero),
+    .print-button {
+      display: none !important;
+    }
+    :global(.page) {
+      display: block;
+      min-height: 0;
+    }
+    :global(.page-main) {
+      max-width: none;
+      padding: 0;
+    }
+
+    .print-header {
+      display: block;
+      margin-bottom: 10pt;
+      padding-bottom: 8pt;
+      border-bottom: 2pt solid #141414;
+    }
+    .print-header h1 {
+      margin: 0;
+      font-size: 22pt;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+    .print-header p {
+      margin: 4pt 0 0;
+      font-size: 10pt;
+    }
+    .print-role {
+      font-weight: 600;
+    }
+    .print-links a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .lead {
+      max-width: none;
+      margin: 0 0 10pt;
+      font-size: 9.75pt;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    :global(.block + .block) {
+      margin-top: 10pt;
+    }
+    :global(.block:not(:first-of-type)) {
+      break-inside: avoid;
+    }
+    :global(.section-title) {
+      margin: 0 0 2pt;
+      font-size: 8.5pt;
+      color: #141414;
+      break-after: avoid;
+    }
+    .role {
+      position: relative;
+      display: block;
+      padding: 4pt 0;
+      border: 0;
+      break-inside: avoid;
+    }
+    .role:last-child {
+      border: 0;
+    }
+    .when {
+      position: absolute;
+      top: 4pt;
+      right: 0;
+      padding: 0;
+      font-size: 9pt;
+      line-height: 1.45;
+      white-space: nowrap;
+    }
+    h3 {
+      padding-right: 1.4in;
+      font-size: 10.5pt;
+      line-height: 1.35;
+    }
+    .where,
+    .summary {
+      margin-top: 1pt;
+      color: #3a3a3a;
+    }
+    .role-links {
+      display: none;
+    }
+    .print-link {
+      display: inline;
+      font-size: 9pt;
+      font-weight: 400;
+    }
+    .print-link a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .highlights {
+      margin-top: 2pt;
+    }
+    .highlights li + li {
+      margin-top: 1pt;
+    }
+    .skills {
+      gap: 2pt;
+    }
+    .skill-group {
+      display: block;
+    }
+    dt {
+      display: inline;
+    }
+    dt::after {
+      content: ': ';
+    }
+    dd {
+      display: inline;
+    }
+    .skill-group :global(.chips) {
+      display: inline;
+    }
+    .skill-group :global(.chips li) {
+      display: inline;
+      padding: 0;
+      border: 0;
+      font-size: inherit;
+      color: inherit;
+    }
+    .skill-group :global(.chips li + li)::before {
+      content: ', ';
     }
   }
 </style>
