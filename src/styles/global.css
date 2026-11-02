@@ -241,6 +241,26 @@ svg {
   color: var(--muted);
 }
 
+.chips li:has(a) {
+  padding: 0;
+}
+.chips a {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: inherit;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    color 0.3s var(--ease-soft),
+    border-color 0.3s var(--ease-soft);
+}
+.chips li:has(a):hover {
+  border-color: var(--accent);
+}
+.chips a:hover {
+  color: var(--accent);
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

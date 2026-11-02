@@ -8,6 +8,7 @@ Source for [cameronwillia.ms](https://cameronwillia.ms), built with [Astro](http
 make dev       # dev server at http://localhost:4321
 make build     # type-check and build to dist/
 make preview   # serve the production build at http://localhost:4322
+make now       # start a new Now update (the previous one moves to /now/archive)
 ```
 
 ## Deploy

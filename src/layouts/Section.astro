@@ -17,7 +17,6 @@ interface Props {
 }
 
 const { section, heading, eyebrow, intro, title, description, ogType } = Astro.props;
-const current = sections.find((s) => s.id === section)!;
 const path = Astro.url.pathname.replace(/\/$/, '');
 ---
 
@@ -50,9 +49,13 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     <main id="main" class="page-main" tabindex="-1">
       <div class="hero grain">
         <div class="hero-text">
-          <p class="eyebrow">
-            <slot name="eyebrow">{eyebrow ?? current.label}</slot>
-          </p>
+          {
+            (eyebrow || Astro.slots.has('eyebrow')) && (
+              <p class="eyebrow">
+                <slot name="eyebrow">{eyebrow}</slot>
+              </p>
+            )
+          }
           <h1>{heading}</h1>
           {intro && <p class="hero-intro">{intro}</p>}
           <slot name="hero" />

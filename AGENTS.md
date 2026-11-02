@@ -18,7 +18,7 @@ endpoints, no on-demand rendering**: every page must be prerenderable at build t
 ```
 src/
   content.config.ts     Zod schemas for the thoughts, projects and now collections
-  content/              Markdown content (thoughts/, projects/, now/now.md)
+  content/              Markdown content (thoughts/, projects/, now/YYYY-MM-DD.md)
   data/site.ts          Name, intro, links, section list
   data/resume.ts        Resume as typed data
   lib/content.ts        getThoughts(), getProjects(), readingTime(), formatDate()
@@ -88,6 +88,12 @@ src/
 ## Conventions
 
 - Content changes go in Markdown or `src/data/*`, never hard-coded into pages.
+- Now updates are dated files in `src/content/now/`. Never edit an older one to change the
+  present: create a new file (`make now` copies the latest to today's date). The newest file is
+  `/now`; older ones are listed at `/now/archive` and served at `/now/<date>`.
+- Skill and tech chips render through `Chips.astro`; a chip links to docs when its exact label
+  is in `src/data/tech-links.ts`. Add an entry there when introducing a new skill or tech.
+  Don't use linked chips inside an element that's already a link (e.g. project cards).
 - Keep pages static and JS-free unless a feature genuinely needs a script; prefer CSS.
 - Check new UI in both themes.
 - Icons live in `src/assets/icons/` and are imported with `?url` in Base.astro / site.webmanifest.ts

@@ -1,10 +1,11 @@
 ---
-import { getEntry, render } from 'astro:content';
+import { render } from 'astro:content';
 import Section from '../layouts/Section.astro';
-import { formatDate } from '../lib/content';
+import Arrow from '../components/Arrow.astro';
+import { getNowUpdates, formatDate } from '../lib/content';
 
-const now = await getEntry('now', 'now');
-if (!now) throw new Error('Missing src/content/now/now.md');
+const [now, ...archived] = await getNowUpdates();
+if (!now) throw new Error('Add a Now update in src/content/now/');
 const { Content } = await render(now);
 ---
 
@@ -17,10 +18,38 @@ const { Content } = await render(now);
   <article class="prose">
     <Content />
   </article>
+
+  {
+    archived.length > 0 && (
+      <a class="archive-link" href="/now/archive">
+        Previous Now pages ({archived.length})
+        <Arrow class="archive-arrow" />
+      </a>
+    )
+  }
 </Section>
 
 <style>
   .updated {
     display: contents;
+  }
+  .archive-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 48px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 0.3s var(--ease-soft);
+  }
+  .archive-link:hover {
+    border-color: var(--text);
+  }
+  :global(.archive-arrow) {
+    width: 16px;
+    height: 16px;
   }
 </style>
