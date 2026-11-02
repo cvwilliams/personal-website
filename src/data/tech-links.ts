@@ -1,0 +1,15 @@
+export const techLinks: Record<string, string> = {
+  Kotlin: 'https://kotlinlang.org/docs/home.html',
+  Swift: 'https://www.swift.org/documentation/',
+  Rust: 'https://doc.rust-lang.org/book/',
+  TypeScript: 'https://www.typescriptlang.org/docs/',
+  Android: 'https://developer.android.com/docs',
+  iOS: 'https://developer.apple.com/documentation/',
+  'Kotlin Multiplatform': 'https://kotlinlang.org/docs/multiplatform.html',
+  'Compose Multiplatform': 'https://www.jetbrains.com/compose-multiplatform/',
+  'Bitcoin and self-custody': 'https://developer.bitcoin.org/',
+  Astro: 'https://docs.astro.build/',
+  'Firebase Hosting': 'https://firebase.google.com/docs/hosting',
+  Docker: 'https://docs.docker.com/',
+  'AI-assisted development (Claude Code)': 'https://docs.claude.com/en/docs/claude-code/overview',
+};

@@ -1,0 +1,71 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Section from '../../layouts/Section.astro';
+import Arrow from '../../components/Arrow.astro';
+import { getNowUpdates, formatDate } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const [, ...archived] = await getNowUpdates();
+  return archived.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'now'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const date = formatDate(entry.data.updated);
+---
+
+<Section
+  section="now"
+  heading="Now"
+  title={`Now, ${date}`}
+  intro={entry.data.focus}
+  description={`What Cameron Williams was focused on as of ${date}.`}
+>
+  <a slot="eyebrow" class="back" href="/now/archive">
+    <Arrow direction="left" class="back-arrow" />
+    Archive · <time datetime={entry.data.updated.toISOString()}>{date}</time>
+  </a>
+
+  <p class="notice">
+    This is an older snapshot from {date}. <a href="/now">See what I’m up to now</a>.
+  </p>
+
+  <article class="prose">
+    <Content />
+  </article>
+</Section>
+
+<style>
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .back:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  :global(.back-arrow) {
+    width: 14px;
+    height: 14px;
+  }
+  .notice {
+    max-width: 68ch;
+    margin: 0 0 32px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1.5px dashed var(--border);
+    color: var(--muted);
+  }
+  .notice a {
+    color: var(--text);
+    font-weight: 600;
+    text-underline-offset: 3px;
+  }
+</style>

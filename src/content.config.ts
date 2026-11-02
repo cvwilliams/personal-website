@@ -34,7 +34,7 @@ const projects = defineCollection({
 });
 
 const now = defineCollection({
-  loader: glob({ pattern: 'now.md', base: './src/content/now' }),
+  loader: glob({ pattern: '*.md', base: './src/content/now' }),
   schema: z.object({
     updated: z.coerce.date(),
     focus: z.string(),
