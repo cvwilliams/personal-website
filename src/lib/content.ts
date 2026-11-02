@@ -17,6 +17,11 @@ export async function getProjects() {
   );
 }
 
+export async function getNowUpdates() {
+  const all = await getCollection('now');
+  return all.sort((a, b) => b.data.updated.valueOf() - a.data.updated.valueOf());
+}
+
 export function readingTime(body: string | undefined): number {
   const words = (body ?? '').trim().split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 230));

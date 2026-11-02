@@ -1,5 +1,6 @@
 ---
 import Section from '../layouts/Section.astro';
+import Chips from '../components/Chips.astro';
 import { site } from '../data/site';
 import { summary, experience, education, skills, currentRole } from '../data/resume';
 
@@ -113,11 +114,7 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
           <div class="skill-group">
             <dt>{g.group}</dt>
             <dd>
-              <ul class="chips">
-                {g.items.map((item) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
+              <Chips items={g.items} />
             </dd>
           </div>
         ))
@@ -403,6 +400,9 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
       border: 0;
       font-size: inherit;
       color: inherit;
+    }
+    .skill-group :global(.chips a) {
+      padding: 0;
     }
     .skill-group :global(.chips li + li)::before {
       content: ', ';

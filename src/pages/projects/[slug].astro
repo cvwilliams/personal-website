@@ -2,6 +2,7 @@
 import { render, type CollectionEntry } from 'astro:content';
 import Section from '../../layouts/Section.astro';
 import Arrow from '../../components/Arrow.astro';
+import Chips from '../../components/Chips.astro';
 import { getProjects } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -40,11 +41,7 @@ const statusLabel = { active: 'Active', shipped: 'Shipped', archived: 'Archived'
       tech.length > 0 && (
         <aside>
           <h2 class="section-title">Built with</h2>
-          <ul class="chips">
-            {tech.map((t) => (
-              <li>{t}</li>
-            ))}
-          </ul>
+          <Chips items={tech} />
         </aside>
       )
     }

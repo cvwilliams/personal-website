@@ -1,0 +1,19 @@
+---
+import { techLinks } from '../data/tech-links';
+
+interface Props {
+  items: string[];
+  linked?: boolean;
+}
+
+const { items, linked = true } = Astro.props;
+---
+
+<ul class="chips">
+  {
+    items.map((item) => {
+      const href = linked ? techLinks[item] : undefined;
+      return <li>{href ? <a href={href}>{item}</a> : item}</li>;
+    })
+  }
+</ul>
