@@ -53,7 +53,8 @@ const [now] = await getNowUpdates();
       });
       addEventListener('pagereveal', (event) => {
         if (!event.viewTransition) return;
-        const from = window.navigation?.activation?.from?.url ?? document.referrer;
+        const navigation = /** @type {any} */ (window).navigation;
+        const from = navigation?.activation?.from?.url ?? document.referrer;
         const section = from && sectionOf(from);
         if (section) name(section);
         event.viewTransition.finished.finally(clear);

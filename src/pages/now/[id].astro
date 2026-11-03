@@ -3,6 +3,7 @@ import { render, type CollectionEntry } from 'astro:content';
 import Section from '../../layouts/Section.astro';
 import Arrow from '../../components/Arrow.astro';
 import Reading from '../../components/Reading.astro';
+import Listening from '../../components/Listening.astro';
 import { getNowUpdates, formatDate } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -37,6 +38,7 @@ const date = formatDate(entry.data.updated);
 
   <article class="prose">
     <Reading books={entry.data.reading} />
+    <Listening items={entry.data.listening} />
     <Content />
   </article>
 </Section>

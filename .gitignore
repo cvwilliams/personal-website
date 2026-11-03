@@ -12,4 +12,7 @@ firebase-debug.log*
 # env / os
 .env
 .env.*
+!.env.example
+*.p8
+.secrets/
 .DS_Store
