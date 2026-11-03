@@ -1,6 +1,4 @@
 ---
-import { site } from '../data/site';
-
 interface Book {
   title: string;
   author?: string;
@@ -10,10 +8,9 @@ interface Book {
 
 interface Props {
   books: Book[];
-  fromGoodreads?: boolean;
 }
 
-const { books, fromGoodreads = false } = Astro.props;
+const { books } = Astro.props;
 ---
 
 {
@@ -41,11 +38,6 @@ const { books, fromGoodreads = false } = Astro.props;
           </li>
         ))}
       </ul>
-      {fromGoodreads && (
-        <p class="source">
-          Synced from <a href={`https://www.goodreads.com/user/show/${site.goodreadsUserId}`}>Goodreads</a>
-        </p>
-      )}
     </section>
   )
 }
@@ -88,9 +80,5 @@ const { books, fromGoodreads = false } = Astro.props;
   p {
     margin: 2px 0 0;
     color: var(--muted);
-  }
-  .source {
-    margin-top: 14px;
-    font-size: 0.8125rem;
   }
 </style>

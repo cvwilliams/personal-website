@@ -105,7 +105,9 @@ src/
   public Goodreads shelf widget (`/review/custom_widget/<id>`, parsed in `src/loaders/goodreads.ts`;
   Goodreads retired shelf RSS feeds in October 2026). If the feed is empty or
   unreachable it falls back to the Now update's `reading` frontmatter; archived Now pages always
-  show their own frontmatter. The Deploy workflow also runs weekly (Mondays) so the list stays
+  show their own frontmatter. `make now` freezes the live Goodreads list into the outgoing update
+  (and the new one) so the archive shows what `/now` displayed at the time. The widget parser is
+  shared in `src/lib/goodreads.mjs`. The Deploy workflow also runs weekly (Mondays) so the list stays
   current; run it from the Actions tab for an immediate refresh.
 - Now updates are dated files in `src/content/now/`. Never edit an older one to change the
   present: create a new file (`make now` copies the latest to today's date). The newest file is
