@@ -1,7 +1,6 @@
 import type { APIRoute } from 'astro';
 import { site } from '../data/site';
 import { headline, summary, experience, education, skills } from '../data/resume';
-import { getProjects } from '../lib/content';
 
 const months: Record<string, string> = {
   jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
@@ -24,9 +23,8 @@ function profile(network: string, url: string) {
   return { network, username: url.replace(/\/$/, '').split('/').pop(), url };
 }
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = () => {
   const [city, region] = site.location.split(',').map((part) => part.trim());
-  const projects = await getProjects();
 
   const resume = {
     $schema: 'https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json',
@@ -57,13 +55,6 @@ export const GET: APIRoute = async () => {
       endDate: isoDate(entry.end),
     })),
     skills: skills.map((group) => ({ name: group.group, keywords: group.items })),
-    projects: projects.map((project) => ({
-      name: project.data.title,
-      description: project.data.summary,
-      url: project.data.links.live ?? project.data.links.repo ?? `${site.url}/projects/${project.id}`,
-      startDate: String(project.data.year),
-      keywords: project.data.tech,
-    })),
     meta: {
       canonical: `${site.url}/resume.json`,
       version: 'v1.0.0',
