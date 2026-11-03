@@ -1,8 +1,12 @@
 import { createServer } from 'node:http';
+import { randomBytes } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { appleMusicConfig, developerToken } from '../src/lib/apple-music.mjs';
 
 const PORT = 4323;
+const ALLOWED_ORIGINS = new Set([`http://localhost:${PORT}`, `http://127.0.0.1:${PORT}`]);
+const nonce = randomBytes(24).toString('hex');
+let saved = false;
 const config = appleMusicConfig();
 let token;
 try {
@@ -36,7 +40,12 @@ const page = `<!doctype html>
   button.addEventListener('click', async () => {
     try {
       const userToken = await MusicKit.getInstance().authorize();
-      await fetch('/token', { method: 'POST', body: userToken });
+      const response = await fetch('/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain', 'X-Token-Nonce': ${JSON.stringify(nonce)} },
+        body: userToken,
+      });
+      if (!response.ok) throw new Error(await response.text());
       status.textContent = 'Done. The token was saved to .env; you can close this tab.';
     } catch (error) {
       status.textContent = 'Sign-in failed: ' + error;
@@ -51,16 +60,31 @@ function saveToEnv(userToken) {
   const current = existsSync(file) ? readFileSync(file, 'utf8') : '';
   const next = /^APPLE_MUSIC_USER_TOKEN=.*$/m.test(current)
     ? current.replace(/^APPLE_MUSIC_USER_TOKEN=.*$/m, line)
-    : `${current.replace(/\n?$/, '\n')}${line}\n`;
+    : `${current ? current.replace(/\n?$/, '\n') : ''}${line}\n`;
   writeFileSync(file, next);
 }
 
+function reject(res, status, message) {
+  res.statusCode = status;
+  res.end(message);
+}
+
 const server = createServer((req, res) => {
-  if (req.method === 'POST' && req.url === '/token') {
+  if (req.url === '/token') {
+    if (req.method !== 'POST') return reject(res, 405, 'Method not allowed');
+    if (saved) return reject(res, 409, 'Token already saved');
+    if (!ALLOWED_ORIGINS.has(req.headers.origin ?? '')) return reject(res, 403, 'Bad origin');
+    if (req.headers['x-token-nonce'] !== nonce) return reject(res, 403, 'Bad nonce');
     let body = '';
-    req.on('data', (chunk) => (body += chunk));
+    req.on('data', (chunk) => {
+      body += chunk;
+      if (body.length > 8192) req.destroy();
+    });
     req.on('end', () => {
-      saveToEnv(body.trim());
+      const userToken = body.trim();
+      if (!/^[A-Za-z0-9+/=._-]{20,8192}$/.test(userToken)) return reject(res, 400, 'That does not look like a Music User Token');
+      saveToEnv(userToken);
+      saved = true;
       res.end('ok');
       console.log('\nSaved APPLE_MUSIC_USER_TOKEN to .env.');
       console.log('Update GitHub too:  gh secret set APPLE_MUSIC_USER_TOKEN  (then paste the value from .env)');

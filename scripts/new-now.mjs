@@ -49,6 +49,7 @@ const music = appleMusicConfig();
 if (isAppleMusicConfigured(music)) {
   try {
     const rotation = await fetchHeavyRotation(music, 5);
+    if (rotation.length === 0) throw new Error('heavy rotation came back empty');
     sources.push({
       key: 'listening',
       label: 'item(s) from Apple Music',
