@@ -76,6 +76,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     {skipLink && <a class="skip-link" href="#main">Skip to content</a>}
+    <span id="new-tab-note" hidden>Opens in a new tab</span>
     <slot />
     <script is:inline>
       (() => {
