@@ -14,6 +14,49 @@ const [now] = await getNowUpdates();
 ---
 
 <Base skipLink={false}>
+  <script is:inline slot="head">
+    (() => {
+      const parts = [
+        ['', 'field'],
+        ['h2', 'title'],
+        ['.tile-art', 'art'],
+        ['.tile-body', 'tile-body'],
+        ['.tile-arrow', 'tile-arrow'],
+      ];
+      const sectionOf = (url) => {
+        const target = new URL(url, location.href);
+        if (target.origin !== location.origin) return undefined;
+        return target.pathname.match(/^\/(now|projects|thoughts|resume)(?:[/.]|$)/)?.[1];
+      };
+      const clear = () =>
+        document.querySelectorAll('.tile, .tile *').forEach((el) => el.style.removeProperty('view-transition-name'));
+      const name = (section) => {
+        clear();
+        const tile = document.querySelector(`.tile[data-section="${section}"]`);
+        if (!tile) return;
+        parts.forEach(([selector, prefix]) => {
+          const el = selector ? tile.querySelector(selector) : tile;
+          el?.style.setProperty('view-transition-name', `${prefix}-${section}`);
+        });
+      };
+      document.addEventListener('click', (event) => {
+        const tile = event.target instanceof Element ? event.target.closest('.tile') : null;
+        if (tile && !event.defaultPrevented) name(tile.dataset.section);
+      });
+      addEventListener('pageswap', (event) => {
+        const url = event.activation?.entry?.url;
+        const section = event.viewTransition && url && sectionOf(url);
+        if (section) name(section);
+      });
+      addEventListener('pagereveal', (event) => {
+        if (!event.viewTransition) return;
+        const from = window.navigation?.activation?.from?.url ?? document.referrer;
+        const section = from && sectionOf(from);
+        if (section) name(section);
+        event.viewTransition.finished.finally(clear);
+      });
+    })();
+  </script>
   <main id="main" class="tiles" tabindex="-1">
     <header class="badge">
       <div class="badge-text">
@@ -93,26 +136,6 @@ const [now] = await getNowUpdates();
     <SiteFooter />
   </div>
 
-  <script is:inline>
-    (() => {
-      const pick = (min, max) => min + Math.random() * (max - min);
-      document.querySelectorAll('.tile-art').forEach((svg) => {
-        const shapes = [...svg.querySelectorAll('[class*="f-"]')];
-        const colorOf = (el) => [...el.classList].find((c) => c.startsWith('f-') && c !== 'f-on');
-        const palette = [...new Set(shapes.map(colorOf).filter(Boolean))];
-        const shuffled = [...palette].sort(() => Math.random() - 0.5);
-        shapes.forEach((el) => {
-          const from = colorOf(el);
-          if (from) el.classList.replace(from, shuffled[palette.indexOf(from)]);
-        });
-        svg.style.setProperty('--art-x', `${pick(-12, 12).toFixed(1)}px`);
-        svg.style.setProperty('--art-y', `${pick(-12, 12).toFixed(1)}px`);
-        svg.style.setProperty('--art-r', `${pick(-7, 7).toFixed(1)}deg`);
-        svg.style.setProperty('--art-s', pick(0.94, 1.06).toFixed(3));
-      });
-    })();
-  </script>
-
   <script>
     const clocks = document.querySelectorAll<HTMLElement>('[data-clock]');
     const format = new Intl.DateTimeFormat('en-US', {
@@ -136,6 +159,16 @@ const [now] = await getNowUpdates();
 
   <script>
     const finePointer = window.matchMedia('(pointer: fine)');
+
+    const saveDrag = (svg: SVGSVGElement, shape: SVGGraphicsElement, offset: { x: number; y: number }) => {
+      try {
+        const state = JSON.parse(sessionStorage.getItem('art-state') || '{}');
+        const art = state[svg.dataset.art ?? ''];
+        if (!art || shape.dataset.i === undefined) return;
+        art.drags[shape.dataset.i] = [Math.round(offset.x * 10) / 10, Math.round(offset.y * 10) / 10];
+        sessionStorage.setItem('art-state', JSON.stringify(state));
+      } catch {}
+    };
     const DRAG_THRESHOLD = 4;
 
     document.querySelectorAll<SVGSVGElement>('.tile-art').forEach((svg) => {
@@ -157,7 +190,7 @@ const [now] = await getNowUpdates();
       svg.querySelectorAll<SVGGraphicsElement>('rect, circle, path').forEach((shape) => {
         shape.classList.add('draggable');
         let start: { x: number; y: number; dx: number; dy: number } | null = null;
-        let offset = { x: 0, y: 0 };
+        let offset = { x: Number(shape.dataset.dx ?? 0), y: Number(shape.dataset.dy ?? 0) };
         let dragging = false;
 
         shape.addEventListener('pointerdown', (event) => {
@@ -186,7 +219,10 @@ const [now] = await getNowUpdates();
         });
 
         const end = () => {
-          if (dragging) suppressClick = true;
+          if (dragging) {
+            suppressClick = true;
+            saveDrag(svg, shape, offset);
+          }
           start = null;
           dragging = false;
           shape.classList.remove('is-dragging');
