@@ -2,7 +2,7 @@
 import Section from '../layouts/Section.astro';
 import Chips from '../components/Chips.astro';
 import { site } from '../data/site';
-import { summary, experience, education, skills, currentRole } from '../data/resume';
+import { headline, summary, experience, education, skills } from '../data/resume';
 
 const printLinks = [site.url, site.links.github, site.links.linkedin]
   .filter(Boolean)
@@ -25,7 +25,7 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
   <header class="print-header">
     <h1>{site.name}</h1>
     <p class="print-role">
-      {[currentRole && `${currentRole.title} at ${currentRole.company}`, site.location].filter(Boolean).join(' · ')}
+      {headline} · {site.location}
     </p>
     <p class="print-links">
       {
@@ -106,7 +106,7 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
     </ol>
   </section>
 
-  <section class="block" aria-labelledby="skills">
+  <section class="block skills-block" aria-labelledby="skills">
     <h2 class="section-title" id="skills">Skills</h2>
     <dl class="skills">
       {
@@ -322,6 +322,9 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
     }
     :global(.block:not(:first-of-type)) {
       break-inside: avoid;
+    }
+    .skills-block {
+      display: none;
     }
     :global(.section-title) {
       margin: 0 0 2pt;
