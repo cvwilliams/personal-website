@@ -28,6 +28,10 @@ jobs:
       - run: npm run build
         env:
           ASTRO_TELEMETRY_DISABLED: 1
+          APPLE_MUSIC_TEAM_ID: ${{ secrets.APPLE_MUSIC_TEAM_ID }}
+          APPLE_MUSIC_KEY_ID: ${{ secrets.APPLE_MUSIC_KEY_ID }}
+          APPLE_MUSIC_PRIVATE_KEY: ${{ secrets.APPLE_MUSIC_PRIVATE_KEY }}
+          APPLE_MUSIC_USER_TOKEN: ${{ secrets.APPLE_MUSIC_USER_TOKEN }}
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
