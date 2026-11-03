@@ -65,16 +65,19 @@ src/
   applies it to both `.tile-art` and `.hero-art`, so the art keeps its arrangement across pages
   and back navigation. Keep new art compatible: fill with `.f-*` classes, never use the section's
   own color, and keep the shape order identical wherever the art renders.
-- Page transitions use native cross-document View Transitions (`@view-transition` in global.css):
-  `field-<section>`, `art-<section>` and `title-<section>` names morph a homepage tile into its
-  section hero. On the homepage the names are set only on the tile being navigated to or from,
-  by the `pageswap`/`pagereveal` script in index.astro (static names on every tile would leave
-  the other tiles hanging around as solid blocks). Titles and art scale a single snapshot
-  (`vt-title`/`vt-art` classes) instead of crossfading. The `field-*` groups render as one solid, rounded block in the section color that
-  grows or shrinks (their snapshots are hidden), like an Android shared-element transition;
-  text lives in its own groups (`tile-body-*`/`tile-arrow-*` fade out fast, `hero-text` fades in
-  late) so it never stretches. Names must stay unique per page. Prefetch-on-hover is enabled in
-  astro.config.mjs.
+- Page transitions use native cross-document View Transitions (`@view-transition` in global.css).
+  Between the homepage and a section, `field-<section>`, `art-<section>` and `title-<section>`
+  morph the clicked tile into its section hero: the `field-*` group renders as one solid,
+  rounded block in the section color that grows or shrinks (its snapshots are hidden), like an
+  Android shared-element transition; titles and art scale a single snapshot (`vt-title`/`vt-art`);
+  tile text fades out fast and `hero-text` fades in late, so nothing stretches. Names are set
+  only on the tile (index.astro) and hero (Section.astro) being navigated to or from the
+  homepage, by `pageswap`/`pagereveal` scripts with click/referrer fallbacks for Safari; static
+  names would leave other tiles hanging around and make same-section navigation awkward.
+  The navigated tile gets `.vt-active`, which drops its hover state before the snapshot so the
+  morph starts from the plain block. Navigation between pages within a section is a plain quick
+  crossfade. Names must stay unique
+  per page. Prefetch-on-hover is enabled in astro.config.mjs.
 - Easter egg: with a mouse, art shapes are draggable; a drag doesn't trigger the tile link.
 - 404 is a museum piece: "404" built from shapes plus a gallery wall label. Keep the joke going
   if you edit it.
@@ -122,5 +125,7 @@ src/
   the fallback browsers request by default; keep it in sync with the copy in src/assets/icons.
 - Link-preview images (1200×630 JPEG) live in `src/assets/og/`: one for the homepage and one per
   section, chosen in Base.astro via the `section` prop. Same poster style as the site.
+- Caching (firebase.json): pages (`/`, `*.html`, extensionless clean URLs) are `no-cache` so a
+  deploy shows up immediately; hashed files under `/_astro/` are cached forever.
 - URLs have no trailing slash (`trailingSlash: 'never'`, `build.format: 'file'`).
 - Use Astro scoped `<style>` for page-specific CSS; use `:global()` to style child components.
