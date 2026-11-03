@@ -45,7 +45,7 @@ const book = z.object({
 const rotationItem = z.object({
   title: z.string(),
   subtitle: z.string().optional(),
-  kind: z.enum(['album', 'single', 'ep', 'playlist']),
+  kind: z.enum(['album', 'single', 'ep']),
   url: z.url().optional(),
   artwork: z.url().optional(),
 });
