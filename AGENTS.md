@@ -137,5 +137,9 @@ src/
   section, chosen in Base.astro via the `section` prop. Same poster style as the site.
 - Caching (firebase.json): pages (`/`, `*.html`, extensionless clean URLs) are `no-cache` so a
   deploy shows up immediately; hashed files under `/_astro/` are cached forever.
+- External links open in a new tab automatically: `src/integrations/external-links.mjs` rewrites
+  the built HTML (build/preview only, not the dev server), adding `target="_blank"`,
+  `rel="noopener noreferrer"` and `aria-describedby="new-tab-note"` (the hidden note in
+  Base.astro). Don't add `target` by hand; a link that already has one is left alone.
 - URLs have no trailing slash (`trailingSlash: 'never'`, `build.format: 'file'`).
 - Use Astro scoped `<style>` for page-specific CSS; use `:global()` to style child components.
