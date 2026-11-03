@@ -28,12 +28,15 @@ const [now] = await getNowUpdates();
         if (target.origin !== location.origin) return undefined;
         return target.pathname.match(/^\/(now|projects|thoughts|resume)(?:[/.]|$)/)?.[1];
       };
-      const clear = () =>
+      const clear = () => {
         document.querySelectorAll('.tile, .tile *').forEach((el) => el.style.removeProperty('view-transition-name'));
+        document.querySelectorAll('.tile.vt-active').forEach((el) => el.classList.remove('vt-active'));
+      };
       const name = (section) => {
         clear();
         const tile = document.querySelector(`.tile[data-section="${section}"]`);
         if (!tile) return;
+        tile.classList.add('vt-active');
         parts.forEach(([selector, prefix]) => {
           const el = selector ? tile.querySelector(selector) : tile;
           el?.style.setProperty('view-transition-name', `${prefix}-${section}`);
