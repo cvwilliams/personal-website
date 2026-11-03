@@ -8,6 +8,10 @@ export default defineConfig({
   trailingSlash: 'never',
   build: { format: 'file' },
   integrations: [mdx(), sitemap()],
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   vite: {
     build: {
       assetsInlineLimit: 0,

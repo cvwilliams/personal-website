@@ -318,3 +318,15 @@
     transform: none;
   }
 }
+
+.tile-body,
+.tile-arrow {
+  view-transition-class: tile-detail;
+}
+.tile-head h2 {
+  view-transition-class: vt-title;
+}
+.tile-art {
+  view-transition-class: vt-art;
+}
+

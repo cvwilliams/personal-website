@@ -4,6 +4,7 @@ export const site = {
   description: 'Resume, projects, thoughts and what Cameron Williams is working on now.',
   url: 'https://cameronwillia.ms',
   location: 'New York, NY',
+  goodreadsUserId: '52174720',
   links: {
     github: 'https://github.com/cvwilliams',
     linkedin: 'https://linkedin.com/in/cameronvwilliams',

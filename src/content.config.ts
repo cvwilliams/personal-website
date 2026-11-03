@@ -1,6 +1,8 @@
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
+import { goodreadsShelf } from './loaders/goodreads';
+import { site } from './data/site';
 
 const thoughts = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/thoughts' }),
@@ -33,12 +35,26 @@ const projects = defineCollection({
   }),
 });
 
+const book = z.object({
+  title: z.string(),
+  author: z.string().optional(),
+  url: z.url().optional(),
+});
+
 const now = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/now' }),
   schema: z.object({
     updated: z.coerce.date(),
     focus: z.string(),
+    reading: z.array(book).default([]),
   }),
 });
 
-export const collections = { thoughts, projects, now };
+const reading = defineCollection({
+  loader: goodreadsShelf({ userId: site.goodreadsUserId, shelf: 'currently-reading' }),
+  schema: book.extend({
+    cover: z.url().optional(),
+  }),
+});
+
+export const collections = { thoughts, projects, now, reading };
