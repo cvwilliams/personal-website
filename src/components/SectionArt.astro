@@ -4,16 +4,14 @@ import type { Section } from '../data/site';
 interface Props {
   section: Section;
   class?: string;
-  transitionName?: string;
 }
 
-const { section, class: className, transitionName } = Astro.props;
+const { section, class: className } = Astro.props;
 ---
 
 <svg
   class={className}
   data-art={section}
-  style={transitionName ? `view-transition-name: ${transitionName}` : undefined}
   viewBox="0 0 200 200"
   aria-hidden="true"
   focusable="false"
