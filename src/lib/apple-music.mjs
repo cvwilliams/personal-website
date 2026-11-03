@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 
 /**
  * @typedef {{ teamId?: string; keyId?: string; privateKey?: string; userToken?: string }} AppleMusicConfig
- * @typedef {{ id: string; title: string; subtitle?: string; kind: 'album' | 'single' | 'ep' | 'playlist'; url?: string; artwork?: string }} RotationItem
+ * @typedef {{ id: string; title: string; subtitle?: string; kind: 'album' | 'single' | 'ep'; url?: string; artwork?: string }} RotationItem
  */
 
 /** @returns {AppleMusicConfig} */
@@ -29,37 +29,65 @@ export function developerToken({ teamId, keyId, privateKey }, ttlSeconds = 3600)
   return `${data}.${signature.toString('base64url')}`;
 }
 
+const isExpiringArtwork = (url) => !url || /blobstore\.apple\.com|X-Amz-Expires/.test(url);
+
 /** @returns {RotationItem | null} */
-function toItem(item) {
+function toItem(item, catalog) {
   const attributes = item.attributes ?? {};
-  if (!attributes.name) return null;
-  const isPlaylist = item.type.includes('playlists');
-  let kind = isPlaylist ? 'playlist' : 'album';
-  let title = attributes.name;
-  if (!isPlaylist) {
-    if (attributes.isSingle || / - Single$/.test(title)) kind = 'single';
-    else if (/ - EP$/.test(title)) kind = 'ep';
-    title = title.replace(/ - (Single|EP)$/, '');
-  }
+  const catalogAttributes = catalog?.attributes ?? {};
+  const name = attributes.name ?? catalogAttributes.name;
+  if (!name) return null;
+  let kind = 'album';
+  if (attributes.isSingle || catalogAttributes.isSingle || / - Single$/.test(name)) kind = 'single';
+  else if (/ - EP$/.test(name)) kind = 'ep';
+  const title = name.replace(/ - (Single|EP)$/, '');
+  const artworkTemplate = catalogAttributes.artwork?.url ?? attributes.artwork?.url;
+  const artwork = artworkTemplate?.replace('{w}', '400').replace('{h}', '400').replace('{f}', 'jpg');
   return {
     id: item.id,
     title,
-    subtitle: isPlaylist ? attributes.curatorName : attributes.artistName,
+    subtitle: attributes.artistName ?? catalogAttributes.artistName,
     kind,
-    url: attributes.url,
-    artwork: attributes.artwork?.url?.replace('{w}', '400').replace('{h}', '400').replace('{f}', 'jpg'),
+    url: catalogAttributes.url ?? attributes.url,
+    artwork: isExpiringArtwork(artwork) ? undefined : artwork,
   };
 }
 
+async function catalogVersions(items, headers) {
+  const byType = { 'library-albums': [] };
+  for (const item of items) byType[item.type]?.push(item.id);
+  const catalog = new Map();
+  for (const [type, ids] of Object.entries(byType)) {
+    if (ids.length === 0) continue;
+    const kind = type.replace('library-', '');
+    try {
+      const response = await fetch(
+        `https://api.music.apple.com/v1/me/library/${kind}?ids=${ids.map(encodeURIComponent).join(',')}&include=catalog`,
+        { headers, signal: AbortSignal.timeout(15_000) },
+      );
+      if (!response.ok) continue;
+      const { data = [] } = await response.json();
+      for (const libraryItem of data) {
+        const match = libraryItem.relationships?.catalog?.data?.[0];
+        if (match?.attributes) catalog.set(libraryItem.id, match);
+      }
+    } catch {
+      // Keep the library versions if the lookup fails.
+    }
+  }
+  return catalog;
+}
+
 /**
- * Albums, singles and playlists in the user's Apple Music heavy rotation (stations are skipped).
+ * Albums, singles and EPs in the user's Apple Music heavy rotation (playlists and stations are skipped).
  * @param {AppleMusicConfig} config
  * @returns {Promise<RotationItem[]>}
  */
 export async function fetchHeavyRotation(config, limit = 5) {
   if (!config.userToken) throw new Error('missing APPLE_MUSIC_USER_TOKEN');
+  const headers = { Authorization: `Bearer ${developerToken(config)}`, 'Music-User-Token': config.userToken };
   const response = await fetch('https://api.music.apple.com/v1/me/history/heavy-rotation?limit=10', {
-    headers: { Authorization: `Bearer ${developerToken(config)}`, 'Music-User-Token': config.userToken },
+    headers,
     signal: AbortSignal.timeout(15_000),
   });
   if (response.status === 401 || response.status === 403) {
@@ -69,9 +97,10 @@ export async function fetchHeavyRotation(config, limit = 5) {
   }
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   const { data = [] } = await response.json();
-  return data
-    .filter((item) => !item.type.includes('stations'))
-    .map(toItem)
+  const candidates = data.filter((item) => item.type === 'albums' || item.type === 'library-albums');
+  const catalog = await catalogVersions(candidates, headers);
+  return candidates
+    .map((item) => toItem(item, catalog.get(item.id)))
     .filter(Boolean)
     .slice(0, limit);
 }

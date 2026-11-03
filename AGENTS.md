@@ -113,9 +113,12 @@ src/
   shared in `src/lib/goodreads.mjs`. The Deploy workflow also runs weekly (Mondays) so the list stays
   current; run it from the Actions tab for an immediate refresh.
 - The Now page's Heavy rotation comes from the `listening` collection: the Apple Music API's
-  heavy-rotation endpoint (top 5 albums/singles/EPs/playlists, stations skipped), fetched at build
+  heavy-rotation endpoint (top 5 albums/singles/EPs; playlists and stations skipped), fetched at build
   time by `src/loaders/apple-music.ts` using `src/lib/apple-music.mjs`, which signs a short-lived
-  MusicKit developer token. Credentials come from env vars (`.env` locally via compose, GitHub
+  MusicKit developer token. Heavy rotation often returns library items (ids like `l.…`)
+  with no public URL, so they're swapped for their catalog versions (`include=catalog`) for links
+  and stable artwork; signed blobstore artwork expires within a day and is dropped in favor of a
+  placeholder tile. Credentials come from env vars (`.env` locally via compose, GitHub
   secrets in CI; see `.env.example`); never commit them. Without them, or if the user token has
   expired (refresh with `make music-token`), it falls back to the Now update's `listening`
   frontmatter. `make now` freezes it into archived updates alongside the reading list.
@@ -134,5 +137,9 @@ src/
   section, chosen in Base.astro via the `section` prop. Same poster style as the site.
 - Caching (firebase.json): pages (`/`, `*.html`, extensionless clean URLs) are `no-cache` so a
   deploy shows up immediately; hashed files under `/_astro/` are cached forever.
+- External links open in a new tab automatically: `src/integrations/external-links.mjs` rewrites
+  the built HTML (build/preview only, not the dev server), adding `target="_blank"`,
+  `rel="noopener noreferrer"` and `aria-describedby="new-tab-note"` (the hidden note in
+  Base.astro). Don't add `target` by hand; a link that already has one is left alone.
 - URLs have no trailing slash (`trailingSlash: 'never'`, `build.format: 'file'`).
 - Use Astro scoped `<style>` for page-specific CSS; use `:global()` to style child components.

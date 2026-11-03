@@ -2,7 +2,7 @@
 interface Item {
   title: string;
   subtitle?: string;
-  kind: 'album' | 'single' | 'ep' | 'playlist';
+  kind: 'album' | 'single' | 'ep';
   url?: string;
   artwork?: string;
 }
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const { items } = Astro.props;
-const kindLabel = { album: 'Album', single: 'Single', ep: 'EP', playlist: 'Playlist' } as const;
+const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
 ---
 
 {
@@ -20,7 +20,7 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP', playlist: 'Playl
     <section class="listening" aria-labelledby="listening-title">
       <h2 id="listening-title">Heavy rotation</h2>
       <ol>
-        {items.map((item) => {
+        {items.map((item, index) => {
           const Tag = item.url ? 'a' : 'div';
           return (
             <li>
@@ -28,7 +28,9 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP', playlist: 'Playl
                 {item.artwork ? (
                   <img src={item.artwork} alt="" width="200" height="200" loading="lazy" decoding="async" />
                 ) : (
-                  <span class="placeholder" aria-hidden="true" />
+                  <span class={`placeholder ph-${index % 3}`} aria-hidden="true">
+                    {item.title.charAt(0)}
+                  </span>
                 )}
                 <span class="kind">{kindLabel[item.kind]}</span>
                 <span class="title">{item.title}</span>
@@ -81,7 +83,23 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP', playlist: 'Playl
     transition: transform 0.4s var(--ease-soft);
   }
   .placeholder {
-    background: var(--panel);
+    display: grid;
+    place-items: center;
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+  .ph-0 {
+    background: var(--yellow);
+    color: var(--ink);
+  }
+  .ph-1 {
+    background: var(--blue);
+    color: var(--paper);
+  }
+  .ph-2 {
+    background: var(--red);
+    color: var(--ink);
   }
   a.item:hover img {
     transform: translateY(-2px);
