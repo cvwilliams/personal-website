@@ -4,3 +4,8 @@ dist
 .git
 .firebase
 .DS_Store
+.env
+.env.*
+!.env.example
+.secrets
+*.p8

@@ -2,6 +2,7 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import { goodreadsShelf } from './loaders/goodreads';
+import { appleMusicHeavyRotation } from './loaders/apple-music';
 import { site } from './data/site';
 
 const thoughts = defineCollection({
@@ -41,12 +42,21 @@ const book = z.object({
   url: z.url().optional(),
 });
 
+const rotationItem = z.object({
+  title: z.string(),
+  subtitle: z.string().optional(),
+  kind: z.enum(['album', 'single', 'ep', 'playlist']),
+  url: z.url().optional(),
+  artwork: z.url().optional(),
+});
+
 const now = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/now' }),
   schema: z.object({
     updated: z.coerce.date(),
     focus: z.string(),
     reading: z.array(book).default([]),
+    listening: z.array(rotationItem).default([]),
   }),
 });
 
@@ -57,4 +67,9 @@ const reading = defineCollection({
   }),
 });
 
-export const collections = { thoughts, projects, now, reading };
+const listening = defineCollection({
+  loader: appleMusicHeavyRotation({ limit: 5 }),
+  schema: rotationItem,
+});
+
+export const collections = { thoughts, projects, now, reading, listening };

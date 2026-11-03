@@ -1,0 +1,115 @@
+---
+interface Item {
+  title: string;
+  subtitle?: string;
+  kind: 'album' | 'single' | 'ep' | 'playlist';
+  url?: string;
+  artwork?: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+const kindLabel = { album: 'Album', single: 'Single', ep: 'EP', playlist: 'Playlist' } as const;
+---
+
+{
+  items.length > 0 && (
+    <section class="listening" aria-labelledby="listening-title">
+      <h2 id="listening-title">Heavy rotation</h2>
+      <ol>
+        {items.map((item) => {
+          const Tag = item.url ? 'a' : 'div';
+          return (
+            <li>
+              <Tag class="item" href={item.url}>
+                {item.artwork ? (
+                  <img src={item.artwork} alt="" width="200" height="200" loading="lazy" decoding="async" />
+                ) : (
+                  <span class="placeholder" aria-hidden="true" />
+                )}
+                <span class="kind">{kindLabel[item.kind]}</span>
+                <span class="title">{item.title}</span>
+                {item.subtitle && <span class="subtitle">{item.subtitle}</span>}
+              </Tag>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  )
+}
+
+<style>
+  .listening {
+    margin-bottom: 2em;
+  }
+  .listening h2 {
+    margin-top: 0;
+  }
+  ol {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(140px, 42%), 1fr));
+    gap: 20px 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li,
+  li + li {
+    margin: 0;
+  }
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    color: inherit;
+    text-decoration: none;
+  }
+  img,
+  .placeholder {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    margin-bottom: 8px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px var(--shadow-color);
+    transition: transform 0.4s var(--ease-soft);
+  }
+  .placeholder {
+    background: var(--panel);
+  }
+  a.item:hover img {
+    transform: translateY(-2px);
+  }
+  .kind {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  a.item:hover .title {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .subtitle {
+    font-size: 0.875rem;
+    line-height: 1.35;
+    color: var(--muted);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    a.item:hover img {
+      transform: none;
+    }
+  }
+</style>

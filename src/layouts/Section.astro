@@ -50,7 +50,8 @@ const isSectionIndex = sections.some((s) => s.id === section && s.href === path)
       });
       addEventListener('pagereveal', (event) => {
         if (!event.viewTransition) return;
-        const from = window.navigation?.activation?.from?.url ?? document.referrer;
+        const navigation = /** @type {any} */ (window).navigation;
+        const from = navigation?.activation?.from?.url ?? document.referrer;
         if (from && isHome(from)) name();
         event.viewTransition.finished.finally(clear);
       });
