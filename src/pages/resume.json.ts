@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { site } from '../data/site';
-import { summary, experience, education, skills, currentRole } from '../data/resume';
+import { headline, summary, experience, education, skills } from '../data/resume';
 import { getProjects } from '../lib/content';
 
 const months: Record<string, string> = {
@@ -32,7 +32,7 @@ export const GET: APIRoute = async () => {
     $schema: 'https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json',
     basics: {
       name: site.name,
-      label: currentRole?.title,
+      label: headline,
       url: site.url,
       summary,
       location: { city, region, countryCode: 'US' },
