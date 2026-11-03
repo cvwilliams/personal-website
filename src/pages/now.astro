@@ -1,12 +1,15 @@
 ---
-import { render } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import Section from '../layouts/Section.astro';
 import Arrow from '../components/Arrow.astro';
+import Reading from '../components/Reading.astro';
 import { getNowUpdates, formatDate } from '../lib/content';
 
 const [now, ...archived] = await getNowUpdates();
 if (!now) throw new Error('Add a Now update in src/content/now/');
 const { Content } = await render(now);
+const synced = (await getCollection('reading')).map((book) => book.data);
+const books = synced.length > 0 ? synced : now.data.reading;
 ---
 
 <Section section="now" heading="Now" intro={now.data.focus} description="What I'm working on right now.">
@@ -16,6 +19,7 @@ const { Content } = await render(now);
   </span>
 
   <article class="prose">
+    <Reading books={books} fromGoodreads={synced.length > 0} />
     <Content />
   </article>
 

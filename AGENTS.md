@@ -59,9 +59,22 @@ src/
   tiles stack and the page scrolls.
 - Homepage tiles fill the grid in source order: Now (top-left), Projects, Thoughts, Resume
   (bottom-right). The name badge shows a live New York clock.
-- Each visit reshuffles every tile's art colors (only among colors that composition already
-  uses) and nudges/tilts/scales it via `--art-x/-y/-r/-s` (inline script in index.astro).
-  Keep new art compatible: fill with `.f-*` classes and never use the section's own color.
+- Each browser session reshuffles every tile's art colors (only among colors that composition
+  already uses) and nudges/tilts/scales it via `--art-x/-y/-r/-s`. The inline script in Base.astro
+  stores this per section in `sessionStorage['art-state']` (with any dragged shape offsets) and
+  applies it to both `.tile-art` and `.hero-art`, so the art keeps its arrangement across pages
+  and back navigation. Keep new art compatible: fill with `.f-*` classes, never use the section's
+  own color, and keep the shape order identical wherever the art renders.
+- Page transitions use native cross-document View Transitions (`@view-transition` in global.css):
+  `field-<section>`, `art-<section>` and `title-<section>` names morph a homepage tile into its
+  section hero. On the homepage the names are set only on the tile being navigated to or from,
+  by the `pageswap`/`pagereveal` script in index.astro (static names on every tile would leave
+  the other tiles hanging around as solid blocks). Titles and art scale a single snapshot
+  (`vt-title`/`vt-art` classes) instead of crossfading. The `field-*` groups render as one solid, rounded block in the section color that
+  grows or shrinks (their snapshots are hidden), like an Android shared-element transition;
+  text lives in its own groups (`tile-body-*`/`tile-arrow-*` fade out fast, `hero-text` fades in
+  late) so it never stretches. Names must stay unique per page. Prefetch-on-hover is enabled in
+  astro.config.mjs.
 - Easter egg: with a mouse, art shapes are draggable; a drag doesn't trigger the tile link.
 - 404 is a museum piece: "404" built from shapes plus a gallery wall label. Keep the joke going
   if you edit it.
@@ -88,6 +101,12 @@ src/
 ## Conventions
 
 - Content changes go in Markdown or `src/data/*`, never hard-coded into pages.
+- The Now page's Reading list comes from the `reading` collection, loaded at build time from the
+  public Goodreads shelf widget (`/review/custom_widget/<id>`, parsed in `src/loaders/goodreads.ts`;
+  Goodreads retired shelf RSS feeds in October 2026). If the feed is empty or
+  unreachable it falls back to the Now update's `reading` frontmatter; archived Now pages always
+  show their own frontmatter. The Deploy workflow also runs weekly (Mondays) so the list stays
+  current; run it from the Actions tab for an immediate refresh.
 - Now updates are dated files in `src/content/now/`. Never edit an older one to change the
   present: create a new file (`make now` copies the latest to today's date). The newest file is
   `/now`; older ones are listed at `/now/archive` and served at `/now/<date>`.

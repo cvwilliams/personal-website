@@ -18,6 +18,7 @@ interface Props {
 
 const { section, heading, eyebrow, intro, title, description, ogType } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, '');
+const isSectionIndex = sections.some((s) => s.id === section && s.href === path);
 ---
 
 <Base title={title ?? heading} description={description ?? intro} ogType={ogType} section={section}>
@@ -47,7 +48,7 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     </header>
 
     <main id="main" class="page-main" tabindex="-1">
-      <div class="hero grain">
+      <div class="hero grain" style={`view-transition-name: field-${section}`}>
         <div class="hero-text">
           {
             (eyebrow || Astro.slots.has('eyebrow')) && (
@@ -56,11 +57,11 @@ const path = Astro.url.pathname.replace(/\/$/, '');
               </p>
             )
           }
-          <h1>{heading}</h1>
+          <h1 style={isSectionIndex ? `view-transition-name: title-${section}` : undefined}>{heading}</h1>
           {intro && <p class="hero-intro">{intro}</p>}
           <slot name="hero" />
         </div>
-        <SectionArt section={section} class="hero-art" />
+        <SectionArt section={section} class="hero-art" transitionName={`art-${section}`} />
       </div>
 
       <slot />

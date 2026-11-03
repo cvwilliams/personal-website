@@ -14,7 +14,13 @@ const titleId = `tile-${section}-title`;
 const bodyId = `tile-${section}-body`;
 ---
 
-<a class="tile grain" href={href} data-section={section} aria-labelledby={titleId} aria-describedby={bodyId}>
+<a
+  class="tile grain"
+  href={href}
+  data-section={section}
+  aria-labelledby={titleId}
+  aria-describedby={bodyId}
+>
   <SectionArt section={section} class="tile-art" />
   <div class="tile-head">
     <h2 id={titleId}>{title}</h2>

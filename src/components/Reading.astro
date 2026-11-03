@@ -1,0 +1,96 @@
+---
+import { site } from '../data/site';
+
+interface Book {
+  title: string;
+  author?: string;
+  url?: string;
+  cover?: string;
+}
+
+interface Props {
+  books: Book[];
+  fromGoodreads?: boolean;
+}
+
+const { books, fromGoodreads = false } = Astro.props;
+---
+
+{
+  books.length > 0 && (
+    <section class="reading" aria-labelledby="reading-title">
+      <h2 id="reading-title">Reading</h2>
+      <ul>
+        {books.map((book) => (
+          <li>
+            {book.cover && (
+              <img
+                src={book.cover}
+                alt=""
+                width="56"
+                height="84"
+                loading="lazy"
+                decoding="async"
+                referrerpolicy="no-referrer"
+              />
+            )}
+            <div>
+              {book.url ? <a href={book.url}>{book.title}</a> : <span class="title">{book.title}</span>}
+              {book.author && <p>by {book.author}</p>}
+            </div>
+          </li>
+        ))}
+      </ul>
+      {fromGoodreads && (
+        <p class="source">
+          Synced from <a href={`https://www.goodreads.com/user/show/${site.goodreadsUserId}`}>Goodreads</a>
+        </p>
+      )}
+    </section>
+  )
+}
+
+<style>
+  .reading {
+    margin-bottom: 2em;
+  }
+  .reading h2 {
+    margin-top: 0;
+  }
+  ul {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
+  }
+  li + li {
+    margin-top: 0;
+  }
+  img {
+    flex: none;
+    width: 56px;
+    height: 84px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 4px 14px var(--shadow-color);
+  }
+  a,
+  .title {
+    font-weight: 700;
+  }
+  p {
+    margin: 2px 0 0;
+    color: var(--muted);
+  }
+  .source {
+    margin-top: 14px;
+    font-size: 0.8125rem;
+  }
+</style>
