@@ -4,6 +4,7 @@ import Section from '../layouts/Section.astro';
 import Arrow from '../components/Arrow.astro';
 import Reading from '../components/Reading.astro';
 import Listening from '../components/Listening.astro';
+import Spanish from '../components/Spanish.astro';
 import { getNowUpdates, formatDate } from '../lib/content';
 
 const [now, ...archived] = await getNowUpdates();
@@ -24,6 +25,7 @@ const listening = rotation.length > 0 ? rotation : now.data.listening;
   <article class="prose">
     <Reading books={books} />
     <Listening items={listening} />
+    {now.data.spanish && <Spanish hours={now.data.spanish.hours} note={now.data.spanish.note} />}
     <Content />
   </article>
 

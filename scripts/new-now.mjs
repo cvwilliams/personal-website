@@ -2,6 +2,7 @@ import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fetchGoodreadsShelf } from '../src/lib/goodreads.mjs';
 import { appleMusicConfig, fetchHeavyRotation, isAppleMusicConfigured } from '../src/lib/apple-music.mjs';
+import { site } from '../src/data/site.ts';
 
 const dir = 'src/content/now';
 const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
@@ -35,10 +36,9 @@ function withList(markdown, key, items, fields) {
 
 const sources = [];
 
-const userId = readFileSync('src/data/site.ts', 'utf8').match(/goodreadsUserId:\s*'(\d+)'/)?.[1];
-if (userId) {
+if (site.goodreadsUserId) {
   try {
-    const books = await fetchGoodreadsShelf({ userId, shelf: 'currently-reading' });
+    const books = await fetchGoodreadsShelf({ userId: site.goodreadsUserId, shelf: 'currently-reading' });
     sources.push({ key: 'reading', label: 'book(s) from Goodreads', items: books, fields: ['title', 'author', 'url'] });
   } catch (error) {
     console.warn(`Couldn't reach Goodreads (${error.message}); keeping the existing reading lists.`);

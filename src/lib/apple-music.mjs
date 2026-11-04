@@ -42,7 +42,7 @@ function toItem(item, catalog) {
   else if (/ - EP$/.test(name)) kind = 'ep';
   const title = name.replace(/ - (Single|EP)$/, '');
   const artworkTemplate = catalogAttributes.artwork?.url ?? attributes.artwork?.url;
-  const artwork = artworkTemplate?.replace('{w}', '400').replace('{h}', '400').replace('{f}', 'jpg');
+  const artwork = artworkTemplate?.replace('{w}', '300').replace('{h}', '300').replace('{f}', 'jpg');
   return {
     id: item.id,
     title,

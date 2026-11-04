@@ -13,54 +13,7 @@ const projects = (await getProjects()).slice(0, 3);
 const [now] = await getNowUpdates();
 ---
 
-<Base skipLink={false}>
-  <script is:inline slot="head">
-    (() => {
-      const parts = [
-        ['', 'field'],
-        ['h2', 'title'],
-        ['.tile-art', 'art'],
-        ['.tile-body', 'tile-body'],
-        ['.tile-arrow', 'tile-arrow'],
-      ];
-      const sectionOf = (url) => {
-        const target = new URL(url, location.href);
-        if (target.origin !== location.origin) return undefined;
-        return target.pathname.match(/^\/(now|projects|thoughts|resume)(?:[/.]|$)/)?.[1];
-      };
-      const clear = () => {
-        document.querySelectorAll('.tile, .tile *').forEach((el) => el.style.removeProperty('view-transition-name'));
-        document.querySelectorAll('.tile.vt-active').forEach((el) => el.classList.remove('vt-active'));
-      };
-      const name = (section) => {
-        clear();
-        const tile = document.querySelector(`.tile[data-section="${section}"]`);
-        if (!tile) return;
-        tile.classList.add('vt-active');
-        parts.forEach(([selector, prefix]) => {
-          const el = selector ? tile.querySelector(selector) : tile;
-          el?.style.setProperty('view-transition-name', `${prefix}-${section}`);
-        });
-      };
-      document.addEventListener('click', (event) => {
-        const tile = event.target instanceof Element ? event.target.closest('.tile') : null;
-        if (tile && !event.defaultPrevented) name(tile.dataset.section);
-      });
-      addEventListener('pageswap', (event) => {
-        const url = event.activation?.entry?.url;
-        const section = event.viewTransition && url && sectionOf(url);
-        if (section) name(section);
-      });
-      addEventListener('pagereveal', (event) => {
-        if (!event.viewTransition) return;
-        const navigation = /** @type {any} */ (window).navigation;
-        const from = navigation?.activation?.from?.url ?? document.referrer;
-        const section = from && sectionOf(from);
-        if (section) name(section);
-        event.viewTransition.finished.finally(clear);
-      });
-    })();
-  </script>
+<Base skipLink={false} art>
   <main id="main" class="tiles" tabindex="-1">
     <header class="badge">
       <div class="badge-text">
@@ -164,15 +117,8 @@ const [now] = await getNowUpdates();
   <script>
     const finePointer = window.matchMedia('(pointer: fine)');
 
-    const saveDrag = (svg: SVGSVGElement, shape: SVGGraphicsElement, offset: { x: number; y: number }) => {
-      try {
-        const state = JSON.parse(sessionStorage.getItem('art-state') || '{}');
-        const art = state[svg.dataset.art ?? ''];
-        if (!art || shape.dataset.i === undefined) return;
-        art.drags[shape.dataset.i] = [Math.round(offset.x * 10) / 10, Math.round(offset.y * 10) / 10];
-        sessionStorage.setItem('art-state', JSON.stringify(state));
-      } catch {}
-    };
+    type SiteArt = { saveDrag(section: string, index: string, x: number, y: number): void };
+    const siteArt = (window as Window & { siteArt?: SiteArt }).siteArt;
     const DRAG_THRESHOLD = 4;
 
     document.querySelectorAll<SVGSVGElement>('.tile-art').forEach((svg) => {
@@ -225,7 +171,7 @@ const [now] = await getNowUpdates();
         const end = () => {
           if (dragging) {
             suppressClick = true;
-            saveDrag(svg, shape, offset);
+            if (svg.dataset.art && shape.dataset.i) siteArt?.saveDrag(svg.dataset.art, shape.dataset.i, offset.x, offset.y);
           }
           start = null;
           dragging = false;
