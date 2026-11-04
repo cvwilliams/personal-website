@@ -1,0 +1,62 @@
+<script is:inline>
+  (() => {
+    const sameOrigin = (url) => {
+      try {
+        const target = new URL(url, location.href);
+        return target.origin === location.origin ? target : null;
+      } catch {
+        return null;
+      }
+    };
+    const isHome = (url) => ['/', '/index.html'].includes(sameOrigin(url)?.pathname ?? '');
+    const sectionOf = (url) => sameOrigin(url)?.pathname.match(/^\/(now|projects|thoughts|resume)(?:[/.]|$)/)?.[1];
+    const setName = (el, name) => el?.style.setProperty('view-transition-name', name);
+    const clear = () => {
+      document.querySelectorAll('[style*="view-transition-name"]').forEach((el) => el.style.removeProperty('view-transition-name'));
+      document.querySelectorAll('.vt-active').forEach((el) => el.classList.remove('vt-active'));
+    };
+    const nameTile = (section) => {
+      const tile = document.querySelector(`.tile[data-section="${section}"]`);
+      if (!tile) return;
+      tile.classList.add('vt-active');
+      setName(tile, `field-${section}`);
+      setName(tile.querySelector('h2'), `title-${section}`);
+      setName(tile.querySelector('.tile-art'), `art-${section}`);
+      setName(tile.querySelector('.tile-body'), `tile-body-${section}`);
+      setName(tile.querySelector('.tile-arrow'), `tile-arrow-${section}`);
+    };
+    const nameHero = () => {
+      const page = document.querySelector('.page[data-section]');
+      const hero = page?.querySelector('.hero');
+      if (!hero) return;
+      const section = page.dataset.section;
+      setName(hero, `field-${section}`);
+      setName(hero.querySelector('.hero-art'), `art-${section}`);
+      setName(hero.querySelector('.hero-text'), 'hero-text');
+      setName(hero.querySelector('h1[data-vt-title]'), `title-${section}`);
+    };
+    const prepare = (otherUrl) => {
+      clear();
+      if (!otherUrl) return;
+      if (document.querySelector('.tiles')) {
+        const section = sectionOf(otherUrl);
+        if (section) nameTile(section);
+      } else if (isHome(otherUrl)) {
+        nameHero();
+      }
+    };
+    document.addEventListener('click', (event) => {
+      const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+      if (link && !event.defaultPrevented) prepare(link.href);
+    });
+    addEventListener('pageswap', (event) => {
+      if (event.viewTransition) prepare(event.activation?.entry?.url);
+    });
+    addEventListener('pagereveal', (event) => {
+      if (!event.viewTransition) return;
+      const navigation = /** @type {any} */ (window).navigation;
+      prepare(navigation?.activation?.from?.url ?? document.referrer);
+      event.viewTransition.finished.finally(clear);
+    });
+  })();
+</script>

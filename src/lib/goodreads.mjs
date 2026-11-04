@@ -38,7 +38,12 @@ function parseBooks(html) {
     const author = chunk.match(/class="gr_custom_author[^"]*"[^>]*>[\s\S]*?<a\b[^>]*>([\s\S]*?)<\/a>/)?.[1];
     const bookId = rawCover?.match(/\/(\d+)(?:\._[^/]*)?\.\w+$/)?.[1];
     if (!title || !bookId) return [];
-    const cover = rawCover && !rawCover.includes('nophoto') ? rawCover.replace(/\._S[XY]\d+_/i, '') : undefined;
+    const cover =
+      rawCover && !rawCover.includes('nophoto')
+        ? /\._S[XY]\d+_/i.test(rawCover)
+          ? rawCover.replace(/\._S[XY]\d+_/i, '._SY180_')
+          : rawCover.replace(/(\.\w+)$/, '._SY180_$1')
+        : undefined;
     return [
       {
         id: bookId,

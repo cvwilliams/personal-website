@@ -1,0 +1,63 @@
+<script is:inline>
+  (() => {
+    const KEY = 'art-state';
+    let state = {};
+    try {
+      state = JSON.parse(sessionStorage.getItem(KEY) || '{}');
+    } catch {}
+    const pick = (min, max) => +(min + Math.random() * (max - min)).toFixed(3);
+    const shapesOf = (svg) => [...svg.querySelectorAll('rect, circle, path')];
+    const colorOf = (el) => [...el.classList].find((c) => c.startsWith('f-') && c !== 'f-on');
+    let changed = false;
+
+    document.querySelectorAll('svg[data-art]').forEach((svg) => {
+      const section = svg.dataset.art;
+      let art = state[section];
+      if (!art) {
+        if (!svg.classList.contains('tile-art')) return;
+        const palette = [...new Set(shapesOf(svg).map(colorOf).filter(Boolean))];
+        const shuffled = [...palette].sort(() => Math.random() - 0.5);
+        art = {
+          colors: Object.fromEntries(palette.map((c, i) => [c, shuffled[i]])),
+          x: pick(-12, 12),
+          y: pick(-12, 12),
+          r: pick(-7, 7),
+          s: pick(0.94, 1.06),
+          drags: {},
+        };
+        state[section] = art;
+        changed = true;
+      }
+      shapesOf(svg).forEach((el, i) => {
+        el.dataset.i = String(i);
+        const from = colorOf(el);
+        if (from && art.colors[from]) el.classList.replace(from, art.colors[from]);
+        const drag = art.drags[i];
+        if (drag) {
+          el.style.setProperty('translate', `${drag[0]}px ${drag[1]}px`);
+          el.dataset.dx = String(drag[0]);
+          el.dataset.dy = String(drag[1]);
+        }
+      });
+      svg.style.setProperty('--art-x', `${art.x}px`);
+      svg.style.setProperty('--art-y', `${art.y}px`);
+      svg.style.setProperty('--art-r', `${art.r}deg`);
+      svg.style.setProperty('--art-s', String(art.s));
+    });
+
+    const save = () => {
+      try {
+        sessionStorage.setItem(KEY, JSON.stringify(state));
+      } catch {}
+    };
+    if (changed) save();
+
+    /** @type {any} */ (window).siteArt = {
+      saveDrag(section, index, x, y) {
+        if (!state[section]) return;
+        state[section].drags[index] = [Math.round(x * 10) / 10, Math.round(y * 10) / 10];
+        save();
+      },
+    };
+  })();
+</script>

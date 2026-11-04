@@ -9,6 +9,7 @@ make dev       # dev server at http://localhost:4321
 make build     # type-check and build to dist/
 make preview   # serve the production build at http://localhost:4322
 make now       # start a new Now update (the previous one moves to /now/archive)
+make spanish hours=N  # update your Dreaming Spanish hours on the Now page
 make music-token  # sign in to Apple Music for the Now page's heavy rotation (see .env.example)
 ```
 

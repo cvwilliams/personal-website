@@ -21,42 +21,7 @@ const path = Astro.url.pathname.replace(/\/$/, '');
 const isSectionIndex = sections.some((s) => s.id === section && s.href === path);
 ---
 
-<Base title={title ?? heading} description={description ?? intro} ogType={ogType} section={section}>
-  <script is:inline slot="head" define:vars={{ section, isSectionIndex }}>
-    (() => {
-      const isHome = (url) => {
-        const target = new URL(url, location.href);
-        return target.origin === location.origin && (target.pathname === '/' || target.pathname === '/index.html');
-      };
-      const name = () => {
-        const hero = document.querySelector('.page .hero');
-        if (!hero) return;
-        hero.style.setProperty('view-transition-name', `field-${section}`);
-        hero.querySelector('.hero-art')?.style.setProperty('view-transition-name', `art-${section}`);
-        hero.querySelector('.hero-text')?.style.setProperty('view-transition-name', 'hero-text');
-        if (isSectionIndex) hero.querySelector('h1')?.style.setProperty('view-transition-name', `title-${section}`);
-      };
-      const clear = () =>
-        document
-          .querySelectorAll('.page .hero, .page .hero *')
-          .forEach((el) => el.style.removeProperty('view-transition-name'));
-      document.addEventListener('click', (event) => {
-        const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
-        if (link && !event.defaultPrevented && isHome(link.href)) name();
-      });
-      addEventListener('pageswap', (event) => {
-        const url = event.activation?.entry?.url;
-        if (event.viewTransition && url && isHome(url)) name();
-      });
-      addEventListener('pagereveal', (event) => {
-        if (!event.viewTransition) return;
-        const navigation = /** @type {any} */ (window).navigation;
-        const from = navigation?.activation?.from?.url ?? document.referrer;
-        if (from && isHome(from)) name();
-        event.viewTransition.finished.finally(clear);
-      });
-    })();
-  </script>
+<Base title={title ?? heading} description={description ?? intro} ogType={ogType} section={section} art>
   <div class="page" data-section={section}>
     <header class="site-header">
       <a class="home-link" href="/">{site.name}</a>
@@ -92,7 +57,7 @@ const isSectionIndex = sections.some((s) => s.id === section && s.href === path)
               </p>
             )
           }
-          <h1>{heading}</h1>
+          <h1 data-vt-title={isSectionIndex ? '' : undefined}>{heading}</h1>
           {intro && <p class="hero-intro">{intro}</p>}
           <slot name="hero" />
         </div>
