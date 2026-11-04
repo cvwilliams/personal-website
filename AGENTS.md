@@ -125,6 +125,9 @@ src/
 - Now updates are dated files in `src/content/now/`. Never edit an older one to change the
   present: create a new file (`make now` copies the latest to today's date). The newest file is
   `/now`; older ones are listed at `/now/archive` and served at `/now/<date>`.
+- `/resume.json` (JSON Resume v1.0.0, `src/pages/resume.json.ts`) is generated from
+  `src/data/site.ts` and `src/data/resume.ts` and mirrors the resume page (no projects). Keep resume dates in
+  the `Mon YYYY` / `YYYY` / `Fall YYYY` forms so they convert to ISO dates.
 - Skill and tech chips render through `Chips.astro`; a chip links to docs when its exact label
   is in `src/data/tech-links.ts`. Add an entry there when introducing a new skill or tech.
   Don't use linked chips inside an element that's already a link (e.g. project cards).

@@ -2,7 +2,7 @@
 import Section from '../layouts/Section.astro';
 import Chips from '../components/Chips.astro';
 import { site } from '../data/site';
-import { summary, experience, education, skills, currentRole } from '../data/resume';
+import { headline, summary, experience, education, skills } from '../data/resume';
 
 const printLinks = [site.url, site.links.github, site.links.linkedin]
   .filter(Boolean)
@@ -15,17 +15,20 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
   intro="Where I've worked, what I know, and how I got here."
   description={`Experience, education and skills of ${site.name}.`}
 >
-  <button slot="hero" type="button" class="print-button" data-print>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M7 9V3h10v6M7 18H4v-7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7h-3M7 14h10v7H7z"></path>
-    </svg>
-    Print / Save as PDF
-  </button>
+  <div slot="hero" class="hero-actions">
+    <button type="button" class="print-button" data-print>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 9V3h10v6M7 18H4v-7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7h-3M7 14h10v7H7z"></path>
+      </svg>
+      Print / Save as PDF
+    </button>
+    <a class="json-link" href="/resume.json" type="application/json">JSON Resume</a>
+  </div>
 
   <header class="print-header">
     <h1>{site.name}</h1>
     <p class="print-role">
-      {[currentRole && `${currentRole.title} at ${currentRole.company}`, site.location].filter(Boolean).join(' · ')}
+      {headline} · {site.location}
     </p>
     <p class="print-links">
       {
@@ -106,7 +109,7 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
     </ol>
   </section>
 
-  <section class="block" aria-labelledby="skills">
+  <section class="block skills-block" aria-labelledby="skills">
     <h2 class="section-title" id="skills">Skills</h2>
     <dl class="skills">
       {
@@ -222,12 +225,23 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
     }
   }
 
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 22px;
+    margin-top: 12px;
+  }
+  .json-link {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--on-surface);
+    text-underline-offset: 3px;
+  }
   .print-button {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    align-self: flex-start;
-    margin-top: 12px;
     padding: 10px 18px;
     border-radius: 999px;
     border: 1.5px solid var(--on-surface);
@@ -273,7 +287,7 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
     :global(.site-header),
     :global(.site-footer),
     :global(.hero),
-    .print-button {
+    .hero-actions {
       display: none !important;
     }
     :global(.page) {
@@ -322,6 +336,9 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
     }
     :global(.block:not(:first-of-type)) {
       break-inside: avoid;
+    }
+    .skills-block {
+      display: none;
     }
     :global(.section-title) {
       margin: 0 0 2pt;
