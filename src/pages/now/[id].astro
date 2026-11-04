@@ -4,6 +4,7 @@ import Section from '../../layouts/Section.astro';
 import Arrow from '../../components/Arrow.astro';
 import Reading from '../../components/Reading.astro';
 import Listening from '../../components/Listening.astro';
+import Spanish from '../../components/Spanish.astro';
 import { getNowUpdates, formatDate } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -39,6 +40,7 @@ const date = formatDate(entry.data.updated);
   <article class="prose">
     <Reading books={entry.data.reading} />
     <Listening items={entry.data.listening} />
+    {entry.data.spanish && <Spanish hours={entry.data.spanish.hours} note={entry.data.spanish.note} />}
     <Content />
   </article>
 </Section>

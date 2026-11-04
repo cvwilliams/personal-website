@@ -1,0 +1,112 @@
+---
+import { LEVEL_STARTS, spanishProgress } from '../lib/dreaming-spanish';
+
+interface Props {
+  hours: number;
+  note?: string;
+}
+
+const { hours, note } = Astro.props;
+const { level, nextLevelStart, progress } = spanishProgress(hours);
+const formatted = hours.toLocaleString('en-US', { maximumFractionDigits: 1 });
+const toNext = nextLevelStart ? Math.ceil(nextLevelStart - hours) : 0;
+---
+
+<section class="studying" aria-labelledby="studying-title">
+  <h2 id="studying-title">Studying</h2>
+  <h3>Spanish</h3>
+  <p class="summary">
+    <strong>{formatted} hours</strong>{' '}of comprehensible input on{' '}
+    <a href="https://www.dreamingspanish.com">Dreaming Spanish</a>.
+  </p>
+  <p class="level-line">
+    <strong>Level {level}</strong>
+    <span class="muted">
+      {nextLevelStart ? `, ${toNext.toLocaleString('en-US')} hours to go until Level ${level + 1}.` : ', the top level.'}
+    </span>
+  </p>
+  <div
+    class="levels"
+    role="progressbar"
+    aria-label={`Dreaming Spanish level ${level} of 7`}
+    aria-valuemin="0"
+    aria-valuemax={LEVEL_STARTS.at(-1)}
+    aria-valuenow={hours}
+    aria-valuetext={`${formatted} hours, level ${level}`}
+  >
+    {
+      LEVEL_STARTS.map((_, i) => {
+        const fill = i + 1 < level ? 1 : i + 1 === level ? progress : 0;
+        return (
+          <span class:list={['level', { done: fill === 1, current: i + 1 === level }]}>
+            <span class="fill" style={`--fill: ${Math.round(fill * 100)}%`} />
+            <span class="number">{i + 1}</span>
+          </span>
+        );
+      })
+    }
+  </div>
+  {note && <p class="note">{note}</p>}
+</section>
+
+<style>
+  .studying {
+    margin-bottom: 2em;
+  }
+  .studying h2 {
+    margin-top: 0;
+  }
+  .studying h3 {
+    margin: 0 0 6px;
+  }
+  .summary {
+    margin: 0;
+  }
+  .level-line {
+    margin: 2px 0 14px;
+  }
+  .muted {
+    color: var(--muted);
+  }
+  .levels {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 6px;
+    max-width: 520px;
+  }
+  .level {
+    position: relative;
+    display: block;
+    height: 34px;
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--border);
+  }
+  .fill {
+    position: absolute;
+    inset: 0;
+    width: var(--fill);
+    background: var(--text);
+  }
+  .current .fill {
+    background: var(--red);
+  }
+  .number {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 100%;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    color: var(--muted);
+  }
+  .done .number {
+    color: var(--bg);
+  }
+  .current .number {
+    color: var(--text);
+  }
+  .note {
+    margin: 14px 0 0;
+  }
+</style>

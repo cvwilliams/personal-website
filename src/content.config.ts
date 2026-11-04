@@ -57,6 +57,12 @@ const now = defineCollection({
     focus: z.string(),
     reading: z.array(book).default([]),
     listening: z.array(rotationItem).default([]),
+    spanish: z
+      .object({
+        hours: z.number().nonnegative(),
+        note: z.string().optional(),
+      })
+      .optional(),
   }),
 });
 

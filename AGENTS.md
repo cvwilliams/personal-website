@@ -57,6 +57,13 @@ src/
   in place (`--hover-scale`, ~1.2%, staying inside the 10px gutter) with a long ease-out
   (`--dur`, `--ease-soft`); the grid, other tiles and name badge never move. Below 900px the
   tiles stack and the page scrolls.
+- Pages with section art pass `art` to Base (homepage, Section layout); only those get the
+  art-state and transition scripts. Base preloads the Latin Libre Franklin file. Remote images are
+  requested at about 2x display size (Goodreads `_SY180_`, Apple Music 300px).
+- Transition names are set by one inline script in Base.astro's `<head>`: on the homepage it names
+  the tile for the section being navigated to/from; on section pages it names the hero only when
+  the other page is the homepage. The art-state script in Base.astro owns `sessionStorage` and
+  exposes `window.siteArt.saveDrag()` for the homepage drag script.
 - Homepage tiles fill the grid in source order: Now (top-left), Projects, Thoughts, Resume
   (bottom-right). The name badge shows a live New York clock.
 - Each browser session reshuffles every tile's art colors (only among colors that composition
@@ -122,6 +129,10 @@ src/
   secrets in CI; see `.env.example`); never commit them. Without them, or if the user token has
   expired (refresh with `make music-token`), it falls back to the Now update's `listening`
   frontmatter. `make now` freezes it into archived updates alongside the reading list.
+- The Now page's Studying section has a Spanish subsection rendered from the `spanish` frontmatter (`hours`, optional
+  `note`) on each Now update: level and progress come from Dreaming Spanish's thresholds in
+  `src/lib/dreaming-spanish.ts` (0/50/150/300/600/1000/1500 h). There's no Dreaming Spanish API,
+  so hours are entered by hand with `make spanish hours=N`, which edits the latest update.
 - Now updates are dated files in `src/content/now/`. Never edit an older one to change the
   present: create a new file (`make now` copies the latest to today's date). The newest file is
   `/now`; older ones are listed at `/now/archive` and served at `/now/<date>`.
