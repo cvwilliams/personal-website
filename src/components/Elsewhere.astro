@@ -1,0 +1,78 @@
+---
+import Arrow from './Arrow.astro';
+import { site } from '../data/site';
+
+const links = [
+  { label: 'GitHub', detail: 'Code and side projects', href: site.links.github },
+  { label: 'LinkedIn', detail: 'Work history', href: site.links.linkedin },
+  { label: 'RSS', detail: 'New thoughts, in your reader', href: '/rss.xml' },
+  { label: 'JSON Resume', detail: 'My resume, machine-readable', href: '/resume.json' },
+].filter((l) => l.href);
+---
+
+<ul class="elsewhere">
+  {
+    links.map((l) => (
+      <li>
+        <a href={l.href}>
+          <span class="label">{l.label}</span>
+          <span class="detail">{l.detail}</span>
+          <Arrow class="arrow" />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  :global(.prose) .elsewhere {
+    margin: 0 0 2em;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  :global(.prose) .elsewhere li {
+    margin: 0;
+  }
+  :global(.prose) .elsewhere a {
+    display: flex;
+    align-items: baseline;
+    gap: 6px 16px;
+    flex-wrap: wrap;
+    padding: 14px 0;
+    border-top: 1px solid var(--rule);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .label {
+    font-weight: 700;
+  }
+  .detail {
+    flex: 1;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .elsewhere :global(.arrow) {
+    flex: none;
+    align-self: center;
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s var(--ease-soft);
+  }
+  a:hover .label {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  a:hover :global(.arrow) {
+    transform: translate(2px, -2px);
+  }
+  @media (max-width: 480px) {
+    .detail {
+      flex-basis: 100%;
+      order: 3;
+    }
+    .label {
+      flex: 1;
+    }
+  }
+</style>

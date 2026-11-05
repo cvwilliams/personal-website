@@ -2,7 +2,8 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import { goodreadsShelf } from './loaders/goodreads';
-import { appleMusicHeavyRotation } from './loaders/apple-music';
+import { appleMusicAlbums, appleMusicHeavyRotation } from './loaders/apple-music';
+import { desertIslandAlbums } from './data/desert-island';
 import { site } from './data/site';
 
 const thoughts = defineCollection({
@@ -78,4 +79,9 @@ const listening = defineCollection({
   schema: rotationItem,
 });
 
-export const collections = { thoughts, projects, now, reading, listening };
+const desertIsland = defineCollection({
+  loader: appleMusicAlbums({ albums: desertIslandAlbums }),
+  schema: rotationItem,
+});
+
+export const collections = { thoughts, projects, now, reading, listening, desertIsland };

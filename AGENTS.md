@@ -21,6 +21,10 @@ src/
   content/              Markdown content (thoughts/, projects/, now/YYYY-MM-DD.md)
   data/site.ts          Name, intro, links, section list
   data/resume.ts        Resume as typed data
+  data/about.mdx        About page copy (bio, albums, map, Elsewhere)
+  data/desert-island.ts Desert island albums (artwork and links come from the Apple Music catalog)
+  data/places.ts        Places on the About map (name, country, lat, lon)
+  data/world-dots.ts    Generated 2° land grid for the dotted world map
   lib/content.ts        getThoughts(), getProjects(), readingTime(), formatDate()
   layouts/Base.astro    <html>, <head>, fonts, global CSS
   layouts/Section.astro Inner-page shell: header nav, tinted hero card, footer
@@ -41,7 +45,8 @@ src/
   `ThemeToggle` component stores an explicit choice as `data-theme` on `<html>` and animates
   the switch with a View Transition (circular reveal).
 - Sections are flat color fields: Resume blue, Projects red, Thoughts yellow, Now ink (paper in
-  dark mode). Set `data-section="resume|projects|thoughts|now"` on an element to get
+  dark mode), About a darker paper with all four colors in its art. The homepage name badge links
+  to /about and morphs into its hero. Set `data-section="resume|projects|thoughts|now|about"` on an element to get
   `--surface`, `--surface-hover`, `--on-surface`, `--on-surface-muted`, `--rule`, and
   `--accent` (the section color, darkened/lightened to read on the page background).
   Text on a field must use `--on-surface` (ink on red/yellow, paper on blue).

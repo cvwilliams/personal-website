@@ -1,0 +1,13 @@
+---
+import { getCollection } from 'astro:content';
+import Listening from './Listening.astro';
+import { desertIslandAlbums } from '../data/desert-island';
+
+const synced = new Map((await getCollection('desertIsland')).map((entry) => [entry.id, entry.data]));
+const items = desertIslandAlbums.map((album, index) => {
+  const match = synced.get(String(index));
+  return { title: album.title, subtitle: album.artist, kind: 'album' as const, url: match?.url, artwork: match?.artwork };
+});
+---
+
+<Listening items={items} heading="Desert island albums" showKind={false} />

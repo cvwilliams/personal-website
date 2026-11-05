@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Tile from '../components/Tile.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import Arrow from '../components/Arrow.astro';
 import '../styles/home.css';
 import { site } from '../data/site';
 import { currentRole } from '../data/resume';
@@ -17,7 +18,9 @@ const [now] = await getNowUpdates();
   <main id="main" class="tiles" tabindex="-1">
     <header class="badge">
       <div class="badge-text">
-        <h1>{site.name}</h1>
+        <h1>
+          <a class="badge-name" href="/about">{site.name}<Arrow class="badge-arrow" /></a>
+        </h1>
         <p class="badge-meta">
           <span>{site.intro}</span>
           <span class="badge-dot" aria-hidden="true">·</span>

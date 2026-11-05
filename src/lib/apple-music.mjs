@@ -108,3 +108,43 @@ export async function fetchHeavyRotation(config, limit = 5) {
 export function isAppleMusicConfigured(config) {
   return Boolean(config.teamId && config.keyId && config.privateKey && config.userToken);
 }
+
+export function isCatalogConfigured(config) {
+  return Boolean(config.teamId && config.keyId && config.privateKey);
+}
+
+const normalize = (value) =>
+  value
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+
+/**
+ * Looks up albums in the Apple Music catalog by title and artist. Needs only a developer token.
+ * Returns one entry per album, in order: the catalog match, or null when nothing matches.
+ * @param {AppleMusicConfig} config
+ * @param {{ title: string; artist: string }[]} albums
+ * @returns {Promise<(RotationItem | null)[]>}
+ */
+export async function fetchCatalogAlbums(config, albums, storefront = 'us') {
+  const headers = { Authorization: `Bearer ${developerToken(config)}` };
+  return Promise.all(
+    albums.map(async ({ title, artist }) => {
+      const url = new URL(`https://api.music.apple.com/v1/catalog/${storefront}/search`);
+      url.search = new URLSearchParams({ term: `${artist} ${title}`, types: 'albums', limit: '15' }).toString();
+      const response = await fetch(url, { headers, signal: AbortSignal.timeout(15_000) });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const body = await response.json();
+      const match = (body.results?.albums?.data ?? [])
+        .filter(({ attributes: a = {} }) => {
+          return a.name && a.artistName && normalize(a.artistName).includes(normalize(artist)) && normalize(a.name).startsWith(normalize(title));
+        })
+        .sort((a, b) => {
+          const clean = (item) => (item.attributes.contentRating === 'clean' ? 1 : 0);
+          return clean(a) - clean(b) || a.attributes.name.length - b.attributes.name.length;
+        })[0];
+      return match ? toItem(match) : null;
+    }),
+  );
+}

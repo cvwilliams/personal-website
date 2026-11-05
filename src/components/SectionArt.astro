@@ -51,6 +51,17 @@ const { section, class: className } = Astro.props;
     )
   }
   {
+    section === 'about' && (
+      <>
+        <rect class="f-blue" x="22" y="112" width="76" height="88" />
+        <circle class="f-red" cx="124" cy="122" r="58" />
+        <path class="f-yellow" d="M112 200L166 104L220 200Z" />
+        <rect class="f-on" x="150" y="22" width="12" height="62" />
+        <circle class="f-on" cx="56" cy="74" r="12" />
+      </>
+    )
+  }
+  {
     section === 'now' && (
       <>
         <circle class="s-on" cx="100" cy="100" r="82" fill="none" stroke-width="1.5" stroke-dasharray="3 7" opacity="0.6" />
