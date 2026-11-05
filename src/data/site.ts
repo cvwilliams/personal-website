@@ -12,11 +12,12 @@ export const site = {
   },
 } as const;
 
-export type Section = 'resume' | 'projects' | 'thoughts' | 'now';
+export type Section = 'resume' | 'projects' | 'thoughts' | 'now' | 'about';
 
 export const sections: { id: Section; label: string; href: string }[] = [
   { id: 'now', label: 'Now', href: '/now' },
   { id: 'projects', label: 'Projects', href: '/projects' },
   { id: 'thoughts', label: 'Thoughts', href: '/thoughts' },
   { id: 'resume', label: 'Resume', href: '/resume' },
+  { id: 'about', label: 'About', href: '/about' },
 ];

@@ -30,6 +30,7 @@ const ogImages: Record<Section, string> = {
   projects: ogProjects,
   thoughts: ogThoughts,
   resume: ogResume,
+  about: ogHome,
 };
 const ogImage = new URL(section ? ogImages[section] : ogHome, Astro.site);
 const ogImageAlt = section
@@ -79,6 +80,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogImageAlt} />
     {art && <TransitionNames />}
+    <slot name="head" />
   </head>
   <body>
     {skipLink && <a class="skip-link" href="#main">Skip to content</a>}

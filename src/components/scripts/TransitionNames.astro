@@ -9,7 +9,7 @@
       }
     };
     const isHome = (url) => ['/', '/index.html'].includes(sameOrigin(url)?.pathname ?? '');
-    const sectionOf = (url) => sameOrigin(url)?.pathname.match(/^\/(now|projects|thoughts|resume)(?:[/.]|$)/)?.[1];
+    const sectionOf = (url) => sameOrigin(url)?.pathname.match(/^\/(now|projects|thoughts|resume|about)(?:[/.]|$)/)?.[1];
     const setName = (el, name) => el?.style.setProperty('view-transition-name', name);
     const clear = () => {
       document.querySelectorAll('[style*="view-transition-name"]').forEach((el) => el.style.removeProperty('view-transition-name'));
@@ -24,6 +24,11 @@
       setName(tile.querySelector('.tile-art'), `art-${section}`);
       setName(tile.querySelector('.tile-body'), `tile-body-${section}`);
       setName(tile.querySelector('.tile-arrow'), `tile-arrow-${section}`);
+    };
+    const nameBadge = () => {
+      const badge = document.querySelector('.badge');
+      if (!badge) return;
+      setName(badge, 'field-about');
     };
     const nameHero = () => {
       const page = document.querySelector('.page[data-section]');
@@ -40,7 +45,8 @@
       if (!otherUrl) return;
       if (document.querySelector('.tiles')) {
         const section = sectionOf(otherUrl);
-        if (section) nameTile(section);
+        if (section === 'about') nameBadge();
+        else if (section) nameTile(section);
       } else if (isHome(otherUrl)) {
         nameHero();
       }

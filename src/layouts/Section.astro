@@ -22,6 +22,7 @@ const isSectionIndex = sections.some((s) => s.id === section && s.href === path)
 ---
 
 <Base title={title ?? heading} description={description ?? intro} ogType={ogType} section={section} art>
+  <Fragment slot="head"><slot name="head" /></Fragment>
   <div class="page" data-section={section}>
     <header class="site-header">
       <a class="home-link" href="/">{site.name}</a>
