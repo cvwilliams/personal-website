@@ -4,11 +4,13 @@ export interface Place {
   country: string;
   lat: number;
   lon: number;
-  home?: boolean;
+  /** Where I live now, or have lived. Everything else is a visit. */
+  kind?: 'home' | 'lived';
 }
 
 export const places: Place[] = [
-  { name: 'New York', country: 'United States', lat: 40.71, lon: -74.01, home: true },
+  { name: 'New York', country: 'United States', lat: 40.71, lon: -74.01, kind: 'home' },
+  { name: 'San Francisco', country: 'United States', lat: 37.77, lon: -122.42, kind: 'lived' },
   { name: 'Toronto', country: 'Canada', lat: 43.65, lon: -79.38 },
   { name: 'Montreal', country: 'Canada', lat: 45.5, lon: -73.57 },
   { name: 'Puerto Vallarta', country: 'Mexico', lat: 20.65, lon: -105.23 },
@@ -18,7 +20,7 @@ export const places: Place[] = [
   { name: 'Barbados', country: 'Barbados', lat: 13.1, lon: -59.61 },
   { name: 'Jamaica', country: 'Jamaica', lat: 18.11, lon: -77.3 },
   { name: 'Colombia', country: 'Colombia', lat: 4.71, lon: -74.07 },
-  { name: 'Hong Kong', country: 'Hong Kong', lat: 22.32, lon: 114.17 },
+  { name: 'Hong Kong', country: 'Hong Kong', lat: 22.32, lon: 114.17, kind: 'lived' },
   { name: 'Japan', country: 'Japan', lat: 35.68, lon: 139.69 },
   { name: 'Taiwan', country: 'Taiwan', lat: 25.03, lon: 121.56 },
   { name: 'London', country: 'United Kingdom', lat: 51.51, lon: -0.13 },
