@@ -10,6 +10,7 @@ import ogNow from '../assets/og/og-now.jpg?url';
 import ogProjects from '../assets/og/og-projects.jpg?url';
 import ogThoughts from '../assets/og/og-thoughts.jpg?url';
 import ogResume from '../assets/og/og-resume.jpg?url';
+import ogAbout from '../assets/og/og-about.jpg?url';
 import { site, sections, type Section } from '../data/site';
 import TransitionNames from '../components/scripts/TransitionNames.astro';
 import ArtState from '../components/scripts/ArtState.astro';
@@ -30,7 +31,7 @@ const ogImages: Record<Section, string> = {
   projects: ogProjects,
   thoughts: ogThoughts,
   resume: ogResume,
-  about: ogHome,
+  about: ogAbout,
 };
 const ogImage = new URL(section ? ogImages[section] : ogHome, Astro.site);
 const ogImageAlt = section
