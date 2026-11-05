@@ -9,16 +9,19 @@ interface Item {
 
 interface Props {
   items: Item[];
+  heading?: string;
+  showKind?: boolean;
 }
 
-const { items } = Astro.props;
+const { items, heading = 'Heavy rotation', showKind = true } = Astro.props;
+const headingId = `${heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-title`;
 const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
 ---
 
 {
   items.length > 0 && (
-    <section class="listening" aria-labelledby="listening-title">
-      <h2 id="listening-title">Heavy rotation</h2>
+    <section class="listening" aria-labelledby={headingId}>
+      <h2 id={headingId}>{heading}</h2>
       <ol>
         {items.map((item, index) => {
           const Tag = item.url ? 'a' : 'div';
@@ -32,7 +35,7 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
                     {item.title.charAt(0)}
                   </span>
                 )}
-                <span class="kind">{kindLabel[item.kind]}</span>
+                {showKind && <span class="kind">{kindLabel[item.kind]}</span>}
                 <span class="title">{item.title}</span>
                 {item.subtitle && <span class="subtitle">{item.subtitle}</span>}
               </Tag>

@@ -1,0 +1,49 @@
+---
+import Section from '../layouts/Section.astro';
+import { Content } from '../data/about.mdx';
+import { site } from '../data/site';
+import { currentRole } from '../data/resume';
+
+const person = {
+  '@type': 'Person',
+  name: site.name,
+  url: site.url,
+  ...(currentRole && {
+    jobTitle: 'Software Engineer',
+    worksFor: { '@type': 'Organization', name: currentRole.company },
+  }),
+  address: { '@type': 'PostalAddress', addressLocality: 'New York', addressRegion: 'NY', addressCountry: 'US' },
+  knowsLanguage: ['en', 'es'],
+  sameAs: [site.links.github, site.links.linkedin].filter(Boolean),
+};
+const jsonLd = { '@context': 'https://schema.org', '@type': 'ProfilePage', mainEntity: person };
+---
+
+<Section
+  section="about"
+  heading="About"
+  intro="Engineer in New York. Rap nerd, traveler, perpetual student."
+  description="Who Cameron Williams is: a software engineer in New York who loves travel, rap and learning languages."
+>
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <article class="prose about">
+    <Content />
+  </article>
+</Section>
+
+<style>
+  .about {
+    margin-bottom: 24px;
+  }
+  .about :global(.listening) {
+    margin-top: 2.6em;
+  }
+  .about :global(.listening ol) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (min-width: 640px) {
+    .about :global(.listening ol) {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+</style>

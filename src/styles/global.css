@@ -60,6 +60,14 @@
   --accent: light-dark(#7d5900, var(--yellow));
   --rule: #d6a514;
 }
+[data-section='about'] {
+  --surface: light-dark(#e6dfd1, #1f1f1f);
+  --surface-hover: light-dark(#ded6c6, #262626);
+  --on-surface: var(--text);
+  --on-surface-muted: var(--muted);
+  --accent: var(--text);
+  --rule: var(--border);
+}
 [data-section='now'] {
   --surface: light-dark(var(--ink), var(--paper));
   --surface-hover: light-dark(#242424, #e8e1d5);
@@ -141,7 +149,8 @@
 ::view-transition-group(field-now),
 ::view-transition-group(field-projects),
 ::view-transition-group(field-thoughts),
-::view-transition-group(field-resume) {
+::view-transition-group(field-resume),
+::view-transition-group(field-about) {
   overflow: hidden;
   border-radius: var(--radius);
 }
@@ -157,10 +166,14 @@
 ::view-transition-group(field-resume) {
   background: var(--blue);
 }
+::view-transition-group(field-about) {
+  background: light-dark(#e6dfd1, #1f1f1f);
+}
 ::view-transition-image-pair(field-now),
 ::view-transition-image-pair(field-projects),
 ::view-transition-image-pair(field-thoughts),
-::view-transition-image-pair(field-resume) {
+::view-transition-image-pair(field-resume),
+::view-transition-image-pair(field-about) {
   visibility: hidden;
 }
 

@@ -29,6 +29,34 @@
   line-height: 1.05;
   letter-spacing: -0.035em;
 }
+.badge-name {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.14em;
+  text-decoration-color: currentColor;
+  transition: text-decoration-color 0.3s var(--ease-soft);
+}
+.badge-arrow {
+  display: inline-block;
+  width: 0.55em;
+  height: 0.55em;
+  margin-left: 0.12em;
+  vertical-align: 0.05em;
+  stroke-width: 2.5;
+  transition: transform 0.3s var(--ease-soft);
+}
+@media (hover: hover) {
+  .badge-name {
+    text-decoration-color: color-mix(in srgb, currentColor 22%, transparent);
+  }
+  .badge-name:hover {
+    text-decoration-color: currentColor;
+  }
+}
+.badge-name:hover .badge-arrow {
+  transform: translate(1px, -1px);
+}
 .badge-meta {
   display: flex;
   flex-wrap: wrap;
@@ -209,7 +237,8 @@
     white-space: nowrap;
     pointer-events: none;
   }
-  .badge .theme-toggle {
+  .badge .theme-toggle,
+  .badge-name {
     pointer-events: auto;
   }
   .badge-text {

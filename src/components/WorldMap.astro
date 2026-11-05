@@ -1,0 +1,191 @@
+---
+import { worldDots } from '../data/world-dots';
+import { places } from '../data/places';
+
+const { step, top, columns, rows } = worldDots;
+const toX = (lon: number) => (lon + 180) / step;
+const toY = (lat: number) => (top - lat) / step + 0.5;
+
+const land = rows
+  .flatMap((row, y) =>
+    row
+      .split(',')
+      .filter(Boolean)
+      .flatMap((run) => {
+        const [start, end = start] = run.split('-').map(Number);
+        return Array.from({ length: end - start + 1 }, (_, i) => `M${start + i + 0.5} ${y + 0.5}h0`);
+      }),
+  )
+  .join('');
+
+const countries = new Set(places.map((p) => p.country));
+const visited = places.filter((p) => !p.home);
+const pins = [...visited, ...places.filter((p) => p.home)];
+const idOf = (p: (typeof places)[number]) => String(places.indexOf(p));
+const placeName = (p: (typeof places)[number]) => (p.name === p.country ? p.name : `${p.name}, ${p.country}`);
+const label = `World map marking ${places.length} places I've lived or traveled, across ${countries.size} countries and territories`;
+---
+
+<figure class="world">
+  <svg viewBox={`0 0 ${columns} ${rows.length}`} role="img" aria-label={label}>
+    <path class="land" d={land} />
+    {
+      pins.map((p) => (
+        <g class={p.home ? 'pin home' : 'pin'} data-place={idOf(p)}>
+          <title>{placeName(p)}</title>
+          <circle class="halo" cx={toX(p.lon)} cy={toY(p.lat)} r="1.9" />
+          <circle class="dot" cx={toX(p.lon)} cy={toY(p.lat)} r="0.85" />
+        </g>
+      ))
+    }
+  </svg>
+  <figcaption>
+    <p class="counts">{`${countries.size} countries and territories`}</p>
+    <ul class="legend">
+      <li data-place={idOf(places.find((p) => p.home)!)}><span class="key home" aria-hidden="true"></span>Home</li>
+      {visited.length > 0 && <li><span class="key" aria-hidden="true"></span>Visited</li>}
+    </ul>
+    {
+      visited.length > 0 && (
+        <ul class="places">
+          {visited.map((p) => (
+            <li data-place={idOf(p)}>
+              {p.name}{p.name !== p.country && <span class="country">{`, ${p.country}`}</span>}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.world').forEach((world) => {
+    let active: string | null = null;
+    const set = (id: string | null) => {
+      if (id === active) return;
+      active = id;
+      world.querySelectorAll('.is-active').forEach((el) => el.classList.remove('is-active'));
+      if (id) {
+        world.dataset.active = '';
+        world.querySelectorAll(`[data-place="${id}"]`).forEach((el) => el.classList.add('is-active'));
+      } else {
+        delete world.dataset.active;
+      }
+    };
+    world.addEventListener('pointerover', (event) => {
+      const target = event.target instanceof Element ? event.target.closest<HTMLElement | SVGElement>('[data-place]') : null;
+      set(target?.dataset.place ?? null);
+    });
+    world.addEventListener('pointerleave', () => set(null));
+  });
+</script>
+
+<style>
+  .world {
+    margin: 0 0 2em;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .land {
+    fill: none;
+    stroke: color-mix(in srgb, var(--text) 28%, transparent);
+    stroke-width: 0.62;
+    stroke-linecap: round;
+  }
+  .pin {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition:
+      opacity 0.3s var(--ease-soft),
+      transform 0.3s var(--ease-soft);
+  }
+  .world[data-active] .pin:not(.is-active) {
+    opacity: 0.3;
+  }
+  .pin.is-active {
+    transform: scale(1.7);
+  }
+  .halo {
+    fill: color-mix(in srgb, var(--red) 30%, transparent);
+  }
+  .dot {
+    fill: var(--red);
+  }
+  .home .halo {
+    fill: color-mix(in srgb, var(--blue) 30%, transparent);
+  }
+  .home .dot {
+    fill: light-dark(var(--blue), #86a8ee);
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 20px;
+    margin-top: 16px;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+  .counts {
+    margin: 0;
+    font-weight: 700;
+    color: var(--text);
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li,
+  li + li {
+    margin: 0;
+  }
+  .key {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+  .key.home {
+    background: light-dark(var(--blue), #86a8ee);
+  }
+  .places {
+    flex-basis: 100%;
+    color: var(--text);
+  }
+  [data-place] {
+    cursor: default;
+    transition: opacity 0.3s var(--ease-soft);
+  }
+  .world[data-active] figcaption li:not(.is-active) {
+    opacity: 0.45;
+  }
+  li.is-active {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+  .country {
+    color: var(--muted);
+  }
+  @media (forced-colors: active) {
+    .land {
+      stroke: CanvasText;
+    }
+    .dot,
+    .key {
+      fill: Highlight;
+      background: Highlight;
+    }
+  }
+</style>
