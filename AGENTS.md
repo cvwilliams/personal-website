@@ -23,7 +23,7 @@ src/
   data/resume.ts        Resume as typed data
   data/about.mdx        About page copy (bio, albums, map, Elsewhere)
   data/desert-island.ts Desert island albums (artwork and links come from the Apple Music catalog)
-  data/places.ts        Places on the About map (name, country, lat, lon)
+  data/places.ts        Places on the About map (name, country, lat, lon, kind: home/lived)
   data/world-dots.ts    Generated 2° land grid for the dotted world map
   lib/content.ts        getThoughts(), getProjects(), readingTime(), formatDate()
   layouts/Base.astro    <html>, <head>, fonts, global CSS
