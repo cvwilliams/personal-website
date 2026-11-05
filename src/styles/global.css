@@ -365,7 +365,6 @@ svg {
 }
 
 .prose {
-  max-width: 68ch;
   font-size: 1.125rem;
   line-height: 1.7;
 }
