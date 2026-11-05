@@ -1,6 +1,6 @@
 ---
 import { worldDots } from '../data/world-dots';
-import { places } from '../data/places';
+import { places, type Place } from '../data/places';
 
 const { step, top, columns, rows } = worldDots;
 const toX = (lon: number) => (lon + 180) / step;
@@ -18,12 +18,31 @@ const land = rows
   )
   .join('');
 
+const ids = new Map(places.map((p, i) => [p, String(i)]));
+const idsOf = (list: Place[]) => list.map((p) => ids.get(p)).join(' ');
+const kindOf = (p: Place) => p.kind ?? 'visited';
+const home = places.filter((p) => p.kind === 'home');
+const lived = places.filter((p) => p.kind === 'lived');
+const visited = places.filter((p) => !p.kind);
+const pins = [...visited, ...lived, ...home];
+
 const countries = new Set(places.map((p) => p.country));
-const visited = places.filter((p) => !p.home);
-const pins = [...visited, ...places.filter((p) => p.home)];
-const idOf = (p: (typeof places)[number]) => String(places.indexOf(p));
-const placeName = (p: (typeof places)[number]) => (p.name === p.country ? p.name : `${p.name}, ${p.country}`);
+const homeCountry = home[0]?.country;
+const byCountry = new Map<string, Place[]>();
+for (const p of places) {
+  if (p.kind !== 'home') byCountry.set(p.country, [...(byCountry.get(p.country) ?? []), p]);
+}
+const groups = [...byCountry].map(([country, items]) => ({ country, items }));
+const rank = (g: (typeof groups)[number]) => (g.country === homeCountry ? 0 : g.items.some((p) => p.kind === 'lived') ? 1 : 2);
+groups.sort((a, b) => rank(a) - rank(b));
+
+const placeName = (p: Place) => (p.name === p.country ? p.name : `${p.name}, ${p.country}`);
 const label = `World map marking ${places.length} places I've lived or traveled, across ${countries.size} countries and territories`;
+const legend = [
+  { kind: 'home', label: 'Home', items: home },
+  { kind: 'lived', label: 'Lived', items: lived },
+  { kind: 'visited', label: 'Visited', items: visited },
+].filter((entry) => entry.items.length > 0);
 ---
 
 <figure class="world">
@@ -31,7 +50,7 @@ const label = `World map marking ${places.length} places I've lived or traveled,
     <path class="land" d={land} />
     {
       pins.map((p) => (
-        <g class={p.home ? 'pin home' : 'pin'} data-place={idOf(p)}>
+        <g class={`pin ${kindOf(p)}`} data-pin={ids.get(p)}>
           <title>{placeName(p)}</title>
           <circle class="halo" cx={toX(p.lon)} cy={toY(p.lat)} r="1.9" />
           <circle class="dot" cx={toX(p.lon)} cy={toY(p.lat)} r="0.85" />
@@ -42,42 +61,75 @@ const label = `World map marking ${places.length} places I've lived or traveled,
   <figcaption>
     <p class="counts">{`${countries.size} countries and territories`}</p>
     <ul class="legend">
-      <li data-place={idOf(places.find((p) => p.home)!)}><span class="key home" aria-hidden="true"></span>Home</li>
-      {visited.length > 0 && <li><span class="key" aria-hidden="true"></span>Visited</li>}
+      {
+        legend.map((entry) => (
+          <li data-ids={idsOf(entry.items)}>
+            <span class={`key ${entry.kind}`} aria-hidden="true" />
+            {entry.label}
+          </li>
+        ))
+      }
     </ul>
-    {
-      visited.length > 0 && (
-        <ul class="places">
-          {visited.map((p) => (
-            <li data-place={idOf(p)}>
-              {p.name}{p.name !== p.country && <span class="country">{`, ${p.country}`}</span>}
+    <ul class="places">
+      {
+        groups.map(({ country, items }) =>
+          items.length > 1 ? (
+            <li data-ids={idsOf(items)}>
+              <span class="country">{country}:</span>{' '}
+              {items.map((p, i) => (
+                <>
+                  <span class="city" data-ids={ids.get(p)}>
+                    {p.kind === 'lived' && <span class="key lived" aria-hidden="true" />}
+                    {p.name}
+                    {p.kind === 'lived' && <span class="visually-hidden"> (lived)</span>}
+                  </span>
+                  {i < items.length - 1 && ', '}
+                </>
+              ))}
             </li>
-          ))}
-        </ul>
-      )
-    }
+          ) : (
+            <li data-ids={idsOf(items)}>
+              {items[0].kind === 'lived' && <span class="key lived" aria-hidden="true" />}
+              {items[0].name}
+              {items[0].name !== country && <span class="country">{`, ${country}`}</span>}
+              {items[0].kind === 'lived' && <span class="visually-hidden"> (lived)</span>}
+            </li>
+          ),
+        )
+      }
+    </ul>
   </figcaption>
 </figure>
 
 <script>
   document.querySelectorAll<HTMLElement>('.world').forEach((world) => {
-    let active: string | null = null;
-    const set = (id: string | null) => {
-      if (id === active) return;
-      active = id;
-      world.querySelectorAll('.is-active').forEach((el) => el.classList.remove('is-active'));
-      if (id) {
-        world.dataset.active = '';
-        world.querySelectorAll(`[data-place="${id}"]`).forEach((el) => el.classList.add('is-active'));
-      } else {
+    let current: Element | null = null;
+    const clear = () => world.querySelectorAll('.is-active').forEach((el) => el.classList.remove('is-active'));
+    const activate = (target: Element | null) => {
+      if (target === current) return;
+      current = target;
+      clear();
+      if (!target) {
         delete world.dataset.active;
+        return;
       }
+      world.dataset.active = '';
+      let ids: string[];
+      if (target instanceof SVGElement) {
+        const id = target.dataset.pin ?? '';
+        ids = [id];
+        world.querySelectorAll(`figcaption [data-ids="${id}"]`).forEach((el) => el.classList.add('is-active'));
+      } else {
+        ids = ((target as HTMLElement).dataset.ids ?? '').split(' ');
+        target.classList.add('is-active');
+      }
+      ids.forEach((id) => world.querySelector(`[data-pin="${id}"]`)?.classList.add('is-active'));
     };
     world.addEventListener('pointerover', (event) => {
-      const target = event.target instanceof Element ? event.target.closest<HTMLElement | SVGElement>('[data-place]') : null;
-      set(target?.dataset.place ?? null);
+      const el = event.target instanceof Element ? event.target : null;
+      activate(el?.closest('[data-pin], [data-ids]') ?? null);
     });
-    world.addEventListener('pointerleave', () => set(null));
+    world.addEventListener('pointerleave', () => activate(null));
   });
 </script>
 
@@ -122,6 +174,14 @@ const label = `World map marking ${places.length} places I've lived or traveled,
   .home .dot {
     fill: light-dark(var(--blue), #86a8ee);
   }
+  .lived .halo {
+    fill: color-mix(in srgb, var(--yellow) 35%, transparent);
+  }
+  .lived .dot {
+    fill: var(--yellow);
+    stroke: light-dark(var(--ink), transparent);
+    stroke-width: 0.22;
+  }
   figcaption {
     display: flex;
     flex-wrap: wrap;
@@ -159,18 +219,29 @@ const label = `World map marking ${places.length} places I've lived or traveled,
   .key.home {
     background: light-dark(var(--blue), #86a8ee);
   }
+  .key.lived {
+    background: var(--yellow);
+    box-shadow: inset 0 0 0 1px light-dark(var(--ink), transparent);
+  }
   .places {
     flex-basis: 100%;
     color: var(--text);
   }
-  [data-place] {
+  figcaption li {
     cursor: default;
     transition: opacity 0.3s var(--ease-soft);
   }
-  .world[data-active] figcaption li:not(.is-active) {
+  .world[data-active] figcaption li:not(.is-active, :has(.is-active)) {
     opacity: 0.45;
   }
-  li.is-active {
+  .places .key {
+    width: 7px;
+    height: 7px;
+    margin-right: 5px;
+    vertical-align: 0.05em;
+  }
+  li.is-active,
+  .city.is-active {
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 3px;
