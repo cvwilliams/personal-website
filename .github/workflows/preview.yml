@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   preview:
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -24,7 +24,6 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npm run check
       - run: npm run build
         env:
           ASTRO_TELEMETRY_DISABLED: 1

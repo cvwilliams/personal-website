@@ -1,0 +1,39 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: America/New_York
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    groups:
+      astro:
+        patterns: ['astro', '@astrojs/*']
+      minor-and-patch:
+        patterns: ['*']
+        exclude-patterns: ['astro', '@astrojs/*']
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ['*']
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: docker
+    ignore:
+      - dependency-name: node
+        update-types: ['version-update:semver-major']
