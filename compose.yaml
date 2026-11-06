@@ -21,7 +21,7 @@ services:
   builder:
     <<: *node
     profiles: [tools]
-    command: sh -c "npm install && npm run check && npm run build && npm run check:links"
+    command: sh -c "npm install && npm run check && npm run build && npm run check:links && npm run check:weight"
 
   preview:
     <<: *node
