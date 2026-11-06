@@ -6,14 +6,15 @@ const { step, top, columns, rows } = worldDots;
 const toX = (lon: number) => (lon + 180) / step;
 const toY = (lat: number) => (top - lat) / step + 0.5;
 
+// One line per run of land; a 0-length dash every unit (stroke-dasharray: 0 1) draws its dots.
 const land = rows
   .flatMap((row, y) =>
     row
       .split(',')
       .filter(Boolean)
-      .flatMap((run) => {
+      .map((run) => {
         const [start, end = start] = run.split('-').map(Number);
-        return Array.from({ length: end - start + 1 }, (_, i) => `M${start + i + 0.5} ${y + 0.5}h0`);
+        return `M${start} ${y}h${end - start}.01`;
       }),
   )
   .join('');
@@ -47,7 +48,7 @@ const legend = [
 
 <figure class="world">
   <svg viewBox={`0 0 ${columns} ${rows.length}`} role="img" aria-label={label}>
-    <path class="land" d={land} />
+    <path class="land" d={land} transform="translate(.5 .5)" />
     {
       pins.map((p) => (
         <g class={`pin ${kindOf(p)}`} data-pin={ids.get(p)}>
@@ -148,6 +149,7 @@ const legend = [
     stroke: color-mix(in srgb, var(--text) 28%, transparent);
     stroke-width: 0.62;
     stroke-linecap: round;
+    stroke-dasharray: 0 1;
   }
   .pin {
     transform-box: fill-box;

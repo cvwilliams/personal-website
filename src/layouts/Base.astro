@@ -48,6 +48,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preload" href={latinFont} as="font" type="font/woff2" crossorigin />
     <link rel="expect" href="#main" blocking="render" />
+    <script is:inline type="speculationrules">
+      { "prefetch": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
+    </script>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />

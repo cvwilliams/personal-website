@@ -9,10 +9,6 @@ export default defineConfig({
   trailingSlash: 'never',
   build: { format: 'file' },
   integrations: [mdx(), sitemap(), externalLinks({ site: 'https://cameronwillia.ms' })],
-  prefetch: {
-    prefetchAll: true,
-    defaultStrategy: 'hover',
-  },
   vite: {
     build: {
       assetsInlineLimit: 0,
