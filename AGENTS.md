@@ -12,7 +12,9 @@ endpoints, no on-demand rendering**: every page must be prerenderable at build t
   before calling work done; it must pass with no errors.
 - Run npm: `docker compose run --rm dev npm <args>`
 - Deploys happen in GitHub Actions (push to `main` → live; pull requests → preview channel).
-  Every pull request also runs `ci.yml` (check, build, link check, no secrets). Dependabot
+  Every pull request also runs `ci.yml` (check, build, link check, no secrets), then Lighthouse
+  on the main pages (`lighthouserc.json`: accessibility ≥ 95, best practices and SEO ≥ 90 fail
+  the check; performance < 90 only warns, since CI runners are noisy). Dependabot
   (`.github/dependabot.yml`) opens weekly grouped npm PRs and monthly Actions/Docker PRs; they
   skip the preview deploy because Dependabot PRs can't read the repo's secrets.
   Don't deploy manually unless asked.
