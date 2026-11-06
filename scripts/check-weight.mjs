@@ -4,8 +4,8 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
-// About twice what the site ships today (HTML includes its inline scripts and styles).
-const BUDGET_KB = { html: 30, js: 10, css: 12, fonts: 40 };
+// About 1.5× the heaviest page today (HTML includes its inline scripts and styles).
+const BUDGET_KB = { html: 14, js: 6, css: 9, fonts: 32 };
 
 const root = new URL('../dist/', import.meta.url).pathname;
 if (!existsSync(root)) {
