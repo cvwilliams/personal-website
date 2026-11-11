@@ -42,3 +42,4 @@ updates:
     ignore:
       - dependency-name: node
         update-types: ['version-update:semver-major']
+

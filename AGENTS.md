@@ -19,6 +19,15 @@ endpoints, no on-demand rendering**: every page must be prerenderable at build t
   (`.github/dependabot.yml`) opens weekly grouped npm PRs and monthly Actions/Docker PRs; they
   skip the preview deploy because Dependabot PRs can't read the repo's secrets.
   Don't deploy manually unless asked.
+- Standalone apps keep their own repos and are served from a subfolder of the site
+  (`cvwilliams/pregunta-del-dia` → `/pregunta-del-dia/`). `npm run build:apps`
+  (`scripts/build-apps.mjs`) downloads the latest commit of each app's branch into `apps/`
+  (gitignored), builds it with its base path and copies it into `dist/` after `astro build`; every
+  workflow and the builder container run it. An app change goes live on the site's next deploy
+  (a merge, the weekly rebuild or a manual run of the Deploy workflow). Apps are excluded from
+  `astro check` and the page-weight budget. Firebase serves app folders with a trailing slash
+  (needed for their service workers); site pages have none, and a redirect strips a typed trailing
+  slash from them.
 
 ## Layout
 
@@ -96,7 +105,7 @@ src/
   The navigated tile gets `.vt-active`, which drops its hover state before the snapshot so the
   morph starts from the plain block. Navigation between pages within a section is a plain quick
   crossfade. Names must stay unique
-  per page. Prefetch-on-hover is enabled in astro.config.mjs.
+  per page. Hover prefetch comes from a speculation-rules block in Base.astro (Chromium only; no script).
 - Easter egg: with a mouse, art shapes are draggable; a drag doesn't trigger the tile link.
 - 404 is a museum piece: "404" built from shapes plus a gallery wall label. Keep the joke going
   if you edit it.
@@ -122,6 +131,10 @@ src/
 
 ## Conventions
 
+- Project `links.live`/`links.repo` take a full URL or a path on this site (`/pregunta-del-dia/`);
+  links in Markdown bodies can be relative paths too (`/now`). The link check verifies them.
+- Project `status` is active, on-hold, shipped or archived; labels come from `projectStatusLabel` in
+  `src/lib/content.ts`.
 - Content changes go in Markdown or `src/data/*`, never hard-coded into pages.
 - The Now page's Reading list comes from the `reading` collection, loaded at build time from the
   public Goodreads shelf widget (`/review/custom_widget/<id>`, parsed in `src/loaders/goodreads.ts`;
@@ -167,5 +180,6 @@ src/
   the built HTML (build/preview only, not the dev server), adding `target="_blank"`,
   `rel="noopener noreferrer"` and `aria-describedby="new-tab-note"` (the hidden note in
   Base.astro). Don't add `target` by hand; a link that already has one is left alone.
-- URLs have no trailing slash (`trailingSlash: 'never'`, `build.format: 'file'`).
+- URLs have no trailing slash (`trailingSlash: 'never'`, `build.format: 'file'`), except app
+  folders like `/pregunta-del-dia/`.
 - Use Astro scoped `<style>` for page-specific CSS; use `:global()` to style child components.

@@ -35,3 +35,5 @@ export function formatDate(date: Date, style: 'long' | 'short' = 'long'): string
     timeZone: 'UTC',
   });
 }
+
+export const projectStatusLabel = { active: 'Active', 'on-hold': 'On hold', shipped: 'Shipped', archived: 'Archived' } as const;
