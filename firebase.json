@@ -65,7 +65,7 @@
     ],
     "redirects": [
       {
-        "source": "/pregunta-del-dia",
+        "regex": "^/pregunta-del-dia$",
         "destination": "/pregunta-del-dia/",
         "type": 301
       },
