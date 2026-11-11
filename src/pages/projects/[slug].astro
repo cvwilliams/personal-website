@@ -3,7 +3,7 @@ import { render, type CollectionEntry } from 'astro:content';
 import Section from '../../layouts/Section.astro';
 import Arrow from '../../components/Arrow.astro';
 import Chips from '../../components/Chips.astro';
-import { getProjects } from '../../lib/content';
+import { getProjects, projectStatusLabel } from '../../lib/content';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -17,7 +17,7 @@ interface Props {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const { title, summary, year, status, tech, links } = project.data;
-const statusLabel = { active: 'Active', shipped: 'Shipped', archived: 'Archived' } as const;
+const statusLabel = projectStatusLabel;
 ---
 
 <Section section="projects" heading={title} intro={summary}>

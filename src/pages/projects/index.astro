@@ -1,10 +1,10 @@
 ---
 import Section from '../../layouts/Section.astro';
 import Arrow from '../../components/Arrow.astro';
-import { getProjects } from '../../lib/content';
+import { getProjects, projectStatusLabel } from '../../lib/content';
 
 const projects = await getProjects();
-const statusLabel = { active: 'Active', shipped: 'Shipped', archived: 'Archived' } as const;
+const statusLabel = projectStatusLabel;
 ---
 
 <Section section="projects" heading="Projects" intro="Things I've built, broken, and shipped.">
