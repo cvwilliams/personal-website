@@ -133,6 +133,8 @@ src/
 
 - Project `links.live`/`links.repo` take a full URL or a path on this site (`/pregunta-del-dia/`);
   links in Markdown bodies can be relative paths too (`/now`). The link check verifies them.
+- Project `status` is active, on-hold, shipped or archived; labels come from `projectStatusLabel` in
+  `src/lib/content.ts`.
 - Content changes go in Markdown or `src/data/*`, never hard-coded into pages.
 - The Now page's Reading list comes from the `reading` collection, loaded at build time from the
   public Goodreads shelf widget (`/review/custom_widget/<id>`, parsed in `src/loaders/goodreads.ts`;
