@@ -14,11 +14,11 @@
     "now": "node scripts/new-now.mjs"
   },
   "dependencies": {
-    "@astrojs/mdx": "^8.1.2",
+    "@astrojs/mdx": "^8.1.3",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/libre-franklin": "^5.0.0",
-    "astro": "^7.4.4"
+    "astro": "^7.4.7"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
