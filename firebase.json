@@ -65,6 +65,11 @@
     ],
     "redirects": [
       {
+        "source": "/pregunta-del-dia",
+        "destination": "/pregunta-del-dia/",
+        "type": 301
+      },
+      {
         "regex": "^/((?:now|projects|thoughts|resume|about)(?:/[^/]+)*)/$",
         "destination": "/:1",
         "type": 301
