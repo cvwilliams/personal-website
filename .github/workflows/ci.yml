@@ -27,6 +27,7 @@ jobs:
       - run: npm run build
         env:
           ASTRO_TELEMETRY_DISABLED: 1
+      - run: npm run build:apps
       - run: npm run check:links
       - run: npm run check:weight
 

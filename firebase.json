@@ -2,7 +2,6 @@
   "hosting": {
     "public": "dist",
     "cleanUrls": true,
-    "trailingSlash": false,
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -44,6 +43,31 @@
             "value": "public, max-age=31536000, immutable"
           }
         ]
+      },
+      {
+        "source": "/pregunta-del-dia/assets/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      },
+      {
+        "source": "/pregunta-del-dia/@(sw.js|registerSW.js|manifest.webmanifest)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      }
+    ],
+    "redirects": [
+      {
+        "regex": "^/((?:now|projects|thoughts|resume|about)(?:/[^/]+)*)/$",
+        "destination": "/:1",
+        "type": 301
       }
     ]
   }

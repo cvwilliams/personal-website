@@ -13,6 +13,15 @@ endpoints, no on-demand rendering**: every page must be prerenderable at build t
   before calling work done; it must pass with no errors.
 - Run npm: `docker compose run --rm dev npm <args>`
 - Deploys happen in GitHub Actions (push to `main` → live; pull requests → preview channel).
+- Standalone apps keep their own repos and are served from a subfolder of the site
+  (`cvwilliams/pregunta-del-dia` → `/pregunta-del-dia/`). `npm run build:apps`
+  (`scripts/build-apps.mjs`) downloads the latest commit of each app's branch into `apps/`
+  (gitignored), builds it with its base path and copies it into `dist/` after `astro build`; every
+  workflow and the builder container run it. An app change goes live on the site's next deploy
+  (a merge, the weekly rebuild or a manual run of the Deploy workflow). Apps are excluded from
+  `astro check` and the page-weight budget. Firebase serves app folders with a trailing slash
+  (needed for their service workers); site pages have none, and a redirect strips a typed trailing
+  slash from them.
   Every pull request also runs `ci.yml` (check, build, link check, no secrets), then Lighthouse
   on the main pages (`lighthouserc.json`: accessibility ≥ 95, best practices and SEO ≥ 90 fail
   the check; performance < 90 only warns, since CI runners are noisy). Dependabot

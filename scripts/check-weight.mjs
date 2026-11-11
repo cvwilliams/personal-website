@@ -5,6 +5,8 @@ import { join, relative } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 // About 1.5× the heaviest page today (HTML includes its inline scripts and styles).
+// Standalone apps in apps/ ship their own bundles and aren't part of the site's budget.
+const SKIP = ['pregunta-del-dia/'];
 const BUDGET_KB = { html: 14, js: 6, css: 9, fonts: 32 };
 
 const root = new URL('../dist/', import.meta.url).pathname;
@@ -18,7 +20,7 @@ const walk = (dir) => {
   for (const name of readdirSync(dir)) {
     const path = join(dir, name);
     if (statSync(path).isDirectory()) walk(path);
-    else if (name.endsWith('.html')) pages.push(path);
+    else if (name.endsWith('.html') && !SKIP.some((dir) => relative(root, path).startsWith(dir))) pages.push(path);
   }
 };
 walk(root);

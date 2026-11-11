@@ -12,4 +12,7 @@ export const techLinks: Record<string, string> = {
   'Firebase Hosting': 'https://firebase.google.com/docs/hosting',
   Docker: 'https://docs.docker.com/',
   'AI-assisted development (Claude Code)': 'https://docs.claude.com/en/docs/claude-code/overview',
+  Preact: 'https://preactjs.com/guide/v10/getting-started',
+  Vite: 'https://vite.dev/guide/',
+  PWA: 'https://web.dev/explore/progressive-web-apps',
 };
