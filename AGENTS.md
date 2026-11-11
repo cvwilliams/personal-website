@@ -13,6 +13,12 @@ endpoints, no on-demand rendering**: every page must be prerenderable at build t
   before calling work done; it must pass with no errors.
 - Run npm: `docker compose run --rm dev npm <args>`
 - Deploys happen in GitHub Actions (push to `main` → live; pull requests → preview channel).
+  Every pull request also runs `ci.yml` (check, build, link check, no secrets), then Lighthouse
+  on the main pages (`lighthouserc.json`: accessibility ≥ 95, best practices and SEO ≥ 90 fail
+  the check; performance < 90 only warns, since CI runners are noisy). Dependabot
+  (`.github/dependabot.yml`) opens weekly grouped npm PRs and monthly Actions/Docker PRs; they
+  skip the preview deploy because Dependabot PRs can't read the repo's secrets.
+  Don't deploy manually unless asked.
 - Standalone apps keep their own repos and are served from a subfolder of the site
   (`cvwilliams/pregunta-del-dia` → `/pregunta-del-dia/`). `npm run build:apps`
   (`scripts/build-apps.mjs`) downloads the latest commit of each app's branch into `apps/`
@@ -22,12 +28,6 @@ endpoints, no on-demand rendering**: every page must be prerenderable at build t
   `astro check` and the page-weight budget. Firebase serves app folders with a trailing slash
   (needed for their service workers); site pages have none, and a redirect strips a typed trailing
   slash from them.
-  Every pull request also runs `ci.yml` (check, build, link check, no secrets), then Lighthouse
-  on the main pages (`lighthouserc.json`: accessibility ≥ 95, best practices and SEO ≥ 90 fail
-  the check; performance < 90 only warns, since CI runners are noisy). Dependabot
-  (`.github/dependabot.yml`) opens weekly grouped npm PRs and monthly Actions/Docker PRs; they
-  skip the preview deploy because Dependabot PRs can't read the repo's secrets.
-  Don't deploy manually unless asked.
 
 ## Layout
 
@@ -105,7 +105,7 @@ src/
   The navigated tile gets `.vt-active`, which drops its hover state before the snapshot so the
   morph starts from the plain block. Navigation between pages within a section is a plain quick
   crossfade. Names must stay unique
-  per page. Prefetch-on-hover is enabled in astro.config.mjs.
+  per page. Hover prefetch comes from a speculation-rules block in Base.astro (Chromium only; no script).
 - Easter egg: with a mouse, art shapes are draggable; a drag doesn't trigger the tile link.
 - 404 is a museum piece: "404" built from shapes plus a gallery wall label. Keep the joke going
   if you edit it.
@@ -176,5 +176,6 @@ src/
   the built HTML (build/preview only, not the dev server), adding `target="_blank"`,
   `rel="noopener noreferrer"` and `aria-describedby="new-tab-note"` (the hidden note in
   Base.astro). Don't add `target` by hand; a link that already has one is left alone.
-- URLs have no trailing slash (`trailingSlash: 'never'`, `build.format: 'file'`).
+- URLs have no trailing slash (`trailingSlash: 'never'`, `build.format: 'file'`), except app
+  folders like `/pregunta-del-dia/`.
 - Use Astro scoped `<style>` for page-specific CSS; use `:global()` to style child components.
