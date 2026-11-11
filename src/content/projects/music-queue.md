@@ -6,4 +6,4 @@ status: on-hold
 tech: ['iOS']
 ---
 
-An Apple Music client for iOS. Currently in progress.
+An Apple Music client for iOS.
