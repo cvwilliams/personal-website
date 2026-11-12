@@ -20,9 +20,7 @@ endpoints, no on-demand rendering**: every page must be prerenderable at build t
   skip the preview deploy because Dependabot PRs can't read the repo's secrets.
   Don't deploy manually unless asked.
 - Pregunta del día (`cvwilliams/pregunta-del-dia`) is its own app at https://pregunta.cameronwillia.ms,
-  a second Firebase Hosting site in the same project, deployed from its own repo. The old
-  `/pregunta-del-dia/` address redirects there (firebase.json), and `public/pregunta-del-dia/sw.js`
-  replaces the old service worker so anyone who installed it from here gets unregistered and sent on.
+  a second Firebase Hosting site (`pregunta-dia`) in the same project, deployed from its own repo.
 
 ## Layout
 

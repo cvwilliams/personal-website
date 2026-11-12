@@ -44,22 +44,6 @@
             "value": "public, max-age=31536000, immutable"
           }
         ]
-      },
-      {
-        "source": "/pregunta-del-dia/sw.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      }
-    ],
-    "redirects": [
-      {
-        "regex": "^/pregunta-del-dia(?:/(?:index\\.html)?)?$",
-        "destination": "https://pregunta.cameronwillia.ms/",
-        "type": 301
       }
     ]
   }
