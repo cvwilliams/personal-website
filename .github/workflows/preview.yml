@@ -31,7 +31,6 @@ jobs:
           APPLE_MUSIC_KEY_ID: ${{ secrets.APPLE_MUSIC_KEY_ID }}
           APPLE_MUSIC_PRIVATE_KEY: ${{ secrets.APPLE_MUSIC_PRIVATE_KEY }}
           APPLE_MUSIC_USER_TOKEN: ${{ secrets.APPLE_MUSIC_USER_TOKEN }}
-      - run: npm run build:apps
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

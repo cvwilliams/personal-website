@@ -7,7 +7,6 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "build:apps": "node scripts/build-apps.mjs",
     "check": "astro check",
     "check:links": "node scripts/check-links.mjs",
     "check:weight": "node scripts/check-weight.mjs",

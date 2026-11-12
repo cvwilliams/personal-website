@@ -5,7 +5,7 @@ year: 2026
 status: active
 tech: ['Preact', 'TypeScript', 'Vite', 'PWA']
 links:
-  live: '/pregunta-del-dia/'
+  live: 'https://pregunta.cameronwillia.ms'
   repo: 'https://github.com/cvwilliams/pregunta-del-dia'
 ---
 
