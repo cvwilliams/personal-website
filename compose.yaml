@@ -21,14 +21,14 @@ services:
   builder:
     <<: *node
     profiles: [tools]
-    command: sh -c "npm install && npm run check && npm run build && npm run build:apps && npm run check:links && npm run check:weight"
+    command: sh -c "npm install && npm run check && npm run build && npm run check:links && npm run check:weight"
 
   preview:
     <<: *node
     profiles: [tools]
     ports:
       - "4322:4321"
-    command: sh -c "npm install && npm run build && npm run build:apps && npm run preview -- --host 0.0.0.0"
+    command: sh -c "npm install && npm run build && npm run preview -- --host 0.0.0.0"
 
   firebase:
     profiles: [tools]

@@ -19,15 +19,8 @@ endpoints, no on-demand rendering**: every page must be prerenderable at build t
   (`.github/dependabot.yml`) opens weekly grouped npm PRs and monthly Actions/Docker PRs; they
   skip the preview deploy because Dependabot PRs can't read the repo's secrets.
   Don't deploy manually unless asked.
-- Standalone apps keep their own repos and are served from a subfolder of the site
-  (`cvwilliams/pregunta-del-dia` → `/pregunta-del-dia/`). `npm run build:apps`
-  (`scripts/build-apps.mjs`) downloads the latest commit of each app's branch into `apps/`
-  (gitignored), builds it with its base path and copies it into `dist/` after `astro build`; every
-  workflow and the builder container run it. An app change goes live on the site's next deploy
-  (a merge, the weekly rebuild or a manual run of the Deploy workflow). Apps are excluded from
-  `astro check` and the page-weight budget. Firebase serves app folders with a trailing slash
-  (needed for their service workers); site pages have none, and a redirect strips a typed trailing
-  slash from them.
+- Pregunta del día (`cvwilliams/pregunta-del-dia`) is its own app at https://pregunta.cameronwillia.ms,
+  a second Firebase Hosting site (`pregunta-dia`) in the same project, deployed from its own repo.
 
 ## Layout
 
@@ -131,7 +124,7 @@ src/
 
 ## Conventions
 
-- Project `links.live`/`links.repo` take a full URL or a path on this site (`/pregunta-del-dia/`);
+- Project `links.live`/`links.repo` take a full URL or a path on this site (`/now`);
   links in Markdown bodies can be relative paths too (`/now`). The link check verifies them.
 - Project `status` is active, on-hold, shipped or archived; labels come from `projectStatusLabel` in
   `src/lib/content.ts`.
@@ -180,6 +173,5 @@ src/
   the built HTML (build/preview only, not the dev server), adding `target="_blank"`,
   `rel="noopener noreferrer"` and `aria-describedby="new-tab-note"` (the hidden note in
   Base.astro). Don't add `target` by hand; a link that already has one is left alone.
-- URLs have no trailing slash (`trailingSlash: 'never'`, `build.format: 'file'`), except app
-  folders like `/pregunta-del-dia/`.
+- URLs have no trailing slash (`trailingSlash: 'never'`, `build.format: 'file'`).
 - Use Astro scoped `<style>` for page-specific CSS; use `:global()` to style child components.
