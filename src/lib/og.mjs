@@ -56,10 +56,10 @@ export async function renderOgImage({ section, title, date }) {
   const art = {
     type: 'svg',
     props: {
-      width: 620,
-      height: 620,
+      width: 600,
+      height: 600,
       viewBox: '0 0 200 200',
-      style: { position: 'absolute', right: -40, bottom: -90 },
+      style: { position: 'absolute', right: -60, bottom: -10 },
       children: theme.art.map(([type, attrs]) => ({ type, props: attrs })),
     },
   };
@@ -80,6 +80,7 @@ export async function renderOgImage({ section, title, date }) {
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
+      justifyContent: 'space-between',
       width: 1200,
       height: 630,
       padding: '64px 64px 60px',
@@ -90,24 +91,26 @@ export async function renderOgImage({ section, title, date }) {
     },
     [
       art,
-      h('div', { display: 'flex', fontSize: 21, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }, [
-        `Cameron Williams · ${theme.label}`,
-      ]),
-      h(
-        'div',
-        {
-          display: 'flex',
-          marginTop: 56,
-          maxWidth: 780,
-          fontSize: titleSize(title),
-          fontWeight: 800,
-          lineHeight: 1.04,
-          letterSpacing: '-0.035em',
-        },
-        [title],
-      ),
-      date ? h('div', { display: 'flex', marginTop: 28, fontSize: 30, fontWeight: 500, color: theme.muted }, [date]) : null,
-      h('div', { display: 'flex', marginTop: 'auto', fontSize: 22, fontWeight: 700 }, ['cameronwillia.ms']),
+      h('div', { display: 'flex', flexDirection: 'column' }, [
+        h('div', { display: 'flex', fontSize: 21, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }, [
+          `Cameron Williams · ${theme.label}`,
+        ]),
+        h(
+          'div',
+          {
+            display: 'flex',
+            marginTop: 56,
+            maxWidth: 780,
+            fontSize: titleSize(title),
+            fontWeight: 800,
+            lineHeight: 1.04,
+            letterSpacing: '-0.035em',
+          },
+          [title],
+        ),
+        date ? h('div', { display: 'flex', marginTop: 28, fontSize: 30, fontWeight: 500, color: theme.muted }, [date]) : null,
+      ].filter(Boolean)),
+      h('div', { display: 'flex', fontSize: 22, fontWeight: 700 }, ['cameronwillia.ms']),
       ...grainTiles,
     ].filter(Boolean),
   );
