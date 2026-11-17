@@ -3,6 +3,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import externalLinks from './src/integrations/external-links.mjs';
+import { inlineScriptHashes } from './src/lib/csp.mjs';
 
 export default defineConfig({
   site: 'https://cameronwillia.ms',
@@ -24,6 +25,7 @@ export default defineConfig({
     csp: {
       scriptDirective: {
         resources: ["'self'", "'inline-speculation-rules'"],
+        hashes: inlineScriptHashes(),
       },
     },
   },

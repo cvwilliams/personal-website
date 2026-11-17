@@ -61,8 +61,10 @@ src/
   Text on a field must use `--on-surface` (ink on red/yellow, paper on blue).
 - Gotcha: a custom property that references another (`--x: var(--surface)`) resolves where
   it's declared, so define derived tokens on the element that has `data-section`, not on `:root`.
-- Font: Libre Franklin (a Franklin Gothic revival, the MoMA typeface) via Fontsource, for
-  everything. Headings heavy (750–800) with tight tracking; labels small, uppercase, tracked
+- Font: Libre Franklin (a Franklin Gothic revival, the MoMA typeface), loaded through Astro's Fonts
+  API (`fonts` in astro.config.mjs, Fontsource provider, variable 100–900, latin + latin-ext, with a
+  generated metric-matched fallback) as `--font-libre-franklin`; `<Font />` in Base.astro preloads
+  the latin file. Use it for everything. Headings heavy (750–800) with tight tracking; labels small, uppercase, tracked
   (`.eyebrow`). `--font-label` is the same family; `.mono` just means tabular numbers.
 - Art lives in `SectionArt.astro`: 200×200 viewBox, flat cut-paper shapes filled with the
   `.f-red/.f-blue/.f-yellow/.f-ink/.f-paper/.f-on` classes (SVG attributes can't read CSS
@@ -72,7 +74,7 @@ src/
   (`--dur`, `--ease-soft`); the grid, other tiles and name badge never move. Below 900px the
   tiles stack and the page scrolls.
 - Pages with section art pass `art` to Base (homepage, Section layout); only those get the
-  art-state and transition scripts. Base preloads the Latin Libre Franklin file. Remote images are
+  art-state and transition scripts. Remote images are
   requested at about 2x display size (Goodreads `_SY180_`, Apple Music 300px).
 - Transition names are set by one inline script in Base.astro's `<head>`: on the homepage it names
   the tile for the section being navigated to/from; on section pages it names the hero only when
@@ -161,6 +163,12 @@ src/
   is in `src/data/tech-links.ts`. Add an entry there when introducing a new skill or tech.
   Don't use linked chips inside an element that's already a link (e.g. project cards).
 - Keep pages static and JS-free unless a feature genuinely needs a script; prefer CSS.
+- Content Security Policy (`security.csp` in astro.config.mjs) is a `<meta>` tag Astro adds to every
+  built page (not in `astro dev`; check with `make preview`). Astro hashes the scripts and styles it
+  bundles; `<script is:inline>` blocks are hashed from the .astro sources by `src/lib/csp.mjs`, so
+  keep inline script text literal (no expressions inside it). Speculation rules are allowed with
+  `'inline-speculation-rules'`. No `style="…"` attributes or inline event handlers in markup: CSP
+  blocks them (setting styles from JS is fine).
 - Check new UI in both themes.
 - Icons live in `src/assets/icons/` and are imported with `?url` in Base.astro / site.webmanifest.ts
   so their URLs are content-hashed (cache busting). Only `/favicon.ico` stays in `public/` as
