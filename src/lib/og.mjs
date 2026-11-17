@@ -56,10 +56,10 @@ export async function renderOgImage({ section, title, date }) {
   const art = {
     type: 'svg',
     props: {
-      width: 600,
-      height: 600,
+      width: 560,
+      height: 560,
       viewBox: '0 0 200 200',
-      style: { position: 'absolute', right: -60, bottom: -10 },
+      style: { position: 'absolute', right: -10, bottom: -40 },
       children: theme.art.map(([type, attrs]) => ({ type, props: attrs })),
     },
   };
@@ -74,23 +74,21 @@ export async function renderOgImage({ section, title, date }) {
     }
   }
 
-  const tree = h(
+  // Everything is absolutely positioned so the art and grain don't take part in the flex layout.
+  const content = h(
     'div',
     {
-      position: 'relative',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: 1200,
+      height: 630,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
-      width: 1200,
-      height: 630,
       padding: '64px 64px 60px',
-      background: theme.field,
-      color: theme.text,
-      fontFamily: 'Libre Franklin',
-      overflow: 'hidden',
     },
     [
-      art,
       h('div', { display: 'flex', flexDirection: 'column' }, [
         h('div', { display: 'flex', fontSize: 21, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }, [
           `Cameron Williams · ${theme.label}`,
@@ -108,11 +106,27 @@ export async function renderOgImage({ section, title, date }) {
           },
           [title],
         ),
-        date ? h('div', { display: 'flex', marginTop: 28, fontSize: 30, fontWeight: 500, color: theme.muted }, [date]) : null,
-      ].filter(Boolean)),
+        ...(date ? [h('div', { display: 'flex', marginTop: 28, fontSize: 30, fontWeight: 500, color: theme.muted }, [date])] : []),
+      ]),
       h('div', { display: 'flex', fontSize: 22, fontWeight: 700 }, ['cameronwillia.ms']),
-      ...grainTiles,
-    ].filter(Boolean),
+    ],
+  );
+
+  const grainLayer = h('div', { position: 'absolute', top: 0, left: 0, width: 1200, height: 630, display: 'flex' }, grainTiles);
+
+  const tree = h(
+    'div',
+    {
+      position: 'relative',
+      display: 'flex',
+      width: 1200,
+      height: 630,
+      background: theme.field,
+      color: theme.text,
+      fontFamily: 'Libre Franklin',
+      overflow: 'hidden',
+    },
+    [art, content, grainLayer],
   );
 
   const svg = await satori(tree, { width: 1200, height: 630, fonts });
