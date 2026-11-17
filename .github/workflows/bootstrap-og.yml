@@ -1,0 +1,31 @@
+# Temporary: installs the OG image dependencies and fonts on this branch, then is deleted.
+name: Bootstrap OG deps
+on:
+  push:
+    branches: [og-images]
+    paths: [.github/workflows/bootstrap-og.yml]
+permissions:
+  contents: write
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --no-audit --no-fund satori @resvg/resvg-js
+      - name: Download Libre Franklin (static WOFF, which Satori can read) and its license
+        run: |
+          mkdir -p src/assets/fonts/og
+          for w in 500 700 800; do
+            curl -fsSL -o "src/assets/fonts/og/libre-franklin-latin-$w-normal.woff" \
+              "https://cdn.jsdelivr.net/npm/@fontsource/libre-franklin@5/files/libre-franklin-latin-$w-normal.woff"
+          done
+          curl -fsSL -o src/assets/fonts/og/OFL.txt https://raw.githubusercontent.com/google/fonts/main/ofl/librefranklin/OFL.txt
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json src/assets/fonts/og
+          git commit -m "Add satori, @resvg/resvg-js and Libre Franklin WOFF files for OG images"
+          git push
