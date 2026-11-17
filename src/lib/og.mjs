@@ -79,14 +79,14 @@ export async function renderOgImage({ section, title, date }) {
     'div',
     {
       position: 'absolute',
-      top: 0,
-      left: 0,
-      width: 1200,
-      height: 630,
+      top: 64,
+      left: 64,
+      // Satori sizes boxes without their padding, so the inset is set by position and size instead.
+      width: 1200 - 64 * 2,
+      height: 630 - 64 - 60,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
-      padding: '64px 64px 60px',
     },
     [
       h('div', { display: 'flex', flexDirection: 'column' }, [
