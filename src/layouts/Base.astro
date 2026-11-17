@@ -1,6 +1,5 @@
 ---
-import '@fontsource-variable/libre-franklin';
-import latinFont from '@fontsource-variable/libre-franklin/files/libre-franklin-latin-wght-normal.woff2?url';
+import { Font } from 'astro:assets';
 import '../styles/global.css';
 import faviconSvg from '../assets/icons/favicon.svg?url';
 import faviconIco from '../assets/icons/favicon.ico?url';
@@ -46,7 +45,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="preload" href={latinFont} as="font" type="font/woff2" crossorigin />
+    <Font cssVariable="--font-libre-franklin" preload={[{ subset: 'latin' }]} />
     <link rel="expect" href="#main" blocking="render" />
     <script is:inline type="speculationrules">
       { "prefetch": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }

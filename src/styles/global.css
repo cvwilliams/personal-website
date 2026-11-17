@@ -23,7 +23,7 @@
   --accent: var(--text);
   --rule: var(--border);
 
-  --font-sans: 'Libre Franklin Variable', 'Franklin Gothic Medium', 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: var(--font-libre-franklin);
   --font-label: var(--font-sans);
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
