@@ -17,7 +17,9 @@
     "@astrojs/mdx": "^8.1.5",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
-    "astro": "^7.4.11"
+    "@resvg/resvg-js": "^2.6.2",
+    "astro": "^7.4.11",
+    "satori": "^0.63.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",

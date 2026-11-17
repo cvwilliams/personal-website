@@ -174,7 +174,10 @@ src/
   so their URLs are content-hashed (cache busting). Only `/favicon.ico` stays in `public/` as
   the fallback browsers request by default; keep it in sync with the copy in src/assets/icons.
 - Link-preview images (1200×630 JPEG) live in `src/assets/og/`: one for the homepage and one per
-  section, chosen in Base.astro via the `section` prop. Same poster style as the site.
+  section, chosen in Base.astro via the `section` prop. Same poster style as the site. Each
+  thought also gets its own PNG at `/og/<slug>.png`, rendered at build time by
+  `src/pages/og/[slug].png.ts` with `src/lib/og.mjs` (Satori + resvg; static WOFF fonts in
+  `src/assets/fonts/og/`, grain from `src/assets/og/grain.png`) and passed to Base via `ogImage`.
 - Caching (firebase.json): pages (`/`, `*.html`, extensionless clean URLs) are `no-cache` so a
   deploy shows up immediately; hashed files under `/_astro/` are cached forever.
 - External links open in a new tab automatically: `src/integrations/external-links.mjs` rewrites

@@ -3,6 +3,7 @@ import { render, type CollectionEntry } from 'astro:content';
 import Section from '../../layouts/Section.astro';
 import Arrow from '../../components/Arrow.astro';
 import { getThoughts, formatDate, readingTime } from '../../lib/content';
+import { site } from '../../data/site';
 
 export async function getStaticPaths() {
   const thoughts = await getThoughts();
@@ -18,7 +19,13 @@ const { Content } = await render(thought);
 const { title, description, pubDate, updatedDate, tags } = thought.data;
 ---
 
-<Section section="thoughts" heading={title} intro={description} ogType="article">
+<Section
+  section="thoughts"
+  heading={title}
+  intro={description}
+  ogType="article"
+  ogImage={{ src: `/og/${thought.id}.png`, alt: `${title} · ${site.name}` }}
+>
   <a slot="eyebrow" class="back" href="/thoughts">
     <Arrow direction="left" class="back-arrow" />
     Thoughts
