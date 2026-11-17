@@ -45,7 +45,7 @@ const SECTIONS = {
 
 const h = (type, style, children = []) => ({ type, props: { style, children } });
 
-const titleSize = (title) => (title.length <= 28 ? 84 : title.length <= 52 ? 70 : 58);
+const titleSize = (title) => (title.length <= 28 ? 88 : title.length <= 52 ? 76 : 60);
 
 /** @param {{ section: keyof typeof SECTIONS, title: string, date?: string }} options */
 export async function renderOgImage({ section, title, date }) {
@@ -56,10 +56,10 @@ export async function renderOgImage({ section, title, date }) {
   const art = {
     type: 'svg',
     props: {
-      width: 640,
-      height: 640,
+      width: 620,
+      height: 620,
       viewBox: '0 0 200 200',
-      style: { position: 'absolute', right: -120, bottom: -150 },
+      style: { position: 'absolute', right: -40, bottom: -90 },
       children: theme.art.map(([type, attrs]) => ({ type, props: attrs })),
     },
   };
@@ -98,7 +98,7 @@ export async function renderOgImage({ section, title, date }) {
         {
           display: 'flex',
           marginTop: 56,
-          maxWidth: 820,
+          maxWidth: 780,
           fontSize: titleSize(title),
           fontWeight: 800,
           lineHeight: 1.04,
