@@ -22,9 +22,12 @@ interface Props {
   skipLink?: boolean;
   /** Page has section art: enables the art-arrangement and shared-element transition scripts. */
   art?: boolean;
+  /** A page-specific link-preview image (a site path to a 1200×630 PNG), replacing the section's. */
+  ogImage?: { src: string; alt: string };
 }
 
-const { title, description = site.description, ogType = 'website', section, skipLink = true, art = false } = Astro.props;
+const { title, description = site.description, ogType = 'website', section, skipLink = true, art = false, ogImage: pageOgImage } =
+  Astro.props;
 const ogImages: Record<Section, string> = {
   now: ogNow,
   projects: ogProjects,
@@ -32,10 +35,13 @@ const ogImages: Record<Section, string> = {
   resume: ogResume,
   about: ogAbout,
 };
-const ogImage = new URL(section ? ogImages[section] : ogHome, Astro.site);
-const ogImageAlt = section
-  ? `${sections.find((s) => s.id === section)?.label} · ${site.name}`
-  : `${site.name}: Now, Projects, Thoughts and Resume`;
+const ogImage = new URL(pageOgImage?.src ?? (section ? ogImages[section] : ogHome), Astro.site);
+const ogImageType = pageOgImage ? 'image/png' : 'image/jpeg';
+const ogImageAlt =
+  pageOgImage?.alt ??
+  (section
+    ? `${sections.find((s) => s.id === section)?.label} · ${site.name}`
+    : `${site.name}: Now, Projects, Thoughts and Resume`);
 const fullTitle = title ? `${title} · ${site.name}` : site.name;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -75,7 +81,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:type" content={ogImageType} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={ogImageAlt} />

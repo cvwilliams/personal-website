@@ -14,14 +14,15 @@ interface Props {
   title?: string;
   description?: string;
   ogType?: 'website' | 'article';
+  ogImage?: { src: string; alt: string };
 }
 
-const { section, heading, eyebrow, intro, title, description, ogType } = Astro.props;
+const { section, heading, eyebrow, intro, title, description, ogType, ogImage } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, '');
 const isSectionIndex = sections.some((s) => s.id === section && s.href === path);
 ---
 
-<Base title={title ?? heading} description={description ?? intro} ogType={ogType} section={section} art>
+<Base title={title ?? heading} description={description ?? intro} ogType={ogType} ogImage={ogImage} section={section} art>
   <Fragment slot="head"><slot name="head" /></Fragment>
   <div class="page" data-section={section}>
     <header class="site-header">
