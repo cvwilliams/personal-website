@@ -37,6 +37,7 @@ src/
   lib/content.ts        getThoughts(), getProjects(), readingTime(), formatDate()
   lib/structured-data.ts Shared schema.org JSON-LD (Person, WebSite, BlogPosting)
   lib/lastmod.mjs       Sitemap lastmod dates from content frontmatter
+  lib/paths.ts          pagePath(): a page's clean URL path at build time
   layouts/Base.astro    <html>, <head>, fonts, global CSS
   layouts/Section.astro Inner-page shell: header nav, tinted hero card, footer
   components/           Tile (homepage), SectionArt (line art), Arrow, SiteFooter
@@ -194,4 +195,8 @@ src/
   `rel="noopener noreferrer"` and `aria-describedby="new-tab-note"` (the hidden note in
   Base.astro). Don't add `target` by hand; a link that already has one is left alone.
 - URLs have no trailing slash (`trailingSlash: 'never'`, `build.format: 'file'`).
+  At build time `Astro.url.pathname` is the built file (`/about.html`, `/index.html`), so use
+  `pagePath(Astro.url)` from `src/lib/paths.ts` for anything that needs the page's real path
+  (canonical, og:url, current-section checks).
+- Profile links to GitHub and LinkedIn (footer, Elsewhere) carry `rel="me"`.
 - Use Astro scoped `<style>` for page-specific CSS; use `:global()` to style child components.
