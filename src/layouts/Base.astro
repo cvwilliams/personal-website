@@ -42,7 +42,7 @@ const ogImageAlt =
   (section
     ? `${sections.find((s) => s.id === section)?.label} · ${site.name}`
     : `${site.name}: Now, Projects, Thoughts and Resume`);
-const fullTitle = title ? `${title} · ${site.name}` : site.name;
+const fullTitle = title ? `${title} · ${site.name}` : site.title;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 

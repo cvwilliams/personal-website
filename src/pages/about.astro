@@ -2,21 +2,14 @@
 import Section from '../layouts/Section.astro';
 import { Content } from '../data/about.mdx';
 import { site } from '../data/site';
-import { currentRole } from '../data/resume';
+import { jsonLd, person, websiteId } from '../lib/structured-data';
 
-const person = {
-  '@type': 'Person',
-  name: site.name,
-  url: site.url,
-  ...(currentRole && {
-    jobTitle: 'Software Engineer',
-    worksFor: { '@type': 'Organization', name: currentRole.company },
-  }),
-  address: { '@type': 'PostalAddress', addressLocality: 'New York', addressRegion: 'NY', addressCountry: 'US' },
-  knowsLanguage: ['en', 'es'],
-  sameAs: [site.links.github, site.links.linkedin].filter(Boolean),
-};
-const jsonLd = { '@context': 'https://schema.org', '@type': 'ProfilePage', mainEntity: person };
+const structuredData = jsonLd({
+  '@type': 'ProfilePage',
+  url: `${site.url}/about`,
+  isPartOf: { '@id': websiteId },
+  mainEntity: person,
+});
 ---
 
 <Section
@@ -25,7 +18,7 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'ProfilePage', mainE
   intro="Engineer in New York. Rap nerd, traveler, perpetual student."
   description="Who Cameron Williams is: a software engineer in New York who loves travel, rap and learning languages."
 >
-  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <script is:inline slot="head" type="application/ld+json" set:html={structuredData} />
   <article class="prose about">
     <Content />
   </article>

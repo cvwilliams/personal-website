@@ -28,13 +28,15 @@ endpoints, no on-demand rendering**: every page must be prerenderable at build t
 src/
   content.config.ts     Zod schemas for the thoughts, projects and now collections
   content/              Markdown content (thoughts/, projects/, now/YYYY-MM-DD.md)
-  data/site.ts          Name, intro, links, section list
+  data/site.ts          Name, intro, homepage title/description, links, section list
   data/resume.ts        Resume as typed data
   data/about.mdx        About page copy (bio, albums, map, Elsewhere)
   data/desert-island.ts Desert island albums (artwork and links come from the Apple Music catalog)
   data/places.ts        Places on the About map (name, country, lat, lon, kind: home/lived)
   data/world-dots.ts    Generated 2° land grid for the dotted world map
   lib/content.ts        getThoughts(), getProjects(), readingTime(), formatDate()
+  lib/structured-data.ts Shared schema.org JSON-LD (Person, WebSite, BlogPosting)
+  lib/lastmod.mjs       Sitemap lastmod dates from content frontmatter
   layouts/Base.astro    <html>, <head>, fonts, global CSS
   layouts/Section.astro Inner-page shell: header nav, tinted hero card, footer
   components/           Tile (homepage), SectionArt (line art), Arrow, SiteFooter
@@ -178,6 +180,13 @@ src/
   thought also gets its own PNG at `/og/<slug>.png`, rendered at build time by
   `src/pages/og/[slug].png.ts` with `src/lib/og.mjs` (Satori + resvg; static WOFF fonts in
   `src/assets/fonts/og/`, grain from `src/assets/og/grain.png`) and passed to Base via `ogImage`.
+- SEO: the homepage `<title>` and default meta description are `site.title` / `site.description`;
+  other pages use `<page> · Cameron Williams`. JSON-LD lives in `src/lib/structured-data.ts`: the
+  homepage emits WebSite + Person, About a ProfilePage whose mainEntity is the same Person (same
+  `@id`), and each thought a BlogPosting (author/publisher point to that Person, image is its OG PNG). Emit it with `<script is:inline slot="head" type="application/ld+json" set:html={...} />`
+  (the CSP hasher skips ld+json). The sitemap's `lastmod` comes from `src/lib/lastmod.mjs`, which
+  reads thought and Now frontmatter: each thought, `/thoughts`, `/now`, archived Now updates and the
+  homepage get a date; other pages get none rather than a guessed one.
 - Caching (firebase.json): pages (`/`, `*.html`, extensionless clean URLs) are `no-cache` so a
   deploy shows up immediately; hashed files under `/_astro/` are cached forever.
 - External links open in a new tab automatically: `src/integrations/external-links.mjs` rewrites

@@ -1,7 +1,10 @@
 export const site = {
   name: 'Cameron Williams',
   intro: 'Engineer, tinkerer, overthinker',
-  description: 'Resume, projects, thoughts and what Cameron Williams is working on now.',
+  /** The homepage's <title>: name plus role and city, to tell this Cameron Williams apart in search. */
+  title: 'Cameron Williams · Software engineer in New York',
+  description:
+    "Cameron Williams is a software engineer in New York who builds mobile apps, currently working on Bitkey at Block. Projects, writing and what he's up to now.",
   url: 'https://cameronwillia.ms',
   location: 'New York, NY',
   goodreadsUserId: '52174720',

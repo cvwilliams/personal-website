@@ -8,6 +8,7 @@ import '../styles/home.css';
 import { site } from '../data/site';
 import { currentRole } from '../data/resume';
 import { getThoughts, getProjects, getNowUpdates, formatDate } from '../lib/content';
+import { jsonLd, person, website } from '../lib/structured-data';
 
 const [latestThought] = await getThoughts();
 const projects = (await getProjects()).slice(0, 3);
@@ -15,6 +16,7 @@ const [now] = await getNowUpdates();
 ---
 
 <Base skipLink={false} art>
+  <script is:inline slot="head" type="application/ld+json" set:html={jsonLd(website, person)} />
   <main id="main" class="tiles" tabindex="-1">
     <header class="badge">
       <div class="badge-text">
