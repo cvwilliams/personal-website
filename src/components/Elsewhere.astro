@@ -3,8 +3,8 @@ import Arrow from './Arrow.astro';
 import { site } from '../data/site';
 
 const links = [
-  { label: 'GitHub', detail: 'Code and side projects', href: site.links.github },
-  { label: 'LinkedIn', detail: 'Work history', href: site.links.linkedin },
+  { label: 'GitHub', detail: 'Code and side projects', href: site.links.github, me: true },
+  { label: 'LinkedIn', detail: 'Work history', href: site.links.linkedin, me: true },
   { label: 'RSS', detail: 'New thoughts, in your reader', href: '/rss.xml' },
   { label: 'JSON Resume', detail: 'My resume, machine-readable', href: '/resume.json' },
 ].filter((l) => l.href);
@@ -14,7 +14,7 @@ const links = [
   {
     links.map((l) => (
       <li>
-        <a href={l.href}>
+        <a href={l.href} rel={'me' in l ? 'me' : undefined}>
           <span class="label">{l.label}</span>
           <span class="detail">{l.detail}</span>
           <Arrow class="arrow" />

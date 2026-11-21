@@ -5,6 +5,7 @@ import SiteFooter from '../components/SiteFooter.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import '../styles/page.css';
 import { site, sections, type Section } from '../data/site';
+import { pagePath } from '../lib/paths';
 
 interface Props {
   section: Section;
@@ -18,7 +19,7 @@ interface Props {
 }
 
 const { section, heading, eyebrow, intro, title, description, ogType, ogImage } = Astro.props;
-const path = Astro.url.pathname.replace(/\/$/, '');
+const path = pagePath(Astro.url);
 const isSectionIndex = sections.some((s) => s.id === section && s.href === path);
 ---
 

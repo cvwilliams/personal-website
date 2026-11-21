@@ -13,6 +13,7 @@ import ogAbout from '../assets/og/og-about.jpg?url';
 import { site, sections, type Section } from '../data/site';
 import TransitionNames from '../components/scripts/TransitionNames.astro';
 import ArtState from '../components/scripts/ArtState.astro';
+import { pagePath } from '../lib/paths';
 
 interface Props {
   title?: string;
@@ -43,7 +44,7 @@ const ogImageAlt =
     ? `${sections.find((s) => s.id === section)?.label} · ${site.name}`
     : `${site.name}: Now, Projects, Thoughts and Resume`);
 const fullTitle = title ? `${title} · ${site.name}` : site.title;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const canonical = new URL(pagePath(Astro.url), Astro.site);
 ---
 
 <!doctype html>

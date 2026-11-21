@@ -2,8 +2,8 @@
 import { site } from '../data/site';
 
 const links = [
-  { label: 'GitHub', href: site.links.github },
-  { label: 'LinkedIn', href: site.links.linkedin },
+  { label: 'GitHub', href: site.links.github, me: true },
+  { label: 'LinkedIn', href: site.links.linkedin, me: true },
   { label: 'Email', href: site.links.email ? `mailto:${site.links.email}` : '' },
   { label: 'RSS', href: '/rss.xml' },
 ].filter((l) => l.href);
@@ -17,7 +17,7 @@ const year = new Date().getFullYear();
     {
       links.map((l) => (
         <li>
-          <a href={l.href}>{l.label}</a>
+          <a href={l.href} rel={'me' in l ? 'me' : undefined}>{l.label}</a>
         </li>
       ))
     }
