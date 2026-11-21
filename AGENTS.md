@@ -35,7 +35,7 @@ src/
   data/places.ts        Places on the About map (name, country, lat, lon, kind: home/lived)
   data/world-dots.ts    Generated 2° land grid for the dotted world map
   lib/content.ts        getThoughts(), getProjects(), readingTime(), formatDate()
-  lib/structured-data.ts Shared schema.org Person/WebSite JSON-LD
+  lib/structured-data.ts Shared schema.org JSON-LD (Person, WebSite, BlogPosting)
   lib/lastmod.mjs       Sitemap lastmod dates from content frontmatter
   layouts/Base.astro    <html>, <head>, fonts, global CSS
   layouts/Section.astro Inner-page shell: header nav, tinted hero card, footer
@@ -183,7 +183,7 @@ src/
 - SEO: the homepage `<title>` and default meta description are `site.title` / `site.description`;
   other pages use `<page> · Cameron Williams`. JSON-LD lives in `src/lib/structured-data.ts`: the
   homepage emits WebSite + Person, About a ProfilePage whose mainEntity is the same Person (same
-  `@id`). Emit it with `<script is:inline slot="head" type="application/ld+json" set:html={...} />`
+  `@id`), and each thought a BlogPosting (author/publisher point to that Person, image is its OG PNG). Emit it with `<script is:inline slot="head" type="application/ld+json" set:html={...} />`
   (the CSP hasher skips ld+json). The sitemap's `lastmod` comes from `src/lib/lastmod.mjs`, which
   reads thought and Now frontmatter: each thought, `/thoughts`, `/now`, archived Now updates and the
   homepage get a date; other pages get none rather than a guessed one.

@@ -4,6 +4,7 @@ import Section from '../../layouts/Section.astro';
 import Arrow from '../../components/Arrow.astro';
 import { getThoughts, formatDate, readingTime } from '../../lib/content';
 import { site } from '../../data/site';
+import { blogPosting, jsonLd, person } from '../../lib/structured-data';
 
 export async function getStaticPaths() {
   const thoughts = await getThoughts();
@@ -17,6 +18,7 @@ interface Props {
 const { thought } = Astro.props;
 const { Content } = await render(thought);
 const { title, description, pubDate, updatedDate, tags } = thought.data;
+const structuredData = jsonLd(blogPosting({ slug: thought.id, title, description, pubDate, updatedDate, tags }), person);
 ---
 
 <Section
@@ -26,6 +28,8 @@ const { title, description, pubDate, updatedDate, tags } = thought.data;
   ogType="article"
   ogImage={{ src: `/og/${thought.id}.png`, alt: `${title} · ${site.name}` }}
 >
+  <script is:inline slot="head" type="application/ld+json" set:html={structuredData} />
+
   <a slot="eyebrow" class="back" href="/thoughts">
     <Arrow direction="left" class="back-arrow" />
     Thoughts

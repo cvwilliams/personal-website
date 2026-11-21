@@ -31,3 +31,33 @@ export const website = {
 
 export const jsonLd = (...items: object[]) =>
   JSON.stringify({ '@context': 'https://schema.org', '@graph': items });
+
+interface Post {
+  slug: string;
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags: string[];
+}
+
+/** A thought, credited to the same Person and site as the homepage. */
+export const blogPosting = ({ slug, title, description, pubDate, updatedDate, tags }: Post) => {
+  const url = `${site.url}/thoughts/${slug}`;
+  return {
+    '@type': 'BlogPosting',
+    '@id': `${url}#post`,
+    url,
+    mainEntityOfPage: url,
+    headline: title,
+    description,
+    image: `${site.url}/og/${slug}.png`,
+    datePublished: pubDate.toISOString(),
+    dateModified: (updatedDate ?? pubDate).toISOString(),
+    inLanguage: 'en',
+    ...(tags.length > 0 && { keywords: tags }),
+    author: { '@id': personId },
+    publisher: { '@id': personId },
+    isPartOf: { '@id': websiteId },
+  };
+};
