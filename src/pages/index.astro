@@ -144,7 +144,7 @@ const [now] = await getNowUpdates();
 
       svg.querySelectorAll<SVGGraphicsElement>('rect, circle, path').forEach((shape) => {
         shape.classList.add('draggable');
-        let start: { x: number; y: number; dx: number; dy: number } | null = null;
+        let start: { x: number; y: number; dx: number; dy: number; scale: number } | null = null;
         let offset = { x: Number(shape.dataset.dx ?? 0), y: Number(shape.dataset.dy ?? 0) };
         let dragging = false;
 
@@ -152,7 +152,9 @@ const [now] = await getNowUpdates();
           if (!finePointer.matches || event.button !== 0) return;
           event.preventDefault();
           shape.setPointerCapture(event.pointerId);
-          start = { x: event.clientX, y: event.clientY, dx: offset.x, dy: offset.y };
+          // Measure once per drag; reading layout on every pointermove is wasted work on slow devices.
+          const scale = 200 / svg.getBoundingClientRect().width;
+          start = { x: event.clientX, y: event.clientY, dx: offset.x, dy: offset.y, scale };
           dragging = false;
         });
 
@@ -165,10 +167,9 @@ const [now] = await getNowUpdates();
             shape.classList.add('is-dragging');
             shape.parentNode?.appendChild(shape);
           }
-          const scale = 200 / svg.getBoundingClientRect().width;
           offset = {
-            x: start.dx + (event.clientX - start.x) * scale,
-            y: start.dy + (event.clientY - start.y) * scale,
+            x: start.dx + (event.clientX - start.x) * start.scale,
+            y: start.dy + (event.clientY - start.y) * start.scale,
           };
           shape.style.setProperty('translate', `${offset.x}px ${offset.y}px`);
         });
