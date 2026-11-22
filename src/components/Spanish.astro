@@ -93,7 +93,9 @@ const toNext = nextLevelStart ? Math.ceil(nextLevelStart - hours) : 0;
     fill: var(--text);
   }
   .current .fill {
-    fill: var(--red);
+    /* Dark mode puts the paper-colored number on this fill: plain red gives only 3.2:1, the
+       darker red 4.9:1. */
+    fill: light-dark(var(--red), color-mix(in srgb, var(--red) 75%, var(--ink)));
   }
   .number {
     position: relative;
