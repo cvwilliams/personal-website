@@ -91,16 +91,19 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.16;
-  mix-blend-mode: multiply;
+  /* Pre-rendered noise (scripts/make-grain.mjs): black pixels whose alpha bakes in the old
+     16% multiply blend, so there's no live SVG filter or blend mode to repaint. */
+  background-image: url('../assets/grain.png');
+  background-size: 180px;
   border-radius: inherit;
 }
 
 .orbit {
   transform-box: view-box;
   transform-origin: 100px 100px;
-  animation: orbit-spin 40s linear infinite;
+  /* SVG transforms repaint the art on every frame. 720 steps (one every ~55ms, half a degree,
+     about a pixel at hero size) still reads as smooth motion at a fraction of the repaints. */
+  animation: orbit-spin 40s steps(720) infinite;
 }
 @keyframes orbit-spin {
   to {

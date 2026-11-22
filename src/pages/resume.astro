@@ -23,6 +23,9 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
       Print / Save as PDF
     </button>
     <a class="json-link" href="/resume.json" type="application/json">JSON Resume</a>
+    <script is:inline>
+      document.querySelectorAll('[data-print]').forEach((button) => button.addEventListener('click', () => window.print()));
+    </script>
   </div>
 
   <header class="print-header">
@@ -125,10 +128,6 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
     </dl>
   </section>
 </Section>
-
-<script>
-  document.querySelectorAll('[data-print]').forEach((button) => button.addEventListener('click', () => window.print()));
-</script>
 
 <style>
   .lead {

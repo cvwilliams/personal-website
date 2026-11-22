@@ -55,7 +55,7 @@ const canonical = new URL(pagePath(Astro.url), Astro.site);
     <Font cssVariable="--font-libre-franklin" preload={[{ subset: 'latin' }]} />
     <link rel="expect" href="#main" blocking="render" />
     <script is:inline type="speculationrules">
-      { "prefetch": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
+      { "prefetch": [{ "where": { "and": [{ "href_matches": "/*" }, { "not": { "href_matches": ["/*.xml", "/*.json", "/*.webmanifest", "/*.png"] } }] }, "eagerness": "moderate" }] }
     </script>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />

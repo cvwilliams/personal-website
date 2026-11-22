@@ -21,7 +21,9 @@ const bodyId = `tile-${section}-body`;
   aria-labelledby={titleId}
   aria-describedby={bodyId}
 >
-  <SectionArt section={section} class="tile-art" />
+  <div class="tile-art-clip">
+    <SectionArt section={section} class="tile-art" />
+  </div>
   <div class="tile-head">
     <h2 id={titleId}>{title}</h2>
     <Arrow class="tile-arrow" />

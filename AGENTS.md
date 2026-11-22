@@ -71,14 +71,18 @@ src/
   (`.eyebrow`). `--font-label` is the same family; `.mono` just means tabular numbers.
 - Art lives in `SectionArt.astro`: 200×200 viewBox, flat cut-paper shapes filled with the
   `.f-red/.f-blue/.f-yellow/.f-ink/.f-paper/.f-on` classes (SVG attributes can't read CSS
-  variables). Never use a section's own color in its art. `.grain` adds a print-grain overlay.
+  variables). Never use a section's own color in its art. `.grain` adds a print-grain overlay (a pre-rendered PNG,
+  `src/assets/grain.png`, made by `scripts/make-grain.mjs`; no live SVG filters or blend modes).
 - Homepage: 2×2 full-viewport grid at ≥900px. On hover only the active tile scales up slightly
   in place (`--hover-scale`, ~1.2%, staying inside the 10px gutter) with a long ease-out
   (`--dur`, `--ease-soft`); the grid, other tiles and name badge never move. Below 900px the
   tiles stack and the page scrolls.
 - Pages with section art pass `art` to Base (homepage, Section layout); only those get the
   art-state and transition scripts. Remote images are
-  requested at about 2x display size (Goodreads `_SY180_`, Apple Music 300px).
+  requested at about 2x display size (Goodreads `_SY180_`, Apple Music 300px), then self-hosted at
+  build time by `src/integrations/self-host-images.mjs`: every remote `<img>` in the built HTML is
+  downloaded to `/_astro/img/` as WebP at 2× its `width`/`height` attributes (so always set them),
+  keeping the remote URL if a download fails.
 - Transition names are set by one inline script in Base.astro's `<head>`: on the homepage it names
   the tile for the section being navigated to/from; on section pages it names the hero only when
   the other page is the homepage. The art-state script in Base.astro owns `sessionStorage` and
@@ -111,6 +115,10 @@ src/
   moves on hover (scale, translate, rotate) needs its own reduced-motion override, while color and
   opacity fades may stay.
 - Keep text contrast at 4.5:1 or above.
+- Keep it smooth on low-end phones and laptops: animate only `transform` and `opacity`. Hovers that
+  change a large area's color or shadow repaint every frame, so keep color fades short and fade a
+  pre-drawn shadow layer instead of animating `box-shadow` (the homepage tiles' `::before`). No
+  permanent `will-change`; infinite animations on SVG shapes use `steps()`.
 
 ## Accessibility
 
@@ -170,7 +178,8 @@ src/
   built page (not in `astro dev`; check with `make preview`). Astro hashes the scripts and styles it
   bundles; `<script is:inline>` blocks are hashed from the .astro sources by `src/lib/csp.mjs`, so
   keep inline script text literal (no expressions inside it). Speculation rules are allowed with
-  `'inline-speculation-rules'`. No `style="…"` attributes or inline event handlers in markup: CSP
+  `'inline-speculation-rules'`. Page CSS is inlined (`build.inlineStylesheets: 'always'`), and Astro
+  hashes it for the CSP. No `style="…"` attributes or inline event handlers in markup: CSP
   blocks them (setting styles from JS is fine).
 - Check new UI in both themes.
 - Icons live in `src/assets/icons/` and are imported with `?url` in Base.astro / site.webmanifest.ts

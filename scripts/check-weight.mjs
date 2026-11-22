@@ -4,8 +4,10 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
-// About 1.5× the heaviest page today (HTML includes its inline scripts and styles).
-const BUDGET_KB = { html: 14, js: 6, css: 9, fonts: 32 };
+// About 1.4× the heaviest page today. HTML is the whole document as downloaded, so it includes its
+// inline scripts and the page's CSS (inlined via build.inlineStylesheets); css counts that CSS again
+// on its own.
+const BUDGET_KB = { html: 20, js: 6, css: 9, fonts: 32 };
 
 const root = new URL('../dist/', import.meta.url).pathname;
 if (!existsSync(root)) {
