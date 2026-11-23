@@ -14,11 +14,11 @@
     "now": "node scripts/new-now.mjs"
   },
   "dependencies": {
-    "@astrojs/mdx": "^8.1.5",
+    "@astrojs/mdx": "^8.1.6",
     "@astrojs/rss": "^4.0.19",
-    "@astrojs/sitemap": "^3.7.4",
+    "@astrojs/sitemap": "^3.7.6",
     "@resvg/resvg-js": "^2.6.2",
-    "astro": "^7.4.11",
+    "astro": "^7.4.13",
     "satori": "^0.63.2",
     "sharp": "^0.35.4"
   },
