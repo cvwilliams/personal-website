@@ -20,29 +20,33 @@ const { title, summary, year, status, tech, links } = project.data;
 const statusLabel = projectStatusLabel;
 ---
 
-<Section section="projects" heading={title} intro={summary}>
+<Section section="projects" heading={title} intro={summary} article>
   <a slot="eyebrow" class="back" href="/projects">
     <Arrow direction="left" class="back-arrow" />
     Projects
   </a>
 
   <div slot="hero" class="facts">
-    <span class="mono">{year}</span>
-    <span class="mono">{statusLabel[status]}</span>
+    <dl>
+      <dt class="visually-hidden">Year</dt>
+      <dd class="mono">{year}</dd>
+      <dt class="visually-hidden">Status</dt>
+      <dd class="mono">{statusLabel[status]}</dd>
+    </dl>
     {links.live && <a href={links.live}>Visit site</a>}
     {links.repo && <a href={links.repo}>Source code</a>}
   </div>
 
   <div class="layout">
-    <article class="prose">
+    <div class="prose">
       <Content />
-    </article>
+    </div>
     {
       tech.length > 0 && (
-        <aside>
+        <footer>
           <h2 class="section-title">Built with</h2>
           <Chips items={tech} />
-        </aside>
+        </footer>
       )
     }
   </div>
@@ -71,6 +75,15 @@ const statusLabel = projectStatusLabel;
     margin-top: 8px;
     font-size: 0.875rem;
     color: var(--muted);
+  }
+  .facts dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: inherit;
+    margin: 0;
+  }
+  .facts dd {
+    margin: 0;
   }
   .facts a {
     color: var(--accent);

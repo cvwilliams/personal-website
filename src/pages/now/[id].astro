@@ -27,6 +27,7 @@ const date = formatDate(entry.data.updated);
   title={`Now, ${date}`}
   intro={entry.data.focus}
   description={`What Cameron Williams was focused on as of ${date}.`}
+  article
 >
   <a slot="eyebrow" class="back" href="/now/archive">
     <Arrow direction="left" class="back-arrow" />
@@ -37,12 +38,12 @@ const date = formatDate(entry.data.updated);
     This is an older snapshot from {date}. <a href="/now">See what I’m up to now</a>.
   </p>
 
-  <article class="prose">
+  <div class="prose">
     <Reading books={entry.data.reading} />
     <Listening items={entry.data.listening} />
     {entry.data.spanish && <Spanish hours={entry.data.spanish.hours} note={entry.data.spanish.note} />}
     <Content />
-  </article>
+  </div>
 </Section>
 
 <style>

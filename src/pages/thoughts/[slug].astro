@@ -27,6 +27,7 @@ const structuredData = jsonLd(blogPosting({ slug: thought.id, title, description
   intro={description}
   ogType="article"
   ogImage={{ src: `/og/${thought.id}.png`, alt: `${title} · ${site.name}` }}
+  article
 >
   <script is:inline slot="head" type="application/ld+json" set:html={structuredData} />
 
@@ -35,9 +36,9 @@ const structuredData = jsonLd(blogPosting({ slug: thought.id, title, description
     Thoughts
   </a>
 
-  <div slot="hero" class="facts mono">
-    <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
-    <span>{readingTime(thought.body)} min read</span>
+  <p slot="hero" class="facts mono">
+    <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>{' '}
+    {readingTime(thought.body)} min read{' '}
     {
       updatedDate && (
         <span>
@@ -45,19 +46,21 @@ const structuredData = jsonLd(blogPosting({ slug: thought.id, title, description
         </span>
       )
     }
-  </div>
+  </p>
 
-  <article class="prose">
+  <div class="prose">
     <Content />
-  </article>
+  </div>
 
   {
     tags.length > 0 && (
-      <ul class="chips tags" aria-label="Tags">
-        {tags.map((t) => (
-          <li>{t}</li>
-        ))}
-      </ul>
+      <footer class="tags">
+        <ul class="chips" aria-label="Tags">
+          {tags.map((t) => (
+            <li>{t}</li>
+          ))}
+        </ul>
+      </footer>
     )
   }
 </Section>
@@ -82,7 +85,7 @@ const structuredData = jsonLd(blogPosting({ slug: thought.id, title, description
     display: flex;
     flex-wrap: wrap;
     gap: 8px 20px;
-    margin-top: 8px;
+    margin: 8px 0 0;
     font-size: 0.8125rem;
     color: var(--muted);
   }

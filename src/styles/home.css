@@ -234,8 +234,8 @@
   display: none;
 }
 
-.home-footer {
-  padding: 0 4px;
+footer.site-footer.home-footer {
+  padding-inline: 28px;
 }
 
 @media (min-width: 900px) {
@@ -329,11 +329,11 @@
     display: flex;
   }
 
-  .home-footer footer.site-footer {
+  footer.site-footer.home-footer {
     flex-wrap: nowrap;
     align-items: center;
     height: 44px;
-    padding: 0 26px;
+    padding: 0 30px;
   }
 }
 

@@ -16,15 +16,19 @@ interface Props {
   description?: string;
   ogType?: 'website' | 'article';
   ogImage?: { src: string; alt: string };
+  /** The page is one self-contained piece (a thought, a project, a Now update): wraps the hero and
+   * content in an <article> so its heading and metadata belong to it. */
+  article?: boolean;
 }
 
-const { section, heading, eyebrow, intro, title, description, ogType, ogImage } = Astro.props;
+const { section, heading, eyebrow, intro, title, description, ogType, ogImage, article = false } = Astro.props;
+const Body = article ? 'article' : Fragment;
 const path = pagePath(Astro.url);
 const isSectionIndex = sections.some((s) => s.id === section && s.href === path);
 ---
 
 <Base title={title ?? heading} description={description ?? intro} ogType={ogType} ogImage={ogImage} section={section} art>
-  <Fragment slot="head"><slot name="head" /></Fragment>
+  <slot name="head" slot="head" />
   <div class="page" data-section={section}>
     <header class="site-header">
       <a class="home-link" href="/">{site.name}</a>
@@ -51,23 +55,25 @@ const isSectionIndex = sections.some((s) => s.id === section && s.href === path)
     </header>
 
     <main id="main" class="page-main" tabindex="-1">
-      <div class="hero grain">
-        <div class="hero-text">
-          {
-            (eyebrow || Astro.slots.has('eyebrow')) && (
-              <p class="eyebrow">
-                <slot name="eyebrow">{eyebrow}</slot>
-              </p>
-            )
-          }
-          <h1 data-vt-title={isSectionIndex ? '' : undefined}>{heading}</h1>
-          {intro && <p class="hero-intro">{intro}</p>}
-          <slot name="hero" />
-        </div>
-        <SectionArt section={section} class="hero-art" />
-      </div>
+      <Body>
+        <header class="hero grain">
+          <div class="hero-text">
+            {
+              (eyebrow || Astro.slots.has('eyebrow')) && (
+                <p class="eyebrow">
+                  <slot name="eyebrow">{eyebrow}</slot>
+                </p>
+              )
+            }
+            <h1 data-vt-title={isSectionIndex ? '' : undefined}>{heading}</h1>
+            {intro && <p class="hero-intro">{intro}</p>}
+            <slot name="hero" />
+          </div>
+          <SectionArt section={section} class="hero-art" />
+        </header>
 
-      <slot />
+        <slot />
+      </Body>
     </main>
 
     <SiteFooter />

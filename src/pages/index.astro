@@ -24,8 +24,8 @@ const [now] = await getNowUpdates();
           <a class="badge-name" href="/about">{site.name}<Arrow class="badge-arrow" /></a>
         </h1>
         <p class="badge-meta">
-          <span>{site.intro}</span>
-          <span class="badge-dot" aria-hidden="true">·</span>
+          {site.intro}{' '}
+          <span class="badge-dot" aria-hidden="true">·</span>{' '}
           <span class="clock" data-clock>New York</span>
         </p>
       </div>
@@ -38,7 +38,7 @@ const [now] = await getNowUpdates();
           <>
             <p class="eyebrow">
               <span class="dot" aria-hidden="true"></span>
-              Updated {formatDate(now.data.updated, 'short')}
+              Updated <time datetime={now.data.updated.toISOString()}>{formatDate(now.data.updated, 'short')}</time>
             </p>
             <p class="tile-lead">{now.data.focus}</p>
           </>
@@ -69,7 +69,9 @@ const [now] = await getNowUpdates();
       {
         latestThought ? (
           <>
-            <p class="eyebrow">Latest · {formatDate(latestThought.data.pubDate, 'short')}</p>
+            <p class="eyebrow">
+              Latest · <time datetime={latestThought.data.pubDate.toISOString()}>{formatDate(latestThought.data.pubDate, 'short')}</time>
+            </p>
             <p class="tile-lead">{latestThought.data.title}</p>
           </>
         ) : (
@@ -94,9 +96,7 @@ const [now] = await getNowUpdates();
     </Tile>
   </main>
 
-  <div class="home-footer">
-    <SiteFooter />
-  </div>
+  <SiteFooter class="home-footer" />
 
   <script>
     const clocks = document.querySelectorAll<HTMLElement>('[data-clock]');

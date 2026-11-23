@@ -11,9 +11,12 @@ interface Props {
   items: Item[];
   heading?: string;
   showKind?: boolean;
+  /** Ranked lists (heavy rotation) are ordered; pass false for an unranked set. */
+  ordered?: boolean;
 }
 
-const { items, heading = 'Heavy rotation', showKind = true } = Astro.props;
+const { items, heading = 'Heavy rotation', showKind = true, ordered = true } = Astro.props;
+const List = ordered ? 'ol' : 'ul';
 const headingId = `${heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-title`;
 const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
 ---
@@ -22,7 +25,7 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
   items.length > 0 && (
     <section class="listening" aria-labelledby={headingId}>
       <h2 id={headingId}>{heading}</h2>
-      <ol>
+      <List class="covers">
         {items.map((item, index) => {
           const Tag = item.url ? 'a' : 'div';
           return (
@@ -36,13 +39,13 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
                   </span>
                 )}
                 {showKind && <span class="kind">{kindLabel[item.kind]}</span>}
-                <span class="title">{item.title}</span>
+                <cite class="title">{item.title}</cite>
                 {item.subtitle && <span class="subtitle">{item.subtitle}</span>}
               </Tag>
             </li>
           );
         })}
-      </ol>
+      </List>
     </section>
   )
 }
@@ -54,7 +57,7 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
   .listening h2 {
     margin-top: 0;
   }
-  ol {
+  .covers {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(140px, 42%), 1fr));
     gap: 20px 16px;
@@ -115,6 +118,7 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
     color: var(--accent);
   }
   .title {
+    font-style: normal;
     font-size: 0.9375rem;
     font-weight: 700;
     line-height: 1.3;

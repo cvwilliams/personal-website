@@ -15,19 +15,21 @@ const thoughts = await getThoughts();
       <ol class="list">
         {thoughts.map((e) => (
           <li>
-            <a class="row" href={`/thoughts/${e.id}`}>
-              <time class="date mono" datetime={e.data.pubDate.toISOString()}>
-                {formatDate(e.data.pubDate, 'short')}
-              </time>
-              <div class="text">
-                <h2>
-                  {e.data.title}
-                  {e.data.draft && <span class="draft mono">Draft</span>}
-                </h2>
-                <p class="desc">{e.data.description}</p>
-              </div>
-              <span class="mins mono">{readingTime(e.body)} min</span>
-            </a>
+            <article>
+              <a class="row" href={`/thoughts/${e.id}`}>
+                <time class="date mono" datetime={e.data.pubDate.toISOString()}>
+                  {formatDate(e.data.pubDate, 'short')}
+                </time>
+                <div class="text">
+                  <h2>
+                    {e.data.title}
+                    {e.data.draft && <span class="draft mono">Draft</span>}
+                  </h2>
+                  <p class="desc">{e.data.description}</p>
+                </div>
+                <span class="mins mono">{readingTime(e.body)} min</span>
+              </a>
+            </article>
           </li>
         ))}
       </ol>

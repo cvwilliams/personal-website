@@ -3,6 +3,7 @@ import Section from '../layouts/Section.astro';
 import Chips from '../components/Chips.astro';
 import { site } from '../data/site';
 import { headline, summary, experience, education, skills } from '../data/resume';
+import { isoDate } from '../lib/resume-dates';
 
 const printLinks = [site.url, site.links.github, site.links.linkedin]
   .filter(Boolean)
@@ -54,7 +55,8 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
         experience.map((role) => (
           <li class="role">
             <p class="when mono">
-              {role.start} – {role.end ?? 'Present'}
+              <time datetime={isoDate(role.start)}>{role.start}</time> –{' '}
+              {role.end ? <time datetime={isoDate(role.end)}>{role.end}</time> : 'Present'}
             </p>
             <div class="what">
               <h3>
@@ -70,14 +72,16 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
               {role.location && <p class="where">{role.location}</p>}
               {role.summary && <p class="summary">{role.summary}</p>}
               {role.links && role.links.length > 0 && (
-                <p class="role-links">
+                <ul class="role-links">
                   {role.links.map((link) => (
-                    <a href={link.href}>
-                      {link.label}
-                      <span aria-hidden="true"> ↗</span>
-                    </a>
+                    <li>
+                      <a href={link.href}>
+                        {link.label}
+                        <span aria-hidden="true"> ↗</span>
+                      </a>
+                    </li>
                   ))}
-                </p>
+                </ul>
               )}
               {role.highlights && role.highlights.length > 0 && (
                 <ul class="highlights">
@@ -99,13 +103,20 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
       {
         education.map((e) => (
           <li class="role">
-            <p class="when mono">{[e.start, e.end].filter(Boolean).join(' – ')}</p>
-            <div class="what">
-              <h3>
-                {e.degree}
-                <span class="at"> · {e.school}</span>
-              </h3>
-            </div>
+            <p class="when mono">
+              {[e.start, e.end]
+                .filter((d): d is string => Boolean(d))
+                .map((d, i) => (
+                  <>
+                    {i > 0 && ' – '}
+                    <time datetime={isoDate(d)}>{d}</time>
+                  </>
+                ))}
+            </p>
+            <h3>
+              {e.degree}
+              <span class="at"> · {e.school}</span>
+            </h3>
           </li>
         ))
       }
@@ -180,6 +191,8 @@ const printLinks = [site.url, site.links.github, site.links.linkedin]
     flex-wrap: wrap;
     gap: 4px 18px;
     margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
     font-size: 0.9375rem;
     font-weight: 600;
   }
