@@ -100,6 +100,21 @@
   letter-spacing: -0.04em;
   text-wrap: balance;
 }
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+  text-decoration: none;
+}
+.back:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.back-arrow {
+  width: 14px;
+  height: 14px;
+}
 .hero-intro {
   margin: 0;
   font-size: 1.1875rem;

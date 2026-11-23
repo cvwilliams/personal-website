@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
 import SectionArt from '../components/SectionArt.astro';
+import Arrow from '../components/Arrow.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import '../styles/page.css';
@@ -19,9 +20,11 @@ interface Props {
   /** The page is one self-contained piece (a thought, a project, a Now update): wraps the hero and
    * content in an <article> so its heading and metadata belong to it. */
   article?: boolean;
+  /** A link back to the parent page, shown as the eyebrow. Override its label with the `back` slot. */
+  back?: { href: string; label: string };
 }
 
-const { section, heading, eyebrow, intro, title, description, ogType, ogImage, article = false } = Astro.props;
+const { section, heading, eyebrow, intro, title, description, ogType, ogImage, article = false, back } = Astro.props;
 const Body = article ? 'article' : Fragment;
 const path = pagePath(Astro.url);
 const isSectionIndex = sections.some((s) => s.id === section && s.href === path);
@@ -59,9 +62,16 @@ const isSectionIndex = sections.some((s) => s.id === section && s.href === path)
         <header class="hero grain">
           <div class="hero-text">
             {
-              (eyebrow || Astro.slots.has('eyebrow')) && (
+              (eyebrow || back || Astro.slots.has('eyebrow')) && (
                 <p class="eyebrow">
-                  <slot name="eyebrow">{eyebrow}</slot>
+                  {back ? (
+                    <a class="back" href={back.href}>
+                      <Arrow direction="left" class="back-arrow" />
+                      <slot name="back">{back.label}</slot>
+                    </a>
+                  ) : (
+                    <slot name="eyebrow">{eyebrow}</slot>
+                  )}
                 </p>
               )
             }
