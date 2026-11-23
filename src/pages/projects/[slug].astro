@@ -1,7 +1,6 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
 import Section from '../../layouts/Section.astro';
-import Arrow from '../../components/Arrow.astro';
 import Chips from '../../components/Chips.astro';
 import { getProjects, projectStatusLabel } from '../../lib/content';
 
@@ -20,50 +19,34 @@ const { title, summary, year, status, tech, links } = project.data;
 const statusLabel = projectStatusLabel;
 ---
 
-<Section section="projects" heading={title} intro={summary}>
-  <a slot="eyebrow" class="back" href="/projects">
-    <Arrow direction="left" class="back-arrow" />
-    Projects
-  </a>
-
+<Section section="projects" heading={title} intro={summary} article back={{ href: '/projects', label: 'Projects' }}>
   <div slot="hero" class="facts">
-    <span class="mono">{year}</span>
-    <span class="mono">{statusLabel[status]}</span>
+    <dl>
+      <dt class="visually-hidden">Year</dt>
+      <dd class="mono">{year}</dd>
+      <dt class="visually-hidden">Status</dt>
+      <dd class="mono">{statusLabel[status]}</dd>
+    </dl>
     {links.live && <a href={links.live}>Visit site</a>}
     {links.repo && <a href={links.repo}>Source code</a>}
   </div>
 
   <div class="layout">
-    <article class="prose">
+    <div class="prose">
       <Content />
-    </article>
+    </div>
     {
       tech.length > 0 && (
-        <aside>
+        <footer>
           <h2 class="section-title">Built with</h2>
           <Chips items={tech} />
-        </aside>
+        </footer>
       )
     }
   </div>
 </Section>
 
 <style>
-  .back {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: inherit;
-    text-decoration: none;
-  }
-  .back:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  :global(.back-arrow) {
-    width: 14px;
-    height: 14px;
-  }
   .facts {
     display: flex;
     flex-wrap: wrap;
@@ -71,6 +54,15 @@ const statusLabel = projectStatusLabel;
     margin-top: 8px;
     font-size: 0.875rem;
     color: var(--muted);
+  }
+  .facts dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: inherit;
+    margin: 0;
+  }
+  .facts dd {
+    margin: 0;
   }
   .facts a {
     color: var(--accent);

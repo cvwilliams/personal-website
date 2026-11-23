@@ -38,8 +38,9 @@ src/
   lib/structured-data.ts Shared schema.org JSON-LD (Person, WebSite, BlogPosting)
   lib/lastmod.mjs       Sitemap lastmod dates from content frontmatter
   lib/paths.ts          pagePath(): a page's clean URL path at build time
+  lib/resume-dates.ts   isoDate(): resume dates as ISO year or year-month (resume page, resume.json)
   layouts/Base.astro    <html>, <head>, fonts, global CSS
-  layouts/Section.astro Inner-page shell: header nav, tinted hero card, footer
+  layouts/Section.astro Inner-page shell: header nav, tinted hero card (<header>), footer
   components/           Tile (homepage), SectionArt (line art), Arrow, SiteFooter
   pages/                File-based routes; [slug].astro pages use getStaticPaths
   styles/global.css     Design tokens + base + .prose
@@ -174,6 +175,11 @@ src/
   is in `src/data/tech-links.ts`. Add an entry there when introducing a new skill or tech.
   Don't use linked chips inside an element that's already a link (e.g. project cards).
 - Keep pages static and JS-free unless a feature genuinely needs a script; prefer CSS.
+- Semantic HTML: pages that are one self-contained piece (a thought, a project, a Now update) pass
+  `article` to Section, which wraps the hero and content in `<article>`; their trailing metadata (tags,
+  "Built with") goes in a `<footer>` inside it. Mark titles of works with `<cite>` and dates with
+  `<time datetime>`. Don't add wrapper elements that carry no styles or meaning; flex layout ignores
+  whitespace, so add `{' '}` between flex items whose text would otherwise run together.
 - Content Security Policy (`security.csp` in astro.config.mjs) is a `<meta>` tag Astro adds to every
   built page (not in `astro dev`; check with `make preview`). Astro hashes the scripts and styles it
   bundles; `<script is:inline>` blocks are hashed from the .astro sources by `src/lib/csp.mjs`, so

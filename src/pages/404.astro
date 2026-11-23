@@ -33,35 +33,35 @@ const year = new Date().getFullYear();
           </g>
           <rect class="f-red fallen" x="540" y="268" width="50" height="30" />
         </svg>
+
+        <figcaption class="label">
+          <p class="artist">{site.name}</p>
+          <p class="meta">Lives and works in New York</p>
+          <h1><cite>Untitled (Page Not Found)</cite>, {year}</h1>
+          <p class="meta">Broken link on HTTP</p>
+          <p class="note">
+            The artist clearly meant to put something here. Curators are still debating what. Note the
+            fallen fragment at lower right, believed to be original.
+          </p>
+          <p class="credit">Gift of a mistyped URL<br />404.{year}</p>
+        </figcaption>
       </figure>
 
-      <aside class="label" aria-labelledby="label-title">
-        <p class="artist">{site.name}</p>
-        <p class="meta">Lives and works in New York</p>
-        <h1 id="label-title"><em>Untitled (Page Not Found)</em>, {year}</h1>
-        <p class="meta">Broken link on HTTP</p>
-        <p class="note">
-          The artist clearly meant to put something here. Curators are still debating what. Note the
-          fallen fragment at lower right, believed to be original.
-        </p>
-        <p class="credit">Gift of a mistyped URL<br />404.{year}</p>
-
-        <nav class="exits" aria-label="Exits">
-          <a class="lobby" href="/">Return to the lobby <span aria-hidden="true">→</span></a>
-          <p class="other">Other galleries</p>
-          <ul>
-            {
-              sections.map((s) => (
-                <li>
-                  <a href={s.href} data-section={s.id}>
-                    {s.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </nav>
-      </aside>
+      <nav class="exits" aria-label="Exits">
+        <a class="lobby" href="/">Return to the lobby <span aria-hidden="true">→</span></a>
+        <p class="other" id="other-galleries">Other galleries</p>
+        <ul aria-labelledby="other-galleries">
+          {
+            sections.map((s) => (
+              <li>
+                <a href={s.href} data-section={s.id}>
+                  {s.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
     </main>
   </div>
 </Base>
@@ -91,19 +91,43 @@ const year = new Date().getFullYear();
     flex: 1;
     display: grid;
     align-content: center;
-    gap: 48px;
+    gap: 32px;
     padding: 24px 0 64px;
   }
+  .artwork {
+    display: grid;
+    gap: 48px;
+    margin: 0;
+  }
   @media (min-width: 900px) {
+    /* The wall label is the artwork's caption, so it lives inside the figure. A subgrid puts it in
+       the right-hand column with the exits underneath, and the artwork spans both rows. */
     .exhibit {
       grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
-      align-items: end;
-      gap: 72px;
+      grid-template-rows: auto auto;
+      column-gap: 72px;
     }
-  }
-
-  .artwork {
-    margin: 0;
+    .artwork {
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+      grid-template-columns: subgrid;
+      grid-template-rows: subgrid;
+      gap: normal;
+    }
+    .numerals {
+      grid-column: 1;
+      grid-row: 1 / -1;
+      align-self: end;
+    }
+    .label {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: end;
+    }
+    .exits {
+      grid-column: 2;
+      grid-row: 2;
+    }
   }
   .numerals {
     display: block;
@@ -141,12 +165,15 @@ const year = new Date().getFullYear();
     transform: rotate(14deg);
   }
 
-  .label {
+  .label,
+  .exits {
     max-width: 340px;
-    padding-top: 16px;
-    border-top: 3px solid var(--text);
     font-size: 0.9375rem;
     line-height: 1.45;
+  }
+  .label {
+    padding-top: 16px;
+    border-top: 3px solid var(--text);
   }
   .label p,
   .label h1 {
@@ -175,9 +202,6 @@ const year = new Date().getFullYear();
     font-variant-numeric: tabular-nums;
   }
 
-  .exits {
-    margin-top: 32px;
-  }
   .lobby {
     display: inline-block;
     padding: 12px 20px;
@@ -197,7 +221,7 @@ const year = new Date().getFullYear();
     }
   }
   .other {
-    margin-top: 24px !important;
+    margin: 24px 0 0;
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.1em;

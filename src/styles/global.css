@@ -83,7 +83,6 @@
 .f-ink { fill: var(--ink); }
 .f-paper { fill: var(--paper); }
 .f-on { fill: var(--on-surface); }
-.f-text { fill: var(--text); }
 .s-on { stroke: var(--on-surface); }
 
 .grain::after {
@@ -110,10 +109,6 @@
     transform: rotate(360deg);
   }
 }
-.knock {
-  fill: var(--surface);
-}
-
 .icon-sun {
   opacity: 1;
   transform: none;

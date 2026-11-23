@@ -1,6 +1,12 @@
 ---
 import { site } from '../data/site';
 
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
 const links = [
   { label: 'GitHub', href: site.links.github, me: true },
   { label: 'LinkedIn', href: site.links.linkedin, me: true },
@@ -11,8 +17,8 @@ const links = [
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer">
-  <span>© {year} {site.name}</span>
+<footer class:list={['site-footer', className]}>
+  <small>© {year} {site.name}</small>
   <ul>
     {
       links.map((l) => (
@@ -34,6 +40,9 @@ const year = new Date().getFullYear();
     font-family: var(--font-label);
     font-size: 0.75rem;
     color: var(--muted);
+  }
+  small {
+    font-size: inherit;
   }
   ul {
     display: flex;

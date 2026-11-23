@@ -16,18 +16,18 @@ const rotation = (await getCollection('listening')).map((item) => item.data);
 const listening = rotation.length > 0 ? rotation : now.data.listening;
 ---
 
-<Section section="now" heading="Now" intro={now.data.focus} description="What I'm working on right now.">
-  <span slot="eyebrow" class="updated">
+<Section section="now" heading="Now" intro={now.data.focus} description="What I'm working on right now." article>
+  <Fragment slot="eyebrow">
     <span class="dot" aria-hidden="true"></span>
     Updated <time datetime={now.data.updated.toISOString()}>{formatDate(now.data.updated)}</time>
-  </span>
+  </Fragment>
 
-  <article class="prose">
+  <div class="prose">
     <Reading books={books} />
     <Listening items={listening} />
     {now.data.spanish && <Spanish hours={now.data.spanish.hours} note={now.data.spanish.note} />}
     <Content />
-  </article>
+  </div>
 
   {
     archived.length > 0 && (
@@ -40,9 +40,6 @@ const listening = rotation.length > 0 ? rotation : now.data.listening;
 </Section>
 
 <style>
-  .updated {
-    display: contents;
-  }
   .archive-link {
     display: inline-flex;
     align-items: center;

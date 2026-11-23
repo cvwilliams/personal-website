@@ -15,23 +15,25 @@ const statusLabel = projectStatusLabel;
       <ul class="grid">
         {projects.map((p) => (
           <li>
-            <a class="card" href={`/projects/${p.id}`}>
-              <div class="card-top">
-                <p class="meta mono">
-                  {p.data.year} · {statusLabel[p.data.status]}
-                </p>
-                <Arrow class="card-arrow" />
-              </div>
-              <h2>{p.data.title}</h2>
-              <p class="summary">{p.data.summary}</p>
-              {p.data.tech.length > 0 && (
-                <ul class="chips">
-                  {p.data.tech.map((t) => (
-                    <li>{t}</li>
-                  ))}
-                </ul>
-              )}
-            </a>
+            <article>
+              <a class="card" href={`/projects/${p.id}`}>
+                <div class="card-top">
+                  <p class="meta mono">
+                    {p.data.year} · {statusLabel[p.data.status]}
+                  </p>
+                  <Arrow class="card-arrow" />
+                </div>
+                <h2>{p.data.title}</h2>
+                <p class="summary">{p.data.summary}</p>
+                {p.data.tech.length > 0 && (
+                  <ul class="chips">
+                    {p.data.tech.map((t) => (
+                      <li>{t}</li>
+                    ))}
+                  </ul>
+                )}
+              </a>
+            </article>
           </li>
         ))}
       </ul>
@@ -47,6 +49,9 @@ const statusLabel = projectStatusLabel;
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+  .grid article {
+    height: 100%;
   }
   .card {
     display: flex;

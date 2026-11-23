@@ -32,7 +32,13 @@ const { books } = Astro.props;
               />
             )}
             <div>
-              {book.url ? <a href={book.url}>{book.title}</a> : <span class="title">{book.title}</span>}
+              {book.url ? (
+                <a href={book.url}>
+                  <cite>{book.title}</cite>
+                </a>
+              ) : (
+                <cite>{book.title}</cite>
+              )}
               {book.author && <p>by {book.author}</p>}
             </div>
           </li>
@@ -73,8 +79,8 @@ const { books } = Astro.props;
     border-radius: 4px;
     box-shadow: 0 4px 14px var(--shadow-color);
   }
-  a,
-  .title {
+  cite {
+    font-style: normal;
     font-weight: 700;
   }
   p {
