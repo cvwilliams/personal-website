@@ -3,7 +3,9 @@ import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import { goodreadsShelf } from './loaders/goodreads';
 import { appleMusicAlbums, appleMusicHeavyRotation } from './loaders/apple-music';
+import { openLibraryBooks } from './loaders/open-library';
 import { desertIslandAlbums } from './data/desert-island';
+import { favoriteBooks as favoriteBookList } from './data/favorite-books';
 import { site } from './data/site';
 
 const thoughts = defineCollection({
@@ -87,4 +89,9 @@ const desertIsland = defineCollection({
   schema: rotationItem,
 });
 
-export const collections = { thoughts, projects, now, reading, listening, desertIsland };
+const favoriteBooks = defineCollection({
+  loader: openLibraryBooks({ books: favoriteBookList }),
+  schema: z.object({ url: z.url(), cover: z.url().optional() }),
+});
+
+export const collections = { thoughts, projects, now, reading, listening, desertIsland, favoriteBooks };

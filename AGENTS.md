@@ -32,6 +32,7 @@ src/
   data/resume.ts        Resume as typed data
   data/about.mdx        About page copy (bio, albums, map, Elsewhere)
   data/desert-island.ts Desert island albums (artwork and links come from the Apple Music catalog)
+  data/favorite-books.ts Favorite books on About (covers and links come from Open Library)
   data/places.ts        Places on the About map (name, country, lat, lon, kind: home/lived)
   data/world-dots.ts    Generated 2° land grid for the dotted world map
   lib/content.ts        getThoughts(), getProjects(), readingTime(), formatDate()
@@ -151,6 +152,11 @@ src/
   (and the new one) so the archive shows what `/now` displayed at the time. The widget parser is
   shared in `src/lib/goodreads.mjs`. The Deploy workflow also runs weekly (Mondays) so the list stays
   current; run it from the Actions tab for an immediate refresh.
+- The About page's Favorite books come from `src/data/favorite-books.ts`; the `favoriteBooks`
+  collection (`src/loaders/open-library.ts`, `src/lib/open-library.mjs`) looks each one up on
+  Open Library's search API at build time (no key) for its cover and page link. Unmatched books, or
+  a build without network, fall back to the lettered placeholder tile. They render through
+  `Listening.astro` with `shape="book"` (2:3 covers).
 - The Now page's Heavy rotation comes from the `listening` collection: the Apple Music API's
   heavy-rotation endpoint (top 5 albums/singles/EPs; playlists and stations skipped), fetched at build
   time by `src/loaders/apple-music.ts` using `src/lib/apple-music.mjs`, which signs a short-lived

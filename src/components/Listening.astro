@@ -2,7 +2,7 @@
 interface Item {
   title: string;
   subtitle?: string;
-  kind: 'album' | 'single' | 'ep';
+  kind?: 'album' | 'single' | 'ep';
   url?: string;
   artwork?: string;
 }
@@ -13,9 +13,11 @@ interface Props {
   showKind?: boolean;
   /** Ranked lists (heavy rotation) are ordered; pass false for an unranked set. */
   ordered?: boolean;
+  /** Square album art, or portrait book covers. */
+  shape?: 'album' | 'book';
 }
 
-const { items, heading = 'Heavy rotation', showKind = true, ordered = true } = Astro.props;
+const { items, heading = 'Heavy rotation', showKind = true, ordered = true, shape = 'album' } = Astro.props;
 const List = ordered ? 'ol' : 'ul';
 const headingId = `${heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-title`;
 const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
@@ -25,20 +27,27 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
   items.length > 0 && (
     <section class="listening" aria-labelledby={headingId}>
       <h2 id={headingId}>{heading}</h2>
-      <List class="covers">
+      <List class:list={['covers', shape]}>
         {items.map((item, index) => {
           const Tag = item.url ? 'a' : 'div';
           return (
             <li>
               <Tag class="item" href={item.url}>
                 {item.artwork ? (
-                  <img src={item.artwork} alt="" width="200" height="200" loading="lazy" decoding="async" />
+                  <img
+                    src={item.artwork}
+                    alt=""
+                    width="200"
+                    height={shape === 'book' ? 300 : 200}
+                    loading="lazy"
+                    decoding="async"
+                  />
                 ) : (
                   <span class={`placeholder ph-${index % 3}`} aria-hidden="true">
                     {item.title.charAt(0)}
                   </span>
                 )}
-                {showKind && <span class="kind">{kindLabel[item.kind]}</span>}
+                {showKind && item.kind && <span class="kind">{kindLabel[item.kind]}</span>}
                 <cite class="title">{item.title}</cite>
                 {item.subtitle && <span class="subtitle">{item.subtitle}</span>}
               </Tag>
@@ -87,6 +96,11 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
     border-radius: 8px;
     box-shadow: 0 6px 18px var(--shadow-color);
     transition: transform 0.4s var(--ease-soft);
+  }
+  .book img,
+  .book .placeholder {
+    aspect-ratio: 2 / 3;
+    border-radius: 4px;
   }
   .placeholder {
     display: grid;
