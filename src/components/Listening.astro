@@ -41,6 +41,7 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
                     height={shape === 'book' ? 300 : 200}
                     loading="lazy"
                     decoding="async"
+                    referrerpolicy="no-referrer"
                   />
                 ) : (
                   <span class={`placeholder ph-${index % 3}`} aria-hidden="true">

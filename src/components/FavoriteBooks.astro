@@ -3,11 +3,11 @@ import { getCollection } from 'astro:content';
 import Listening from './Listening.astro';
 import { favoriteBooks } from '../data/favorite-books';
 
-const synced = new Map((await getCollection('favoriteBooks')).map((entry) => [entry.id, entry.data]));
-const items = favoriteBooks.map((book, index) => {
-  const match = synced.get(String(index));
-  return { title: book.title, subtitle: book.author, url: match?.url, artwork: match?.cover };
-});
+// The Goodreads "favorites" shelf, newest first; the hand-written list if it's empty or unreachable.
+const shelf = (await getCollection('favoriteBooks')).map((entry) => entry.data);
+const items = shelf.length
+  ? shelf.map((book) => ({ title: book.title, subtitle: book.author, url: book.url, artwork: book.cover }))
+  : favoriteBooks.map((book) => ({ title: book.title, subtitle: book.author }));
 ---
 
 <Listening items={items} heading="Favorite books" showKind={false} ordered={false} shape="book" />

@@ -27,9 +27,10 @@ function widgetHtml(script) {
 /**
  * @typedef {{ id: string; title: string; author?: string; url: string; cover?: string }} Book
  * @param {string} html
+ * @param {number} coverHeight cover image height in px, requested from Goodreads' image CDN
  * @returns {Book[]}
  */
-function parseBooks(html) {
+function parseBooks(html, coverHeight = 180) {
   const chunks = html.split(/<div[^>]+class="gr_custom_each_container[^"]*"[^>]*>/).slice(1);
   return chunks.flatMap((chunk) => {
     const coverLink = chunk.match(/class="gr_custom_book_container[^"]*"[^>]*>\s*<a\b([^>]*)>([\s\S]*?)<\/a>/);
@@ -41,8 +42,8 @@ function parseBooks(html) {
     const cover =
       rawCover && !rawCover.includes('nophoto')
         ? /\._S[XY]\d+_/i.test(rawCover)
-          ? rawCover.replace(/\._S[XY]\d+_/i, '._SY180_')
-          : rawCover.replace(/(\.\w+)$/, '._SY180_$1')
+          ? rawCover.replace(/\._S[XY]\d+_/i, `._SY${coverHeight}_`)
+          : rawCover.replace(/(\.\w+)$/, `._SY${coverHeight}_$1`)
         : undefined;
     return [
       {
@@ -58,10 +59,10 @@ function parseBooks(html) {
 
 /**
  * Books on a public Goodreads shelf, read from the shelf widget (shelf RSS feeds were retired in 2026).
- * @param {{ userId: string; shelf: string; limit?: number }} options
+ * @param {{ userId: string; shelf: string; limit?: number; coverHeight?: number }} options
  * @returns {Promise<Book[]>}
  */
-export async function fetchGoodreadsShelf({ userId, shelf, limit = 10 }) {
+export async function fetchGoodreadsShelf({ userId, shelf, limit = 10, coverHeight = 180 }) {
   const url = new URL(`https://www.goodreads.com/review/custom_widget/${userId}`);
   url.searchParams.set('shelf', shelf);
   url.searchParams.set('num_books', String(limit));
@@ -76,5 +77,5 @@ export async function fetchGoodreadsShelf({ userId, shelf, limit = 10 }) {
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   const html = widgetHtml(await response.text());
   if (!html) throw new Error('widget response had no widget_code');
-  return parseBooks(html);
+  return parseBooks(html, coverHeight);
 }
