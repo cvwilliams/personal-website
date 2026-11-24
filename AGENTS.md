@@ -32,6 +32,7 @@ src/
   data/resume.ts        Resume as typed data
   data/about.mdx        About page copy (bio, albums, map, Elsewhere)
   data/desert-island.ts Desert island albums (artwork and links come from the Apple Music catalog)
+  data/favorite-books.ts Fallback list for About's Favorite books (live: Goodreads "favorites" shelf)
   data/places.ts        Places on the About map (name, country, lat, lon, kind: home/lived)
   data/world-dots.ts    Generated 2° land grid for the dotted world map
   lib/content.ts        getThoughts(), getProjects(), readingTime(), formatDate()
@@ -80,7 +81,7 @@ src/
   tiles stack and the page scrolls.
 - Pages with section art pass `art` to Base (homepage, Section layout); only those get the
   art-state and transition scripts. Remote images are
-  requested at about 2x display size (Goodreads `_SY180_`, Apple Music 300px), then self-hosted at
+  requested at about 2x display size (Goodreads `_SY180_`, or `_SY600_` for Favorite books; Apple Music 300px), then self-hosted at
   build time by `src/integrations/self-host-images.mjs`: every remote `<img>` in the built HTML is
   downloaded to `/_astro/img/` as WebP at 2× its `width`/`height` attributes (so always set them),
   keeping the remote URL if a download fails.
@@ -151,6 +152,10 @@ src/
   (and the new one) so the archive shows what `/now` displayed at the time. The widget parser is
   shared in `src/lib/goodreads.mjs`. The Deploy workflow also runs weekly (Mondays) so the list stays
   current; run it from the Actions tab for an immediate refresh.
+- The About page's Favorite books come from the public Goodreads shelf `favorites` (the
+  `favoriteBooks` collection, same widget loader as Reading, newest first). If that shelf is empty
+  or unreachable, the list in `src/data/favorite-books.ts` is shown with lettered placeholder tiles.
+  They render through `Listening.astro` with `shape="book"` (2:3 covers).
 - The Now page's Heavy rotation comes from the `listening` collection: the Apple Music API's
   heavy-rotation endpoint (top 5 albums/singles/EPs; playlists and stations skipped), fetched at build
   time by `src/loaders/apple-music.ts` using `src/lib/apple-music.mjs`, which signs a short-lived

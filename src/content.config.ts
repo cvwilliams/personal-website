@@ -87,4 +87,11 @@ const desertIsland = defineCollection({
   schema: rotationItem,
 });
 
-export const collections = { thoughts, projects, now, reading, listening, desertIsland };
+const favoriteBooks = defineCollection({
+  loader: goodreadsShelf({ userId: site.goodreadsUserId, shelf: 'favorites', limit: 10, coverHeight: 600 }),
+  schema: book.extend({
+    cover: z.url().optional(),
+  }),
+});
+
+export const collections = { thoughts, projects, now, reading, listening, desertIsland, favoriteBooks };
