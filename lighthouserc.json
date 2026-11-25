@@ -37,6 +37,12 @@
           {
             "minScore": 0.9
           }
+        ],
+        "errors-in-console": [
+          "error",
+          {
+            "minScore": 1
+          }
         ]
       }
     }
