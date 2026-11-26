@@ -93,7 +93,7 @@ const canonical = new URL(pagePath(Astro.url), Astro.site);
     <slot name="head" />
   </head>
   <body>
-    {skipLink && <a class="skip-link" href="#main">Skip to content</a>}
+    {skipLink && <a class="skip-link" href="#main">Skip to content</a>}{' '}
     <span id="new-tab-note" hidden>Opens in a new tab</span>
     <slot />
     {art && <ArtState />}

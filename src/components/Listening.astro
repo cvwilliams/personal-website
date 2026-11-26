@@ -48,8 +48,9 @@ const kindLabel = { album: 'Album', single: 'Single', ep: 'EP' } as const;
                     {item.title.charAt(0)}
                   </span>
                 )}
-                {showKind && item.kind && <span class="kind">{kindLabel[item.kind]}</span>}
-                <cite class="title">{item.title}</cite>
+                {' '}
+                {showKind && item.kind && <span class="kind">{kindLabel[item.kind]}</span>}{' '}
+                <cite class="title">{item.title}</cite>{' '}
                 {item.subtitle && <span class="subtitle">{item.subtitle}</span>}
               </Tag>
             </li>
