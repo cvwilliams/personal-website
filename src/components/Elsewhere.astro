@@ -15,7 +15,7 @@ const links = [
     links.map((l) => (
       <li>
         <a href={l.href} rel={'me' in l ? 'me' : undefined}>
-          <span class="label">{l.label}</span>
+          <span class="label">{l.label}</span>{' '}
           <span class="detail">{l.detail}</span>
           <Arrow class="arrow" />
         </a>
